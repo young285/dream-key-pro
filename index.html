@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<meta name="app-version" content="12.4">
+<meta name="app-version" content="12.5">
 <meta name="description" content="자동차키 업체용 매출·미수·재고·작업 관리">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -46,7 +46,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 <header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> Pro <small style="font-size:11px">v12.3</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="settings">설정</button></nav>
-<section id="home" class="panel active"><div id="updateBanner" class="update-banner"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
+<section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
 <div class="card date-banner"><div id="todayDateText" class="date-main">오늘</div><div id="todayDateSub" class="date-sub">날짜를 자동으로 표시합니다.</div></div><div class="actions" style="margin:0 0 10px"><button class="action ok" type="button" onclick="openTab('stats')">📊 날짜별 마진·월 통계 보기</button></div>
 <div class="cards">
 <div class="card metric clickable-metric blue" onclick="openMetricDetail('todayCars')"><div class="label">오늘 차량</div><div class="value" id="todayCars">0대</div></div><div class="card metric clickable-metric " onclick="openMetricDetail('todaySales')"><div class="label">오늘 매출</div><div class="value" id="todaySales">0원</div></div><div class="card metric clickable-metric ok" onclick="openMetricDetail('todayProfit')"><div class="label">오늘 순수익</div><div class="value" id="todayProfit">0원</div></div><div class="card metric clickable-metric warn" onclick="openMetricDetail('todayUnpaid')"><div class="label">오늘 미수</div><div class="value" id="todayUnpaid">0원</div></div><div class="card metric clickable-metric blue" onclick="openMetricDetail('monthCars')"><div class="label">이번 달 차량</div><div class="value" id="monthCars">0대</div></div><div class="card metric clickable-metric ok" onclick="openMetricDetail('monthSales')"><div class="label">이번 달 매출</div><div class="value" id="monthSales">0원</div></div><div class="card metric clickable-metric " onclick="openMetricDetail('monthProfit')"><div class="label">이번 달 순이익</div><div class="value" id="monthProfit">0원</div></div><div class="card metric clickable-metric blue" onclick="openMetricDetail('avgDailyCars')"><div class="label">일평균 차량</div><div class="value" id="avgDailyCars">0대</div></div><div class="card metric clickable-metric ok" onclick="openMetricDetail('avgMargin')"><div class="label">차량당 평균 마진</div><div class="value" id="avgMargin">0원</div></div><div class="card metric clickable-metric warn" onclick="openMetricDetail('totalUnpaid')"><div class="label">총 미수금</div><div class="value" id="totalUnpaid">0원</div></div>
@@ -136,7 +136,7 @@ async function notify(text){if(!settings.telegramEnabled||!settings.telegramToke
 $('#testTelegram').onclick=async()=>{try{saveSettingsFromForm();if(!settings.telegramToken||!settings.telegramChat)throw new Error('토큰과 Chat ID를 입력하세요.');const res=await fetch(`https://api.telegram.org/bot${encodeURIComponent(settings.telegramToken)}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:settings.telegramChat,text:`🔑 ${settings.business} 테스트 알림`})});if(!res.ok)throw Error('전송 실패');status($('#settingsStatus'),'텔레그램 테스트 전송 성공')}catch(e){status($('#settingsStatus'),e.message,true)}};
 function saveSettingsFromForm(){settings.goal=Math.max(1,+$('#settingGoal').value||100);settings.business=$('#settingBusiness').value.trim()||'자동차키';settings.setupDone=true;settings.owner=$('#settingOwner').value.trim();settings.businessPhone=$('#settingBusinessPhone').value.trim();settings.address=$('#settingAddress').value.trim();settings.vinUrl=$('#settingVinUrl').value.trim();settings.scriptUrl=$('#settingScriptUrl').value.trim();settings.telegramToken=$('#settingTelegramToken').value.trim();settings.telegramChat=$('#settingTelegramChat').value.trim();settings.telegramEnabled=$('#settingTelegramEnabled').checked;settings.automationUrl=$('#settingAutomationUrl').value.trim();settings.autoBackup=$('#settingAutoBackup').checked;settings.cloudPhotos=$('#settingCloudPhotos').checked;settings.autoUpdate=$('#settingAutoUpdate').checked;settings.aiUrl=$('#settingAiUrl').value.trim();const pin=$('#settingPin').value.trim(),removePin=$('#settingRemovePin').checked;if(removePin)settings.pin='';else if(pin){if(!/^\d{4,6}$/.test(pin))throw new Error('PIN은 숫자 4~6자리로 입력하세요.');settings.pin=pin}settings.autoLock=$('#settingAutoLock').value;$('#settingPin').value='';$('#settingRemovePin').checked=false;save()}
 function loadSettings(){$('#settingGoal').value=settings.goal||100;$('#settingBusiness').value=settings.business||'자동차키';$('#settingOwner').value=settings.owner||'';$('#settingBusinessPhone').value=settings.businessPhone||'';$('#settingAddress').value=settings.address||'';$('#businessLogoPreview').src=settings.businessLogo||'icon-192.png';$('#settingVinUrl').value=settings.vinUrl||'';$('#settingScriptUrl').value=settings.scriptUrl||'';$('#settingTelegramToken').value=settings.telegramToken||'';$('#settingTelegramChat').value=settings.telegramChat||'';$('#settingTelegramEnabled').checked=!!settings.telegramEnabled;$('#settingAutomationUrl').value=settings.automationUrl||'';$('#settingAutoBackup').checked=!!settings.autoBackup;$('#settingCloudPhotos').checked=!!settings.cloudPhotos;$('#settingAutoUpdate').checked=settings.autoUpdate!==false;$('#settingAiUrl').value=settings.aiUrl||'';$('#settingPin').value='';$('#settingRemovePin').checked=false;$('#settingAutoLock').value=settings.autoLock||'on'}
-function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v12.4';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
+function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v12.5';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
 $('#brandEditButton').onclick=()=>{openTab('settings');setTimeout(()=>$('#settingBusiness')?.focus(),250)};
 $('#settingLogoFile').onchange=e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),max=256,q=Math.min(1,max/img.width,max/img.height);c.width=Math.max(1,Math.round(img.width*q));c.height=Math.max(1,Math.round(img.height*q));c.getContext('2d').drawImage(img,0,0,c.width,c.height);settings.businessLogo=c.toDataURL('image/jpeg',.85);$('#businessLogoPreview').src=settings.businessLogo;save(false);applyBranding()};img.src=r.result};r.readAsDataURL(f)};$('#removeBusinessLogo').onclick=()=>{settings.businessLogo='';$('#businessLogoPreview').src='icon-192.png';save(false);applyBranding()};
 
@@ -226,43 +226,94 @@ function unlock(){if($('#pinInput').value===settings.pin){sessionStorage.setItem
 $('#unlockBtn').onclick=unlock;$('#pinInput').onkeydown=e=>{if(e.key==='Enter')unlock()};
 
 
-const APP_VERSION='12.4';
+const APP_VERSION='12.5';
 let remoteVersion='';
-function versionParts(v){return String(v||'').split('.').map(x=>Number(x)||0)}
-function isNewerVersion(remote,local){const a=versionParts(remote),b=versionParts(local),n=Math.max(a.length,b.length);for(let i=0;i<n;i++){const x=a[i]||0,y=b[i]||0;if(x>y)return true;if(x<y)return false}return false}
-async function checkForAppUpdate(silent=true){
-  if(!navigator.onLine)return false;
-  try{
-    const res=await fetch(`./index.html?update_check=${Date.now()}`,{cache:'no-store',headers:{'Cache-Control':'no-cache'}});
-    if(!res.ok)return false;
-    const html=await res.text();
-    const m=html.match(/<meta\s+name=["']app-version["']\s+content=["']([^"']+)["']/i)||html.match(/<meta\s+content=["']([^"']+)["']\s+name=["']app-version["']/i);
-    if(!m)return false;
-    remoteVersion=m[1].trim();
-    if(isNewerVersion(remoteVersion,APP_VERSION)){
-      $('#updateText').textContent=`새 버전 v${remoteVersion}이 있습니다.`;
-      $('#updateBanner').style.display='block';
-      return true;
-    }
-    $('#updateBanner').style.display='none'; remoteVersion=''; if(!silent)status($('#homeStatus'),`현재 v${APP_VERSION} · 최신 버전입니다.`);
-  }catch(e){if(!silent)status($('#homeStatus'),'업데이트 확인에 실패했습니다.',true)}
+let autoUpdating=false;
+
+function versionParts(v){
+  return String(v||'').split('.').map(x=>Number(x)||0)
+}
+function isNewerVersion(remote,local){
+  const a=versionParts(remote),b=versionParts(local),n=Math.max(a.length,b.length);
+  for(let i=0;i<n;i++){
+    const x=a[i]||0,y=b[i]||0;
+    if(x>y)return true;
+    if(x<y)return false;
+  }
   return false;
 }
-async function applyLatestVersion(){
+
+async function fetchRemoteVersion(){
+  if(!navigator.onLine)return '';
+  try{
+    const res=await fetch(`./index.html?update_check=${Date.now()}`,{
+      cache:'no-store',
+      headers:{'Cache-Control':'no-cache'}
+    });
+    if(!res.ok)return '';
+    const html=await res.text();
+    const m=html.match(/<meta\s+name=["']app-version["']\s+content=["']([^"']+)["']/i)
+      ||html.match(/<meta\s+content=["']([^"']+)["']\s+name=["']app-version["']/i);
+    return m?m[1].trim():'';
+  }catch(e){
+    return '';
+  }
+}
+
+async function installLatestVersion(version){
+  if(autoUpdating)return;
+  autoUpdating=true;
   try{
     if('serviceWorker' in navigator){
       const r=await navigator.serviceWorker.getRegistration();
-      if(r){await r.update().catch(()=>{});if(r.waiting)r.waiting.postMessage({type:'SKIP_WAITING'})}
+      if(r){
+        await r.update().catch(()=>{});
+        if(r.waiting) r.waiting.postMessage({type:'SKIP_WAITING'});
+      }
     }
+    // 잠깐 기다려 새 서비스워커가 활성화될 시간을 줌
+    await new Promise(resolve=>setTimeout(resolve,500));
   }finally{
-    const v=remoteVersion||Date.now();
-    location.replace(`./?v=${encodeURIComponent(v)}&fresh=${Date.now()}`);
+    location.replace(`./?v=${encodeURIComponent(version||Date.now())}&fresh=${Date.now()}`);
   }
 }
+
+async function checkForAppUpdate(){
+  if(autoUpdating)return false;
+  const v=await fetchRemoteVersion();
+  if(v && isNewerVersion(v,APP_VERSION)){
+    remoteVersion=v;
+    $('#updateBanner').style.display='none';
+    await installLatestVersion(v);
+    return true;
+  }
+  remoteVersion='';
+  $('#updateBanner').style.display='none';
+  return false;
+}
+
+// 수동 업데이트 버튼은 혹시 필요할 때를 위한 안전장치로만 유지
+async function applyLatestVersion(){
+  const v=(await fetchRemoteVersion())||remoteVersion||Date.now();
+  await installLatestVersion(v);
+}
 $('#applyUpdate').onclick=applyLatestVersion;
-addEventListener('focus',()=>checkForAppUpdate(true));
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkForAppUpdate(true)});
-setTimeout(()=>checkForAppUpdate(true),1500);
+
+// 앱을 처음 열 때 자동 업데이트
+addEventListener('load',()=>setTimeout(()=>checkForAppUpdate(),900));
+
+// 앱을 오래 켜둔 뒤 다시 돌아왔을 때도 자동 확인.
+// 등록 화면에서 입력 중인 내용을 갑자기 끊지 않도록 홈 화면일 때만 즉시 적용.
+addEventListener('focus',()=>{
+  const home=$('#home');
+  if(home?.classList.contains('active')) checkForAppUpdate();
+});
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'){
+    const home=$('#home');
+    if(home?.classList.contains('active')) checkForAppUpdate();
+  }
+});
 setInterval(()=>checkForAppUpdate(true),30*60*1000);
 
 let deferredPrompt;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').style.display='block'});$('#installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').style.display='none'};if('serviceWorker'in navigator)addEventListener('load',async()=>{try{const r=await navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'});await r.update().catch(()=>{})}catch(e){console.warn('Service worker 등록 실패',e)}});
