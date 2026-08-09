@@ -1,4 +1,4 @@
-const CACHE='dream-key-pro-shell-v12.2';
+const CACHE='dream-key-pro-shell-v12.4';
 const CORE=['./','./index.html','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install',event=>{
