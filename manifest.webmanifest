@@ -1,11 +1,11 @@
 {
-  "name": "자동차키 Pro",
-  "short_name": "AutoKey Pro",
-  "start_url": "./?v=12.1",
+  "name": "드림 자동차키 Pro",
+  "short_name": "드림차키 Pro",
+  "start_url": "./?v=12.9",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#eef2f7",
-  "theme_color": "#0f172a",
+  "background_color": "#f4f7fb",
+  "theme_color": "#0b1f3a",
   "icons": [
     {
       "src": "icon-192.png",
@@ -17,6 +17,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "description": "자동차키 업체용 작업·매출·미수·재고·통계 관리"
+  ]
 }
