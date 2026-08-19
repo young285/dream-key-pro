@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<meta name="app-version" content="13.2">
+<meta name="app-version" content="13.3">
 <meta name="description" content="자동차키 업체용 매출·미수·재고·작업 관리">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -88,9 +88,24 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 }
 
 </style>
+
+<style id="modern-blue-v133">
+.job-step-card{background:#f8fbff!important;border:1px solid #bfdbfe!important;padding:14px!important}
+.job-step-card>label{font-size:15px!important;margin-bottom:10px!important}
+.job-main-grid{grid-template-columns:repeat(2,1fr)!important;gap:9px!important}
+.job-main-grid button{min-height:54px!important;border-radius:14px!important;padding:12px 8px!important;font-size:15px!important}
+.job-main-grid button.active{background:#2563eb!important;color:#fff!important;border-color:#2563eb!important;box-shadow:0 5px 14px #2563eb33!important}
+.job-sub-wrap{margin-top:14px;padding:12px;border-radius:14px;background:#eef6ff;border:1px solid #bfdbfe}
+.job-sub-title{font-size:12px;font-weight:900;color:#1d4ed8;margin-bottom:8px}
+.job-sub-grid{grid-template-columns:repeat(2,1fr)!important;gap:8px!important;margin-top:0!important}
+.job-sub-grid button{min-height:46px!important;border-radius:12px!important;font-size:14px!important}
+.job-sub-grid button.active{background:#0f766e!important;color:#fff!important;border-color:#0f766e!important;box-shadow:0 4px 12px #0f766e2b!important}
+.job-final-choice{margin-top:10px;padding:10px 12px;border-radius:11px;background:#fff;border:1px solid #dbeafe;color:#334155;font-size:13px;font-weight:800}
+.job-final-choice b{color:#0f766e;font-size:14px}
+</style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> Pro <small style="font-size:11px">v13.2</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> Pro <small style="font-size:11px">v13.3</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -121,8 +136,11 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
     <button type="button" data-main="사제 스마트키 제작">사제 스마트키 제작</button>
     <button type="button" data-main="기타">기타</button>
   </div>
-  <div id="jobSubGrid" class="job-sub-grid"></div>
-  <div id="jobTypeLabel" class="note" style="margin-top:8px">선택: 스마트키 추가</div>
+  <div id="jobSubWrap" class="job-sub-wrap">
+    <div id="jobSubTitle" class="job-sub-title">스마트키 작업 선택</div>
+    <div id="jobSubGrid" class="job-sub-grid"></div>
+  </div>
+  <div id="jobTypeLabel" class="job-final-choice">✓ 최종 선택: <b>스마트키 추가</b></div>
 </div><div><label>차량 대수</label><input id="carCount" type="number" min="0" value="1" inputmode="numeric"></div><div id="otherWorkBox" class="other-work hidden"><label>기타 작업내용</label><input id="otherWork" placeholder="예: 배터리 교체, 케이스 교체, 키 수리, 칩 복사"></div><div><label>사용 품번</label><input id="partNo" placeholder="예: 95440-P2AC0"></div><div><label>재고 차감 수량</label><input id="stockUsed" type="number" min="0" value="0"></div><div><label>판매금액</label><input id="sale" type="number" inputmode="numeric" min="0" step="1000" required placeholder="받을 금액 또는 공급가액"></div><div><label>부가세 구분</label><select id="vatType"><option value="해당없음">부가세 해당 없음</option><option value="포함">부가세 포함</option><option value="별도">부가세 별도</option></select></div><div id="vatPreview" class="vat-preview"><b>부가세 해당 없음</b><br>공급가액 0원 · 부가세 0원 · 최종금액 0원</div><div><label>원가</label><input id="cost" type="number" inputmode="numeric" min="0" step="1000" value="0"></div><div><label>결제방법</label><select id="payment"><option>현금</option><option>계좌이체</option><option>카드</option><option>미수</option></select></div><div><label>세금계산서</label><select id="taxInvoice"><option value="아니오">아니오</option><option value="예">예</option></select></div><div class="full photo-picker"><label>📷 작업사진 <span class="note">최대 30장 · 클라우드 연동 가능</span></label><div class="photo-actions"><button type="button" id="cameraBtn">📸 바로 촬영</button><button type="button" id="galleryBtn" class="secondary">🖼️ 갤러리 선택</button></div><input id="cameraPhotos" class="hidden" type="file" accept="image/*" capture="environment"><input id="galleryPhotos" class="hidden" type="file" accept="image/*" multiple><div id="photoPreview" class="photo-grid"></div><div class="note">사진은 고화질(최대 2000px)로 저장합니다. 클라우드 사진 사용 시 원본을 업로드하고 앱에는 링크를 저장합니다.</div></div><div class="full"><label>메모</label><div class="actions" style="margin:0 0 8px"><button class="action ghost" type="button" id="aiDraft">AI 작업기록 초안</button><button class="action ghost" type="button" id="vinHistory">VIN 과거작업 검색</button></div><textarea id="memo" placeholder="사용 장비, 작업 방법, 특이사항"></textarea></div><div class="full actions"><button class="action" type="submit" id="saveJobBtn">저장</button><button class="action secondary" type="button" id="cancelEdit">초기화</button></div>
 </form></div></section>
 <section id="history" class="panel">
@@ -238,7 +256,9 @@ function renderJobTypeChooser(main='스마트키',sub='추가'){
   $$('#jobMainGrid button').forEach(b=>b.classList.toggle('active',b.dataset.main===main));
   $('#jobSubGrid').innerHTML=subs.map(x=>`<button type="button" data-sub="${esc(x)}" class="${x===sub?'active':''}">${esc(x)}</button>`).join('');
   $$('#jobSubGrid button').forEach(b=>b.onclick=()=>renderJobTypeChooser(main,b.dataset.sub));
-  $('#jobTypeLabel').textContent='선택: '+$('#jobType').value;
+  if($('#jobSubWrap')) $('#jobSubWrap').classList.toggle('hidden',!subs.length);
+  if($('#jobSubTitle')) $('#jobSubTitle').textContent=main+' 작업 선택';
+  $('#jobTypeLabel').innerHTML='✓ 최종 선택: <b>'+esc($('#jobType').value)+'</b>';
   toggleOtherWork();
 }
 $$('#jobMainGrid button').forEach(b=>b.onclick=()=>renderJobTypeChooser(b.dataset.main,''));
