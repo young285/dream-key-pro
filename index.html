@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<meta name="app-version" content="13.1">
+<meta name="app-version" content="13.2">
 <meta name="description" content="자동차키 업체용 매출·미수·재고·작업 관리">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -64,10 +64,33 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 .contact-suggest small{color:var(--muted)}
 .contact-history-btn{grid-column:1/-1}
 
+
+.job-step-card{grid-column:1/-1;background:#f8fafc;border:1px solid #dbeafe;border-radius:14px;padding:12px}
+.job-main-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+.job-main-grid button{border:1px solid #cbd5e1;background:#fff;border-radius:11px;padding:11px 6px;font-weight:900;color:#1e293b}
+.job-main-grid button.active{background:#2563eb;color:#fff;border-color:#2563eb}
+.job-sub-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:9px}
+.job-sub-grid button{border:1px solid #cbd5e1;background:#fff;border-radius:10px;padding:10px 6px;font-weight:800;color:#334155}
+.job-sub-grid button.active{background:#0f766e;color:#fff;border-color:#0f766e}
+.unified-search-card{margin-bottom:12px;background:linear-gradient(135deg,#fff,#eff6ff)}
+.unified-results{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.unified-hit{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px;cursor:pointer}
+.unified-hit:active{transform:scale(.99)}
+.unified-hit .title{font-weight:900}
+.unified-hit .sub{font-size:12px;color:var(--muted);margin-top:4px}
+.job-detail-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.job-detail-grid>div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:9px}
+.job-detail-grid span{display:block;font-size:11px;color:var(--muted)}
+.job-detail-grid b{display:block;margin-top:3px;font-size:14px;word-break:break-all}
+@media(max-width:560px){
+ .job-main-grid,.job-sub-grid{grid-template-columns:repeat(2,1fr)}
+ .job-detail-grid{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> Pro <small style="font-size:11px">v13.1</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> Pro <small style="font-size:11px">v13.2</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -75,7 +98,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 <div class="cards">
 <div class="card metric clickable-metric blue" onclick="openMetricDetail('todayCars')"><div class="label">오늘 차량</div><div class="value" id="todayCars">0대</div></div><div class="card metric clickable-metric " onclick="openMetricDetail('todaySales')"><div class="label">오늘 매출</div><div class="value" id="todaySales">0원</div></div><div class="card metric clickable-metric ok" onclick="openMetricDetail('todayProfit')"><div class="label">오늘 순수익</div><div class="value" id="todayProfit">0원</div></div><div class="card metric clickable-metric warn" onclick="openMetricDetail('todayUnpaid')"><div class="label">오늘 미수</div><div class="value" id="todayUnpaid">0원</div></div><div class="card metric clickable-metric blue" onclick="openMetricDetail('monthCars')"><div class="label">이번 달 차량</div><div class="value" id="monthCars">0대</div></div><div class="card metric clickable-metric ok" onclick="openMetricDetail('monthSales')"><div class="label">이번 달 매출</div><div class="value" id="monthSales">0원</div></div><div class="card metric clickable-metric " onclick="openMetricDetail('monthProfit')"><div class="label">이번 달 순이익</div><div class="value" id="monthProfit">0원</div></div><div class="card metric clickable-metric blue" onclick="openMetricDetail('avgDailyCars')"><div class="label">일평균 차량</div><div class="value" id="avgDailyCars">0대</div></div><div class="card metric clickable-metric ok" onclick="openMetricDetail('avgMargin')"><div class="label">차량당 평균 마진</div><div class="value" id="avgMargin">0원</div></div><div class="card metric clickable-metric warn" onclick="openMetricDetail('totalUnpaid')"><div class="label">총 미수금</div><div class="value" id="totalUnpaid">0원</div></div>
 </div>
-<h2>빠른 등록</h2><div class="quick"><button data-quick="스마트키 추가"><span>➕</span>추가키</button><button data-quick="올키로스트"><span>🔑</span>올키</button><button data-quick="개문"><span>🚪</span>개문</button><button data-quick="리모컨 제작"><span>📡</span>리모컨</button></div>
+<h2>빠른 등록</h2><div class="quick"><button data-quick="스마트키 추가"><span>➕</span>추가키</button><button data-quick="스마트키 올키"><span>🔑</span>올키</button><button data-quick="개문"><span>🚪</span>개문</button><button data-quick="리모콘 추가"><span>📡</span>리모컨</button></div>
 <h2>이번 달 목표</h2><div class="card goal"><div><b id="goalText">0 / 100대</b><div class="note">월 작업 차량 목표</div></div><div class="bar"><i id="goalBar"></i></div></div>
 <h2>최근 6개월 매출</h2><canvas id="chart" width="1000" height="280"></canvas>
 <div class="actions"><button class="action secondary" id="exportCsv">CSV 내보내기</button><button class="action secondary" id="backupBtn">백업 저장</button><button class="action secondary" id="restoreBtn">백업 불러오기</button><button class="action ok" id="cloudPush">구글시트 전송</button><button class="action ghost" id="cloudPull">구글시트 불러오기</button><input type="file" id="restoreFile" accept=".json" hidden></div>
@@ -83,9 +106,40 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </section>
 <section id="add" class="panel"><div class="card"><h2 id="formTitle">작업 등록</h2><form id="jobForm" class="grid"><input id="editId" type="hidden">
 <div><label>날짜</label><input id="date" type="date" required></div><div><label>시간</label><input id="time" type="time"><label style="margin-top:7px;font-weight:600"><input id="autoTime" type="checkbox" checked style="width:auto"> 저장할 때 휴대폰 현재시간 자동기록</label></div><div class="contact-wrap"><label>고객/거래처</label><input id="customer" placeholder="예: 엑심모터스" autocomplete="off"><div id="customerSuggest" class="contact-suggest"></div></div><div class="contact-wrap"><label>전화번호</label><input id="phone" inputmode="tel" placeholder="010-0000-0000" autocomplete="off"><div id="phoneSuggest" class="contact-suggest"></div></div><div class="contact-history-btn"><button class="action ghost" type="button" id="contactHistoryBtn">📚 거래처/전화번호 과거 내역 보기</button></div><div><label>차량명</label><input id="car" placeholder="예: 쏘렌토 2022"></div><div><label>차량번호</label><input id="plate" placeholder="예: 12가3456"></div><div class="kcea-box"><b>🚗 원부조회 연결</b><div class="kcea-row" style="margin-top:9px"><button class="action" type="button" id="kceaOpen">원부조회 앱 열기</button><button class="action secondary" type="button" id="plateCopy">차량번호 복사</button></div><div class="kcea-status" id="kceaStatus">차량번호를 입력하고 <b>원부조회 앱 열기</b>를 누르면 차량번호를 복사한 뒤 원부조회 앱을 실행합니다.</div></div><div class="full"><label>차대번호 VIN</label><div class="row"><input id="vin" placeholder="선택 입력"><button class="action ghost" type="button" id="vinPaste">VIN 붙여넣기</button><button class="action ghost" type="button" id="vinLookup">VIN 조회</button></div></div>
-<div><label>작업 종류</label><select id="jobType"><option>스마트키 추가</option><option>올키로스트</option><option>리모컨 제작</option><option>개문</option><option>키 판매</option><option>기타</option></select></div><div><label>차량 대수</label><input id="carCount" type="number" min="0" value="1" inputmode="numeric"></div><div id="otherWorkBox" class="other-work hidden"><label>기타 작업내용</label><input id="otherWork" placeholder="예: 배터리 교체, 케이스 교체, 키 수리, 칩 복사"></div><div><label>사용 품번</label><input id="partNo" placeholder="예: 95440-P2AC0"></div><div><label>재고 차감 수량</label><input id="stockUsed" type="number" min="0" value="0"></div><div><label>판매금액</label><input id="sale" type="number" inputmode="numeric" min="0" step="1000" required placeholder="받을 금액 또는 공급가액"></div><div><label>부가세 구분</label><select id="vatType"><option value="해당없음">부가세 해당 없음</option><option value="포함">부가세 포함</option><option value="별도">부가세 별도</option></select></div><div id="vatPreview" class="vat-preview"><b>부가세 해당 없음</b><br>공급가액 0원 · 부가세 0원 · 최종금액 0원</div><div><label>원가</label><input id="cost" type="number" inputmode="numeric" min="0" step="1000" value="0"></div><div><label>결제방법</label><select id="payment"><option>현금</option><option>계좌이체</option><option>카드</option><option>미수</option></select></div><div><label>세금계산서</label><select id="taxInvoice"><option value="아니오">아니오</option><option value="예">예</option></select></div><div class="full photo-picker"><label>📷 작업사진 <span class="note">최대 30장 · 클라우드 연동 가능</span></label><div class="photo-actions"><button type="button" id="cameraBtn">📸 바로 촬영</button><button type="button" id="galleryBtn" class="secondary">🖼️ 갤러리 선택</button></div><input id="cameraPhotos" class="hidden" type="file" accept="image/*" capture="environment"><input id="galleryPhotos" class="hidden" type="file" accept="image/*" multiple><div id="photoPreview" class="photo-grid"></div><div class="note">사진은 고화질(최대 2000px)로 저장합니다. 클라우드 사진 사용 시 원본을 업로드하고 앱에는 링크를 저장합니다.</div></div><div class="full"><label>메모</label><div class="actions" style="margin:0 0 8px"><button class="action ghost" type="button" id="aiDraft">AI 작업기록 초안</button><button class="action ghost" type="button" id="vinHistory">VIN 과거작업 검색</button></div><textarea id="memo" placeholder="사용 장비, 작업 방법, 특이사항"></textarea></div><div class="full actions"><button class="action" type="submit" id="saveJobBtn">저장</button><button class="action secondary" type="button" id="cancelEdit">초기화</button></div>
+<div class="job-step-card">
+  <label>작업 종류</label>
+  <input id="jobType" type="hidden" value="스마트키 추가">
+  <input id="jobMainType" type="hidden" value="스마트키">
+  <input id="jobSubType" type="hidden" value="추가">
+  <div id="jobMainGrid" class="job-main-grid">
+    <button type="button" data-main="스마트키">스마트키</button>
+    <button type="button" data-main="리모콘">리모콘</button>
+    <button type="button" data-main="막키">막키</button>
+    <button type="button" data-main="개문">개문</button>
+    <button type="button" data-main="키 판매">키 판매</button>
+    <button type="button" data-main="핀코드 판매">핀코드 판매</button>
+    <button type="button" data-main="사제 스마트키 제작">사제 스마트키 제작</button>
+    <button type="button" data-main="기타">기타</button>
+  </div>
+  <div id="jobSubGrid" class="job-sub-grid"></div>
+  <div id="jobTypeLabel" class="note" style="margin-top:8px">선택: 스마트키 추가</div>
+</div><div><label>차량 대수</label><input id="carCount" type="number" min="0" value="1" inputmode="numeric"></div><div id="otherWorkBox" class="other-work hidden"><label>기타 작업내용</label><input id="otherWork" placeholder="예: 배터리 교체, 케이스 교체, 키 수리, 칩 복사"></div><div><label>사용 품번</label><input id="partNo" placeholder="예: 95440-P2AC0"></div><div><label>재고 차감 수량</label><input id="stockUsed" type="number" min="0" value="0"></div><div><label>판매금액</label><input id="sale" type="number" inputmode="numeric" min="0" step="1000" required placeholder="받을 금액 또는 공급가액"></div><div><label>부가세 구분</label><select id="vatType"><option value="해당없음">부가세 해당 없음</option><option value="포함">부가세 포함</option><option value="별도">부가세 별도</option></select></div><div id="vatPreview" class="vat-preview"><b>부가세 해당 없음</b><br>공급가액 0원 · 부가세 0원 · 최종금액 0원</div><div><label>원가</label><input id="cost" type="number" inputmode="numeric" min="0" step="1000" value="0"></div><div><label>결제방법</label><select id="payment"><option>현금</option><option>계좌이체</option><option>카드</option><option>미수</option></select></div><div><label>세금계산서</label><select id="taxInvoice"><option value="아니오">아니오</option><option value="예">예</option></select></div><div class="full photo-picker"><label>📷 작업사진 <span class="note">최대 30장 · 클라우드 연동 가능</span></label><div class="photo-actions"><button type="button" id="cameraBtn">📸 바로 촬영</button><button type="button" id="galleryBtn" class="secondary">🖼️ 갤러리 선택</button></div><input id="cameraPhotos" class="hidden" type="file" accept="image/*" capture="environment"><input id="galleryPhotos" class="hidden" type="file" accept="image/*" multiple><div id="photoPreview" class="photo-grid"></div><div class="note">사진은 고화질(최대 2000px)로 저장합니다. 클라우드 사진 사용 시 원본을 업로드하고 앱에는 링크를 저장합니다.</div></div><div class="full"><label>메모</label><div class="actions" style="margin:0 0 8px"><button class="action ghost" type="button" id="aiDraft">AI 작업기록 초안</button><button class="action ghost" type="button" id="vinHistory">VIN 과거작업 검색</button></div><textarea id="memo" placeholder="사용 장비, 작업 방법, 특이사항"></textarea></div><div class="full actions"><button class="action" type="submit" id="saveJobBtn">저장</button><button class="action secondary" type="button" id="cancelEdit">초기화</button></div>
 </form></div></section>
-<section id="history" class="panel"><div class="toolbar"><input class="wide" id="search" placeholder="차량·고객·전화번호·품번·VIN 검색"><input id="filterFrom" type="date" title="시작일"><input id="filterTo" type="date" title="종료일"><input id="filterMonth" type="month"><select id="filterType"><option value="">전체 작업</option><option>스마트키 추가</option><option>올키로스트</option><option>리모컨 제작</option><option>개문</option><option>키 판매</option><option>기타</option></select><select id="filterPayment"><option value="">전체 결제</option><option>현금</option><option>계좌이체</option><option>카드</option><option>미수</option></select><select id="filterPhoto"><option value="">사진 전체</option><option value="yes">사진 있음</option><option value="no">사진 없음</option></select><button class="action ghost" id="todayFilter">오늘</button><button class="action ghost" id="clearFilter">초기화</button></div><div id="jobList" class="list"></div></section>
+<section id="history" class="panel">
+<div class="card unified-search-card">
+  <h2 style="margin-top:0">🔍 통합 작업검색</h2>
+  <div class="note">차종 · 차량번호 · VIN 전체/뒤 6자리/뒤 8자리 · 거래처 · 전화번호 · 품번으로 검색</div>
+  <input id="unifiedSearch" placeholder="예: 쏘렌토 / 123가4567 / 008491 / 엑심모터스 / 95440N1950" autocomplete="off">
+  <div id="unifiedSearchSummary" class="note" style="margin-top:8px"></div>
+  <div id="unifiedResults" class="unified-results"></div>
+</div>
+<div class="toolbar"><input class="wide" id="search" placeholder="차량·고객·전화번호·품번·VIN 검색"><input id="filterFrom" type="date" title="시작일"><input id="filterTo" type="date" title="종료일"><input id="filterMonth" type="month"><select id="filterType">
+<option value="">전체 작업</option>
+<option>스마트키 추가</option><option>스마트키 올키</option>
+<option>리모콘 추가</option><option>리모콘 올키</option><option>리모콘 이모빌 추가</option><option>리모콘 이모빌 올키</option>
+<option>막키 추가</option><option>막키 올키 제작</option><option>막키 이모빌 추가</option><option>막키 이모빌 제작</option>
+<option>개문</option><option>키 판매</option><option>핀코드 판매</option><option>사제 스마트키 제작</option><option>기타</option>
+</select><select id="filterPayment"><option value="">전체 결제</option><option>현금</option><option>계좌이체</option><option>카드</option><option>미수</option></select><select id="filterPhoto"><option value="">사진 전체</option><option value="yes">사진 있음</option><option value="no">사진 없음</option></select><button class="action ghost" id="todayFilter">오늘</button><button class="action ghost" id="clearFilter">초기화</button></div><div id="jobList" class="list"></div></section>
 <section id="unpaid" class="panel"><div id="unpaidSummary" class="card"></div><h2>미수 내역</h2><div id="unpaidList" class="list"></div></section>
 <section id="stock" class="panel">
 <div class="card stock-search-card">
@@ -135,11 +189,64 @@ function save(render=true){try{localStorage.setItem('dkm_jobs',JSON.stringify(jo
 function status(el,msg,error=false){el.textContent=msg;el.className='status'+(error?' error':'');el.style.display='block';setTimeout(()=>el.style.display='none',5000)}
 function lastEntryDate(){return localStorage.getItem('dkm_last_entry_date')||localISO()}
 function openTab(id){if(id==='add'&&!$('#editId')?.value){if(!$('#date').value)$('#date').value=lastEntryDate();$('#time').value=currentTime();if($('#autoTime'))$('#autoTime').checked=true;}$$('.tabs button').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));$$('.panel').forEach(x=>x.classList.toggle('active',x.id===id));renderAll();scrollTo({top:0,behavior:'smooth'})}
-$('#date').value=lastEntryDate();$('#time').value=currentTime();$('#date').addEventListener('change',()=>{if($('#date').value)localStorage.setItem('dkm_last_entry_date',$('#date').value)});$$('.tabs button').forEach(b=>b.onclick=()=>openTab(b.dataset.tab));$$('[data-quick]').forEach(b=>b.onclick=()=>{resetJobForm();openTab('add');$('#jobType').value=b.dataset.quick;$('#sale').focus()});
-function toggleOtherWork(){const on=$('#jobType').value==='기타';$('#otherWorkBox').classList.toggle('hidden',!on);if(on)setTimeout(()=>$('#otherWork').focus(),0)}$('#jobType').addEventListener('change',toggleOtherWork);
+$('#date').value=lastEntryDate();$('#time').value=currentTime();$('#date').addEventListener('change',()=>{if($('#date').value)localStorage.setItem('dkm_last_entry_date',$('#date').value)});$$('.tabs button').forEach(b=>b.onclick=()=>openTab(b.dataset.tab));$$('[data-quick]').forEach(b=>b.onclick=()=>{resetJobForm();openTab('add');const p=parseJobType(b.dataset.quick);renderJobTypeChooser(p.main,p.sub);$('#sale').focus()});
+
+const JOB_FLOW={
+  '스마트키':['추가','올키'],
+  '리모콘':['추가','올키','이모빌 추가','이모빌 올키'],
+  '막키':['추가','올키 제작','이모빌 추가','이모빌 제작'],
+  '개문':[],
+  '키 판매':[],
+  '핀코드 판매':[],
+  '사제 스마트키 제작':[],
+  '기타':[]
+};
+function finalJobType(main,sub){
+  if(main==='스마트키') return `스마트키 ${sub||'추가'}`;
+  if(main==='리모콘'){
+    if(sub==='이모빌 추가') return '리모콘 이모빌 추가';
+    if(sub==='이모빌 올키') return '리모콘 이모빌 올키';
+    return `리모콘 ${sub||'추가'}`;
+  }
+  if(main==='막키'){
+    if(sub==='이모빌 추가') return '막키 이모빌 추가';
+    if(sub==='이모빌 제작') return '막키 이모빌 제작';
+    if(sub==='올키 제작') return '막키 올키 제작';
+    return '막키 추가';
+  }
+  return main;
+}
+function parseJobType(value){
+  value=String(value||'').trim();
+  if(value.startsWith('스마트키 ')) return {main:'스마트키',sub:value.replace('스마트키 ','')};
+  if(value==='올키로스트') return {main:'스마트키',sub:'올키'};
+  if(value.startsWith('리모콘 이모빌 ')) return {main:'리모콘',sub:'이모빌 '+value.replace('리모콘 이모빌 ','')};
+  if(value.startsWith('리모컨 이모빌 ')) return {main:'리모콘',sub:'이모빌 '+value.replace('리모컨 이모빌 ','')};
+  if(value.startsWith('리모콘 ')) return {main:'리모콘',sub:value.replace('리모콘 ','')};
+  if(value.startsWith('리모컨 ')) return {main:'리모콘',sub:value.replace('리모컨 ','')};
+  if(value.startsWith('막키 ')) return {main:'막키',sub:value.replace('막키 ','')};
+  if(['개문','키 판매','핀코드 판매','사제 스마트키 제작','기타'].includes(value)) return {main:value,sub:''};
+  return {main:'기타',sub:''};
+}
+function renderJobTypeChooser(main='스마트키',sub='추가'){
+  const subs=JOB_FLOW[main]||[];
+  if(subs.length && !subs.includes(sub)) sub=subs[0];
+  if(!subs.length) sub='';
+  $('#jobMainType').value=main;
+  $('#jobSubType').value=sub;
+  $('#jobType').value=finalJobType(main,sub);
+  $$('#jobMainGrid button').forEach(b=>b.classList.toggle('active',b.dataset.main===main));
+  $('#jobSubGrid').innerHTML=subs.map(x=>`<button type="button" data-sub="${esc(x)}" class="${x===sub?'active':''}">${esc(x)}</button>`).join('');
+  $$('#jobSubGrid button').forEach(b=>b.onclick=()=>renderJobTypeChooser(main,b.dataset.sub));
+  $('#jobTypeLabel').textContent='선택: '+$('#jobType').value;
+  toggleOtherWork();
+}
+$$('#jobMainGrid button').forEach(b=>b.onclick=()=>renderJobTypeChooser(b.dataset.main,''));
+
+function toggleOtherWork(){const on=$('#jobType').value==='기타';$('#otherWorkBox').classList.toggle('hidden',!on);}
 function vatCalc(amount,type){amount=Math.max(0,Number(amount)||0);if(type==='별도'){const vat=Math.round(amount*.1);return {input:amount,supply:amount,vat,total:amount+vat}}if(type==='포함'){const supply=Math.round(amount/1.1),vat=amount-supply;return {input:amount,supply,vat,total:amount}}return {input:amount,supply:amount,vat:0,total:amount}}
 function renderVatPreview(){const type=$('#vatType').value,v=vatCalc($('#sale').value,type),label=type==='포함'?'부가세 포함':type==='별도'?'부가세 별도':'부가세 해당 없음';$('#vatPreview').innerHTML=`<b>${label}</b><br>공급가액 ${money(v.supply)} · 부가세 ${money(v.vat)} · 최종금액 ${money(v.total)}`}
-function resetJobForm(){ const keepDate=$('#date')?.value||lastEntryDate();$('#jobForm').reset();pendingPhotos=[];renderPhotoPreview();$('#editId').value='';$('#date').value=keepDate;localStorage.setItem('dkm_last_entry_date',keepDate);$('#time').value=currentTime();if($('#autoTime'))$('#autoTime').checked=true;$('#cost').value=0;$('#carCount').value=1;$('#stockUsed').value=0;$('#vatType').value=['해당없음','포함','별도'].includes(settings.lastVatType)?settings.lastVatType:'해당없음';$('#formTitle').textContent='작업 등록';$('#saveJobBtn').textContent='저장';$('#otherWork').value='';toggleOtherWork();renderVatPreview()}
+function resetJobForm(){ const keepDate=$('#date')?.value||lastEntryDate();$('#jobForm').reset();pendingPhotos=[];renderPhotoPreview();$('#editId').value='';$('#date').value=keepDate;localStorage.setItem('dkm_last_entry_date',keepDate);$('#time').value=currentTime();if($('#autoTime'))$('#autoTime').checked=true;$('#cost').value=0;$('#carCount').value=1;$('#stockUsed').value=0;$('#vatType').value=['해당없음','포함','별도'].includes(settings.lastVatType)?settings.lastVatType:'해당없음';$('#formTitle').textContent='작업 등록';$('#saveJobBtn').textContent='저장';$('#otherWork').value='';renderJobTypeChooser('스마트키','추가');toggleOtherWork();renderVatPreview()}
 $('#cancelEdit').onclick=resetJobForm;
 
 function normPhone(v){return String(v||'').replace(/\D/g,'')}
@@ -235,11 +342,77 @@ function renderMetrics(){const t=localISO(),m=t.slice(0,7),today=jobs.filter(j=>
 
 function metricJobs(kind){const t=localISO(),m=t.slice(0,7),today=jobs.filter(j=>j.date===t),month=jobs.filter(j=>j.date?.startsWith(m));if(['todayCars','todaySales','todayProfit'].includes(kind))return today;if(kind==='todayUnpaid')return today.filter(j=>!j.paid);if(['monthCars','monthSales','monthProfit','avgDailyCars','avgMargin'].includes(kind))return month;if(kind==='totalUnpaid')return jobs.filter(j=>!j.paid);return []}
 window.openMetricDetail=kind=>{const map={todayCars:'오늘 작업 차량',todaySales:'오늘 매출 상세',todayProfit:'오늘 순수익 상세',todayUnpaid:'오늘 미수 상세',monthCars:'이번 달 작업 차량',monthSales:'이번 달 매출 상세',monthProfit:'이번 달 순이익 상세',avgDailyCars:'이번 달 날짜별 차량',avgMargin:'이번 달 차량당 마진',totalUnpaid:'전체 미수금'};const arr=metricJobs(kind),sum=k=>arr.reduce((a,j)=>a+(Number(j[k])||0),0),cars=sum('carCount'),sales=sum('sale'),profit=sum('profit');$('#detailTitle').textContent=map[kind]||'상세 내역';$('#detailSummary').innerHTML=`<div>작업/차량<b>${arr.length}건 · ${cars}대</b></div><div>매출<b>${money(sales)}</b></div><div>마진<b>${money(profit)}</b></div>`;if(kind==='avgDailyCars'){const by={};arr.forEach(j=>by[j.date]=(by[j.date]||0)+(Number(j.carCount)||0));$('#detailList').innerHTML=Object.entries(by).sort().map(([d,c])=>`<div class="item" onclick="openDailyHistory('${d}');closeMetricDetail()"><b>${d}</b><span class="money" style="float:right">${c}대</span></div>`).join('')||'<div class="empty">내역이 없습니다.</div>'}else{$('#detailList').innerHTML=arr.length?arr.map(j=>`<div class="item"><div class="item-head"><div><div class="item-title">${esc(j.car||'차량 미입력')} · ${esc(j.jobType)}${j.jobType==='기타'&&j.otherWork?' · '+esc(j.otherWork):''}</div><div class="item-sub">${esc(j.date)} ${esc(j.time||'')} · ${esc(j.customer||'고객 미입력')}</div></div><div class="money">${money(j.sale)}</div></div><div class="item-sub" style="margin-top:7px">원가 ${money(j.cost)} · 마진 ${money(j.profit)}${!j.paid?' · ⚠️ 미수':''}${j.partNo?' · '+esc(j.partNo):''}</div></div>`).join(''):'<div class="empty">내역이 없습니다.</div>'}$('#detailModal').classList.remove('hidden')};window.closeMetricDetail=()=>$('#detailModal').classList.add('hidden');
-function jobHtml(j){const vatLabel=j.vatType==='포함'?'부가세 포함':j.vatType==='별도'?'부가세 별도':j.vatType==='해당없음'?'부가세 없음':'부가세 미지정';return `<div class="item"><div class="item-head"><div><div class="item-title">${esc(j.car||'차량 미입력')} · ${esc(j.jobType)}${j.jobType==='기타'&&j.otherWork?' · '+esc(j.otherWork):''}</div><div class="item-sub">${esc(j.date)} ${esc(j.time||'')} · ${esc(j.customer||'고객 미입력')} ${j.plate?'· '+esc(j.plate):''}</div></div><div class="money">${money(j.sale)}</div></div><div><span class="tag">🚗 ${Number(j.carCount)||0}대</span><span class="tag">${esc(j.payment)}</span><span class="tag ${j.paid?'paid':'unpaid'}">${j.paid?'입금완료':'미수'}</span><span class="tag">${vatLabel}</span>${j.partNo?`<span class="tag">${esc(j.partNo)}</span>`:''}${j.taxInvoice==='예'?'<span class="tag">세금계산서</span>':''}</div><div class="item-sub" style="margin-top:8px">공급가액 ${money(j.supplyAmount??j.sale)} · 부가세 ${money(j.vatAmount||0)} · 원가 ${money(j.cost)} · 순이익 ${money(j.profit)}${j.vin?' · VIN '+esc(j.vin):''}${j.memo?' · '+esc(j.memo):''}${j.paidAt?' · 입금완료 '+esc(j.paidAt):''}</div>${Array.isArray(j.photos)&&j.photos.length?`<div class="job-photos">${j.photos.map((src,i)=>`<img src="${src}" alt="작업사진 ${i+1}" onclick="openPhotoModal('${j.id}',${i})">`).join('')}</div>`:''}<div class="actions">${!j.paid?`<button class="action ok" onclick="markPaid('${j.id}')">입금완료</button>`:`<button class="action warn" onclick="undoPaid('${j.id}')">입금취소</button>`}<button class="action secondary" onclick="editJob('${j.id}')">수정</button><button class="action danger" onclick="deleteJob('${j.id}')">삭제</button></div></div>`}
+function jobHtml(j){const vatLabel=j.vatType==='포함'?'부가세 포함':j.vatType==='별도'?'부가세 별도':j.vatType==='해당없음'?'부가세 없음':'부가세 미지정';return `<div class="item" onclick="if(!event.target.closest('button,img'))openJobDetail('${j.id}')"><div class="item-head"><div><div class="item-title">${esc(j.car||'차량 미입력')} · ${esc(j.jobType)}${j.jobType==='기타'&&j.otherWork?' · '+esc(j.otherWork):''}</div><div class="item-sub">${esc(j.date)} ${esc(j.time||'')} · ${esc(j.customer||'고객 미입력')} ${j.plate?'· '+esc(j.plate):''}</div></div><div class="money">${money(j.sale)}</div></div><div><span class="tag">🚗 ${Number(j.carCount)||0}대</span><span class="tag">${esc(j.payment)}</span><span class="tag ${j.paid?'paid':'unpaid'}">${j.paid?'입금완료':'미수'}</span><span class="tag">${vatLabel}</span>${j.partNo?`<span class="tag">${esc(j.partNo)}</span>`:''}${j.taxInvoice==='예'?'<span class="tag">세금계산서</span>':''}</div><div class="item-sub" style="margin-top:8px">공급가액 ${money(j.supplyAmount??j.sale)} · 부가세 ${money(j.vatAmount||0)} · 원가 ${money(j.cost)} · 순이익 ${money(j.profit)}${j.vin?' · VIN '+esc(j.vin):''}${j.memo?' · '+esc(j.memo):''}${j.paidAt?' · 입금완료 '+esc(j.paidAt):''}</div>${Array.isArray(j.photos)&&j.photos.length?`<div class="job-photos">${j.photos.map((src,i)=>`<img src="${src}" alt="작업사진 ${i+1}" onclick="openPhotoModal('${j.id}',${i})">`).join('')}</div>`:''}<div class="actions">${!j.paid?`<button class="action ok" onclick="markPaid('${j.id}')">입금완료</button>`:`<button class="action warn" onclick="undoPaid('${j.id}')">입금취소</button>`}<button class="action secondary" onclick="editJob('${j.id}')">수정</button><button class="action danger" onclick="deleteJob('${j.id}')">삭제</button></div></div>`}
+
+function normSearch(v){return String(v||'').toLowerCase().replace(/\s+/g,'').replace(/-/g,'')}
+function matchesUnified(j,qRaw){
+  const q=normSearch(qRaw); if(!q)return false;
+  const fields=[
+    j.car,j.plate,j.customer,j.phone,j.partNo,j.jobType,j.memo,j.otherWork
+  ].map(normSearch);
+  if(fields.some(x=>x.includes(q))) return true;
+  const vin=normSearch(j.vin);
+  if(vin && (vin.includes(q) || (q.length>=6 && vin.endsWith(q)))) return true;
+  return false;
+}
+function renderUnifiedSearch(){
+  const input=$('#unifiedSearch'); if(!input)return;
+  const q=input.value.trim(), box=$('#unifiedResults'), summary=$('#unifiedSearchSummary');
+  if(!q){box.innerHTML='';summary.textContent='';return}
+  const arr=jobs.filter(j=>matchesUnified(j,q)).sort((a,b)=>(String(b.date||'')+' '+String(b.time||'')).localeCompare(String(a.date||'')+' '+String(a.time||'')));
+  summary.textContent=`검색 결과 ${arr.length}건`;
+  box.innerHTML=arr.length?arr.slice(0,50).map(j=>`<div class="unified-hit" onclick="openJobDetail('${j.id}')">
+    <div class="title">${esc(j.car||'차량 미입력')} · ${esc(j.jobType||'')}</div>
+    <div class="sub">${esc(j.date||'')} ${esc(j.time||'')} · ${j.plate?esc(j.plate):'차량번호 없음'}${j.vin?' · VIN '+esc(j.vin):''}</div>
+    <div class="sub">${j.customer?esc(j.customer):''}${j.phone?' · '+esc(j.phone):''}${j.partNo?' · '+esc(j.partNo):''} · ${money(j.sale)}</div>
+  </div>`).join(''):'<div class="empty">검색 결과가 없습니다.</div>';
+}
+$('#unifiedSearch')?.addEventListener('input',renderUnifiedSearch);
+
+window.openJobDetail=id=>{
+  const j=jobs.find(x=>x.id===id); if(!j)return;
+  $('#detailTitle').textContent=`${j.car||'차량'} 작업 상세`;
+  const pinText=j.pinCode||j.pincode||j.pin||'';
+  const detailFields=[
+    ['작업일시',`${j.date||''} ${j.time||''}`],
+    ['차종',j.car||''],
+    ['차량번호',j.plate||''],
+    ['VIN',j.vin||''],
+    ['거래처',j.customer||''],
+    ['전화번호',j.phone||''],
+    ['작업종류',j.jobType||''],
+    ['사용 품번',j.partNo||''],
+    ['핀코드',pinText],
+    ['판매금액',money(j.sale)],
+    ['원가',money(j.cost)],
+    ['순수익',money(j.profit)],
+    ['결제',j.payment||''],
+    ['미수상태',j.paid?'입금완료':'미수'],
+    ['세금계산서',j.taxInvoice||''],
+    ['메모',j.memo||'']
+  ];
+  $('#detailSummary').innerHTML=`<div>매출<b>${money(j.sale)}</b></div><div>순수익<b>${money(j.profit)}</b></div><div>상태<b>${j.paid?'입금완료':'미수'}</b></div>`;
+  const photos=Array.isArray(j.photos)?j.photos:[];
+  $('#detailList').innerHTML=`<div class="job-detail-grid">${detailFields.map(([k,v])=>`<div><span>${esc(k)}</span><b>${esc(v||'-')}</b></div>`).join('')}</div>
+    ${photos.length?`<h2>작업 사진</h2><div class="job-photos">${photos.map((src,i)=>`<img src="${src}" alt="작업사진 ${i+1}" onclick="openPhotoModal('${j.id}',${i})">`).join('')}</div>`:''}
+    <div class="actions"><button class="action" onclick="reuseJob('${j.id}')">이 작업 다시 등록</button><button class="action secondary" onclick="closeMetricDetail()">닫기</button></div>`;
+  $('#detailModal').classList.remove('hidden');
+};
+window.reuseJob=id=>{
+  const j=jobs.find(x=>x.id===id); if(!j)return;
+  closeMetricDetail(); resetJobForm(); openTab('add');
+  $('#customer').value=j.customer||''; $('#phone').value=j.phone||'';
+  $('#car').value=j.car||''; $('#plate').value=j.plate||''; $('#vin').value=j.vin||'';
+  $('#partNo').value=j.partNo||''; $('#memo').value=j.memo||'';
+  const p=parseJobType(j.jobType); renderJobTypeChooser(p.main,p.sub);
+  $('#sale').value=j.amountInput??j.sale??0; $('#cost').value=j.cost||0;
+  renderVatPreview();
+};
+
 function renderJobs(){const q=$('#search').value.trim().toLowerCase(),mo=$('#filterMonth').value,tp=$('#filterType').value,py=$('#filterPayment').value,fr=$('#filterFrom').value,to=$('#filterTo').value,ph=$('#filterPhoto').value,arr=jobs.filter(j=>(!q||JSON.stringify(j).toLowerCase().includes(q))&&(!mo||j.date?.startsWith(mo))&&(!fr||j.date>=fr)&&(!to||j.date<=to)&&(!tp||j.jobType===tp)&&(!py||j.payment===py)&&(!ph||(ph==='yes'?(j.photos?.length>0):!(j.photos?.length))));$('#jobList').innerHTML=arr.length?arr.map(jobHtml).join(''):'<div class="empty">조건에 맞는 작업이 없습니다.</div>';const unpaid=jobs.filter(j=>!j.paid);$('#unpaidList').innerHTML=unpaid.length?unpaid.map(jobHtml).join(''):'<div class="empty">미수금이 없습니다.</div>';$('#unpaidSummary').innerHTML=`<b>총 ${unpaid.length}건 · ${money(unpaid.reduce((a,j)=>a+(Number(j.sale)||0),0))}</b><div class="note">입금 완료 전 확인창이 뜹니다. 잘못 처리한 경우 내역의 입금취소 버튼으로 복구할 수 있습니다.</div>`}
 window.markPaid=async id=>{const j=jobs.find(x=>x.id===id);if(!j||j.paid)return;if(!confirm(`${j.customer||j.car||'이 작업'}의 미수금 ${money(j.sale)}을 입금 완료 처리할까요?`))return;j.paymentBeforePaid=j.payment||'미수';j.paid=true;j.payment=j.payment==='미수'?'계좌이체':j.payment;j.paidAt=new Date().toLocaleString('ko-KR',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});save();notify(`💰 미수 입금완료\n${j.customer||''} ${j.car||''}\n${money(j.sale)}`)};
 window.undoPaid=async id=>{const j=jobs.find(x=>x.id===id);if(!j||!j.paid)return;if(!confirm(`${j.customer||j.car||'이 작업'}의 입금 완료 처리를 취소하고 다시 미수로 복구할까요?`))return;j.paid=false;j.payment=j.paymentBeforePaid||'미수';j.paidAt='';delete j.paymentBeforePaid;save();notify(`↩️ 입금완료 취소\n${j.customer||''} ${j.car||''}\n${money(j.sale)} 다시 미수 처리`)};
-window.editJob=id=>{const j=jobs.find(x=>x.id===id);if(!j)return;openTab('add');for(const k of ['date','time','customer','phone','car','plate','vin','jobType','carCount','partNo','stockUsed','cost','payment','taxInvoice','memo'])if($('#'+k))$('#'+k).value=j[k]??'';$('#otherWork').value=j.otherWork||'';toggleOtherWork();if($('#autoTime'))$('#autoTime').checked=false;$('#sale').value=j.amountInput??j.sale??0;$('#vatType').value=['포함','별도','해당없음'].includes(j.vatType)?j.vatType:'해당없음';pendingPhotos=Array.isArray(j.photos)?[...j.photos]:[];renderPhotoPreview();$('#editId').value=id;$('#formTitle').textContent='작업 수정';$('#saveJobBtn').textContent='수정 저장';renderVatPreview()};
+window.editJob=id=>{const j=jobs.find(x=>x.id===id);if(!j)return;openTab('add');for(const k of ['date','time','customer','phone','car','plate','vin','carCount','partNo','stockUsed','cost','payment','taxInvoice','memo'])if($('#'+k))$('#'+k).value=j[k]??'';const p=parseJobType(j.jobType);renderJobTypeChooser(p.main,p.sub);$('#otherWork').value=j.otherWork||'';toggleOtherWork();if($('#autoTime'))$('#autoTime').checked=false;$('#sale').value=j.amountInput??j.sale??0;$('#vatType').value=['포함','별도','해당없음'].includes(j.vatType)?j.vatType:'해당없음';pendingPhotos=Array.isArray(j.photos)?[...j.photos]:[];renderPhotoPreview();$('#editId').value=id;$('#formTitle').textContent='작업 수정';$('#saveJobBtn').textContent='수정 저장';renderVatPreview()};
 window.deleteJob=id=>{if(confirm('이 작업을 삭제할까요?')){const j=jobs.find(x=>x.id===id);if(j)restoreStockUsage(j);jobs=jobs.filter(x=>x.id!==id);save()}};
 function renderStocks(){
   const qRaw=$('#stockSearch')?.value?.trim()||'';
@@ -287,7 +460,7 @@ async function notify(text){if(!settings.telegramEnabled||!settings.telegramToke
 $('#testTelegram').onclick=async()=>{try{saveSettingsFromForm();if(!settings.telegramToken||!settings.telegramChat)throw new Error('토큰과 Chat ID를 입력하세요.');const res=await fetch(`https://api.telegram.org/bot${encodeURIComponent(settings.telegramToken)}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:settings.telegramChat,text:`🔑 ${settings.business} 테스트 알림`})});if(!res.ok)throw Error('전송 실패');status($('#settingsStatus'),'텔레그램 테스트 전송 성공')}catch(e){status($('#settingsStatus'),e.message,true)}};
 function saveSettingsFromForm(){settings.goal=Math.max(1,+$('#settingGoal').value||100);settings.business=$('#settingBusiness').value.trim()||'자동차키';settings.setupDone=true;settings.owner=$('#settingOwner').value.trim();settings.businessPhone=$('#settingBusinessPhone').value.trim();settings.address=$('#settingAddress').value.trim();settings.vinUrl=$('#settingVinUrl').value.trim();settings.scriptUrl=$('#settingScriptUrl').value.trim();settings.telegramToken=$('#settingTelegramToken').value.trim();settings.telegramChat=$('#settingTelegramChat').value.trim();settings.telegramEnabled=$('#settingTelegramEnabled').checked;settings.automationUrl=$('#settingAutomationUrl').value.trim();settings.autoBackup=$('#settingAutoBackup').checked;settings.cloudPhotos=$('#settingCloudPhotos').checked;settings.autoUpdate=$('#settingAutoUpdate').checked;settings.aiUrl=$('#settingAiUrl').value.trim();const pin=$('#settingPin').value.trim(),removePin=$('#settingRemovePin').checked;if(removePin)settings.pin='';else if(pin){if(!/^\d{4,6}$/.test(pin))throw new Error('PIN은 숫자 4~6자리로 입력하세요.');settings.pin=pin}settings.autoLock=$('#settingAutoLock').value;$('#settingPin').value='';$('#settingRemovePin').checked=false;save()}
 function loadSettings(){$('#settingGoal').value=settings.goal||100;$('#settingBusiness').value=settings.business||'자동차키';$('#settingOwner').value=settings.owner||'';$('#settingBusinessPhone').value=settings.businessPhone||'';$('#settingAddress').value=settings.address||'';$('#businessLogoPreview').src=settings.businessLogo||'icon-192.png';$('#settingVinUrl').value=settings.vinUrl||'';$('#settingScriptUrl').value=settings.scriptUrl||'';$('#settingTelegramToken').value=settings.telegramToken||'';$('#settingTelegramChat').value=settings.telegramChat||'';$('#settingTelegramEnabled').checked=!!settings.telegramEnabled;$('#settingAutomationUrl').value=settings.automationUrl||'';$('#settingAutoBackup').checked=!!settings.autoBackup;$('#settingCloudPhotos').checked=!!settings.cloudPhotos;$('#settingAutoUpdate').checked=settings.autoUpdate!==false;$('#settingAiUrl').value=settings.aiUrl||'';$('#settingPin').value='';$('#settingRemovePin').checked=false;$('#settingAutoLock').value=settings.autoLock||'on'}
-function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v13.1';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
+function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v13.2';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
 $('#brandEditButton').onclick=()=>{openTab('settings');setTimeout(()=>$('#settingBusiness')?.focus(),250)};
 $('#settingLogoFile').onchange=e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),max=256,q=Math.min(1,max/img.width,max/img.height);c.width=Math.max(1,Math.round(img.width*q));c.height=Math.max(1,Math.round(img.height*q));c.getContext('2d').drawImage(img,0,0,c.width,c.height);settings.businessLogo=c.toDataURL('image/jpeg',.85);$('#businessLogoPreview').src=settings.businessLogo;save(false);applyBranding()};img.src=r.result};r.readAsDataURL(f)};$('#removeBusinessLogo').onclick=()=>{settings.businessLogo='';$('#businessLogoPreview').src='icon-192.png';save(false);applyBranding()};
 
@@ -377,7 +550,7 @@ function unlock(){if($('#pinInput').value===settings.pin){sessionStorage.setItem
 $('#unlockBtn').onclick=unlock;$('#pinInput').onkeydown=e=>{if(e.key==='Enter')unlock()};
 
 
-const APP_VERSION='13.1';
+const APP_VERSION='13.2';
 let remoteVersion='';
 let autoUpdating=false;
 
