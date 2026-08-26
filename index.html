@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<meta name="app-version" content="14.9">
+<meta name="app-version" content="15.0">
 <meta name="description" content="자동차키 업체용 매출·미수·재고·작업 관리">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -127,7 +127,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V14.9</span> Pro <small style="font-size:11px">v14.9</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V15.0</span> Pro <small style="font-size:11px">v15.0</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="blog">블로그</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -252,6 +252,18 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 <input id="phoneFullRestoreFile" type="file" accept=".json,application/json" style="display:none">
 </div>
 <div id="phoneBackupInfo" class="note" style="margin-top:8px">복원 전 현재 데이터는 자동 안전백업합니다.</div>
+</div><div class="card" style="margin-top:12px">
+<h2>📩 블로그 무료견적 → 내 텔레그램</h2>
+<div class="note">고객이 무료견적을 보내면 네 전용 서버가 텔레그램으로 전달합니다. 텔레그램 봇 토큰은 앱이나 블로그에 저장하지 않습니다.</div>
+<label style="margin-top:10px">무료견적 전송 서버 URL</label>
+<input id="settingQuoteUrl" placeholder="예: Google Apps Script 웹앱 URL">
+<label>고객용 무료견적 페이지 주소</label>
+<input id="settingQuotePageUrl" placeholder="예: https://young285.github.io/dream-key-pro/quote.html">
+<div class="actions">
+<button class="action" id="saveQuoteSettings" type="button">무료견적 설정 저장</button>
+<button class="action ghost" id="testQuoteServer" type="button">전송 테스트</button>
+</div>
+<div id="quoteSettingsStatus" class="status"></div>
 </div><div class="card" style="margin-top:12px"><h2>자동 백업·클라우드·AI</h2><div class="grid"><div class="full"><label>통합 Apps Script URL</label><input id="settingAutomationUrl" placeholder="Google Drive 백업·사진 업로드·AI 중계 URL"></div><div><label><input id="settingAutoBackup" type="checkbox" style="width:auto"> 저장할 때 Google Drive 자동 백업</label></div><div><label><input id="settingCloudPhotos" type="checkbox" style="width:auto"> 사진을 클라우드로 전송</label></div><div><label><input id="settingAutoUpdate" type="checkbox" style="width:auto"> 새 버전 자동 확인</label></div><div><label>AI API URL</label><input id="settingAiUrl" placeholder="비워두면 오프라인 초안 사용"></div></div><p class="note">클라우드 사진 용량은 연결한 Google Drive 계정의 저장공간을 사용합니다. 앱 자체에서 무제한을 보장하지는 않습니다.</p></div><div class="card" style="margin-top:12px"><h2>구글시트 연동</h2><p class="note">동봉된 Google Apps Script 코드를 배포한 뒤 웹앱 URL을 입력하세요.</p><label>Apps Script 웹앱 URL</label><input id="settingScriptUrl" placeholder="https://script.google.com/macros/s/.../exec"><div class="actions"><button class="action ok" id="testCloud">연결 테스트</button></div></div>
 <div class="card" style="margin-top:12px"><h2>텔레그램 알림</h2><p class="note">작업 저장·미수 입금·재고 부족 알림을 보냅니다. 토큰은 이 휴대폰에만 저장되지만, 보안을 위해 Apps Script 중계 사용을 권장합니다.</p><div class="grid"><div><label>Bot Token</label><input id="settingTelegramToken" type="password"></div><div><label>Chat ID</label><input id="settingTelegramChat"></div><div><label><input id="settingTelegramEnabled" type="checkbox" style="width:auto"> 알림 사용</label></div></div><div class="actions"><button class="action ok" id="testTelegram">테스트 전송</button></div></div>
 <div class="card" style="margin-top:12px"><div class="actions"><button class="action" id="saveSettings">설정 저장</button></div><div id="settingsStatus" class="status"></div></div>
@@ -261,7 +273,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 'use strict';
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)], money=n=>Number(n||0).toLocaleString('ko-KR')+'원', uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const DEFAULT_SETTINGS={goal:100,business:'드림 자동차키',setupDone:false,owner:'',businessPhone:'',address:'',businessLogo:'',vinUrl:'',scriptUrl:'',telegramToken:'',telegramChat:'',telegramEnabled:false,lastVatType:'해당없음',automationUrl:'',autoBackup:false,cloudPhotos:false,autoUpdate:true,aiUrl:'',autoLock:'on',pin:''};
+const DEFAULT_SETTINGS={goal:100,business:'드림 자동차키',setupDone:false,owner:'',businessPhone:'',address:'',businessLogo:'',vinUrl:'',scriptUrl:'',telegramToken:'',telegramChat:'',telegramEnabled:false,lastVatType:'해당없음',automationUrl:'',autoBackup:false,cloudPhotos:false,autoUpdate:true,aiUrl:'',quoteUrl:'',quotePageUrl:'',autoLock:'on',pin:''};
 const SAVED_SETTINGS=read('dkm_settings',null);let jobs=normalizeJobs(read('dkm_jobs',[])),stocks=normalizeStocks(read('dkm_stocks',[])),settings={...DEFAULT_SETTINGS,...(SAVED_SETTINGS||{})};if(SAVED_SETTINGS&&SAVED_SETTINGS.setupDone===undefined)settings.setupDone=true;
 
 let pendingPhotos=[];let keyDb=read('dkm_keydb',[]);
@@ -657,13 +669,31 @@ async function cloud(action){if(!settings.scriptUrl)throw Error('설정에서 Ap
 $('#cloudPush').onclick=async()=>{try{await cloud('save');status($('#homeStatus'),'구글시트로 전송했습니다.')}catch(e){status($('#homeStatus'),e.message,true)}};$('#cloudPull').onclick=async()=>{if(!confirm('현재 데이터를 구글시트 데이터로 바꿀까요?'))return;try{const r=await cloud('load');if(!r.data)throw Error('저장된 데이터가 없습니다.');jobs=normalizeJobs(r.data.jobs||[]);stocks=normalizeStocks(r.data.stocks||[]);settings={...settings,...(r.data.settings||{})};save();loadSettings();status($('#homeStatus'),'구글시트 데이터를 불러왔습니다.')}catch(e){status($('#homeStatus'),e.message,true)}};$('#testCloud').onclick=async()=>{try{saveSettingsFromForm();await cloud('ping');status($('#settingsStatus'),'구글시트 연결 성공')}catch(e){status($('#settingsStatus'),e.message,true)}};
 async function notify(text){if(!settings.telegramEnabled||!settings.telegramToken||!settings.telegramChat)return;const c=new AbortController(),timer=setTimeout(()=>c.abort(),4000);try{await fetch(`https://api.telegram.org/bot${encodeURIComponent(settings.telegramToken)}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:settings.telegramChat,text}),signal:c.signal})}catch(e){console.warn('Telegram failed',e)}finally{clearTimeout(timer)}}
 $('#testTelegram').onclick=async()=>{try{saveSettingsFromForm();if(!settings.telegramToken||!settings.telegramChat)throw new Error('토큰과 Chat ID를 입력하세요.');const res=await fetch(`https://api.telegram.org/bot${encodeURIComponent(settings.telegramToken)}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:settings.telegramChat,text:`🔑 ${settings.business} 테스트 알림`})});if(!res.ok)throw Error('전송 실패');status($('#settingsStatus'),'텔레그램 테스트 전송 성공')}catch(e){status($('#settingsStatus'),e.message,true)}};
-function saveSettingsFromForm(){settings.goal=Math.max(1,+$('#settingGoal').value||100);settings.business=$('#settingBusiness').value.trim()||'자동차키';settings.setupDone=true;settings.owner=$('#settingOwner').value.trim();settings.businessPhone=$('#settingBusinessPhone').value.trim();settings.address=$('#settingAddress').value.trim();settings.vinUrl=$('#settingVinUrl').value.trim();settings.scriptUrl=$('#settingScriptUrl').value.trim();settings.telegramToken=$('#settingTelegramToken').value.trim();settings.telegramChat=$('#settingTelegramChat').value.trim();settings.telegramEnabled=$('#settingTelegramEnabled').checked;settings.automationUrl=$('#settingAutomationUrl').value.trim();settings.autoBackup=$('#settingAutoBackup').checked;settings.cloudPhotos=$('#settingCloudPhotos').checked;settings.autoUpdate=$('#settingAutoUpdate').checked;settings.aiUrl=$('#settingAiUrl').value.trim();const pin=$('#settingPin').value.trim(),removePin=$('#settingRemovePin').checked;if(removePin)settings.pin='';else if(pin){if(!/^\d{4,6}$/.test(pin))throw new Error('PIN은 숫자 4~6자리로 입력하세요.');settings.pin=pin}settings.autoLock=$('#settingAutoLock').value;$('#settingPin').value='';$('#settingRemovePin').checked=false;save()}
-function loadSettings(){$('#settingGoal').value=settings.goal||100;$('#settingBusiness').value=settings.business||'자동차키';$('#settingOwner').value=settings.owner||'';$('#settingBusinessPhone').value=settings.businessPhone||'';$('#settingAddress').value=settings.address||'';$('#businessLogoPreview').src=settings.businessLogo||'icon-192.png';$('#settingVinUrl').value=settings.vinUrl||'';$('#settingScriptUrl').value=settings.scriptUrl||'';$('#settingTelegramToken').value=settings.telegramToken||'';$('#settingTelegramChat').value=settings.telegramChat||'';$('#settingTelegramEnabled').checked=!!settings.telegramEnabled;$('#settingAutomationUrl').value=settings.automationUrl||'';$('#settingAutoBackup').checked=!!settings.autoBackup;$('#settingCloudPhotos').checked=!!settings.cloudPhotos;$('#settingAutoUpdate').checked=settings.autoUpdate!==false;$('#settingAiUrl').value=settings.aiUrl||'';$('#settingPin').value='';$('#settingRemovePin').checked=false;$('#settingAutoLock').value=settings.autoLock||'on'}
-function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v14.9';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
+function saveSettingsFromForm(){settings.goal=Math.max(1,+$('#settingGoal').value||100);settings.business=$('#settingBusiness').value.trim()||'자동차키';settings.setupDone=true;settings.owner=$('#settingOwner').value.trim();settings.businessPhone=$('#settingBusinessPhone').value.trim();settings.address=$('#settingAddress').value.trim();settings.vinUrl=$('#settingVinUrl').value.trim();settings.scriptUrl=$('#settingScriptUrl').value.trim();settings.telegramToken=$('#settingTelegramToken').value.trim();settings.telegramChat=$('#settingTelegramChat').value.trim();settings.telegramEnabled=$('#settingTelegramEnabled').checked;settings.automationUrl=$('#settingAutomationUrl').value.trim();settings.autoBackup=$('#settingAutoBackup').checked;settings.cloudPhotos=$('#settingCloudPhotos').checked;settings.autoUpdate=$('#settingAutoUpdate').checked;settings.aiUrl=$('#settingAiUrl').value.trim();settings.quoteUrl=$('#settingQuoteUrl')?.value.trim()||'';settings.quotePageUrl=$('#settingQuotePageUrl')?.value.trim()||'';const pin=$('#settingPin').value.trim(),removePin=$('#settingRemovePin').checked;if(removePin)settings.pin='';else if(pin){if(!/^\d{4,6}$/.test(pin))throw new Error('PIN은 숫자 4~6자리로 입력하세요.');settings.pin=pin}settings.autoLock=$('#settingAutoLock').value;$('#settingPin').value='';$('#settingRemovePin').checked=false;save()}
+function loadSettings(){$('#settingGoal').value=settings.goal||100;$('#settingBusiness').value=settings.business||'자동차키';$('#settingOwner').value=settings.owner||'';$('#settingBusinessPhone').value=settings.businessPhone||'';$('#settingAddress').value=settings.address||'';$('#businessLogoPreview').src=settings.businessLogo||'icon-192.png';$('#settingVinUrl').value=settings.vinUrl||'';$('#settingScriptUrl').value=settings.scriptUrl||'';$('#settingTelegramToken').value=settings.telegramToken||'';$('#settingTelegramChat').value=settings.telegramChat||'';$('#settingTelegramEnabled').checked=!!settings.telegramEnabled;$('#settingAutomationUrl').value=settings.automationUrl||'';$('#settingAutoBackup').checked=!!settings.autoBackup;$('#settingCloudPhotos').checked=!!settings.cloudPhotos;$('#settingAutoUpdate').checked=settings.autoUpdate!==false;$('#settingAiUrl').value=settings.aiUrl||'';if($('#settingQuoteUrl'))$('#settingQuoteUrl').value=settings.quoteUrl||'';if($('#settingQuotePageUrl'))$('#settingQuotePageUrl').value=settings.quotePageUrl||'';$('#settingPin').value='';$('#settingRemovePin').checked=false;$('#settingAutoLock').value=settings.autoLock||'on'}
+function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v15.0';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
 $('#brandEditButton').onclick=()=>{openTab('settings');setTimeout(()=>$('#settingBusiness')?.focus(),250)};
 $('#settingLogoFile').onchange=e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),max=256,q=Math.min(1,max/img.width,max/img.height);c.width=Math.max(1,Math.round(img.width*q));c.height=Math.max(1,Math.round(img.height*q));c.getContext('2d').drawImage(img,0,0,c.width,c.height);settings.businessLogo=c.toDataURL('image/jpeg',.85);$('#businessLogoPreview').src=settings.businessLogo;save(false);applyBranding()};img.src=r.result};r.readAsDataURL(f)};$('#removeBusinessLogo').onclick=()=>{settings.businessLogo='';$('#businessLogoPreview').src='icon-192.png';save(false);applyBranding()};
 
 $('#saveSettings').onclick=()=>{try{saveSettingsFromForm();applyBranding();status($('#settingsStatus'),'설정을 저장했습니다.')}catch(e){status($('#settingsStatus'),e.message,true)}};
+
+$('#saveQuoteSettings')?.addEventListener('click',()=>{
+ try{
+  settings.quoteUrl=$('#settingQuoteUrl').value.trim();
+  settings.quotePageUrl=$('#settingQuotePageUrl').value.trim();
+  save(false);updateBlogCtaPreview();
+  status($('#quoteSettingsStatus'),'무료견적 설정을 저장했습니다.');
+ }catch(e){status($('#quoteSettingsStatus'),e.message||'저장 실패',true)}
+});
+$('#testQuoteServer')?.addEventListener('click',async()=>{
+ const url=$('#settingQuoteUrl').value.trim();if(!url)return status($('#quoteSettingsStatus'),'먼저 무료견적 전송 서버 URL을 입력하세요.',true);
+ try{
+  const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({type:'quote_test',source:'Dream AutoKey Pro',sentAt:new Date().toISOString()})});
+  if(!r.ok)throw new Error('서버 응답 오류');
+  status($('#quoteSettingsStatus'),'테스트 요청을 전송했습니다. 텔레그램을 확인하세요.');
+ }catch(e){status($('#quoteSettingsStatus'),'전송 실패: '+(e.message||''),true)}
+});
+
 const KCEA_PACKAGE='clmns.mobile.ledger2';
 async function copyTextSafe(value){
   const v=String(value||'').trim(); if(!v)return false;
@@ -776,21 +806,24 @@ const INCHEON_AREAS={
 '검단구':['검단동','불로대곡동','원당동','당하동','오류왕길동','마전동','아라1동','아라2동'],
 '강화군':['강화읍','선원면','불은면','길상면','화도면','양도면','내가면','하점면','양사면','송해면','교동면','삼산면','서도면'],
 '옹진군':['북도면','연평면','백령면','대청면','덕적면','자월면','영흥면']};
-function initBlogAreas(){const d=$('#blogDistrict'),g=$('#blogDong');if(!d||!g)return;d.innerHTML='<option value="">구·군 선택</option>'+Object.keys(INCHEON_AREAS).map(x=>`<option>${x}</option>`).join('');const sync=()=>{const r=['인천',d.value,g.value].filter(Boolean).join(' ');$('#blogRegion').value=r;$('#blogRegionLabel').textContent=r||'인천 지역을 선택하세요.'};d.onchange=()=>{g.innerHTML='<option value="">동·읍·면 선택</option>'+(INCHEON_AREAS[d.value]||[]).map(x=>`<option>${x}</option>`).join('');sync()};g.onchange=sync;d.onchange()}
-function setBlogAreaFromText(text){const d=$('#blogDistrict'),g=$('#blogDong');if(!d||!g)return;const t=String(text||'');const district=Object.keys(INCHEON_AREAS).find(x=>t.includes(x))||'';d.value=district;d.onchange();if(district){const dong=(INCHEON_AREAS[district]||[]).find(x=>t.includes(x))||'';g.value=dong;g.onchange()}}
-function blogPhotoMarkers(n){if(!n)return[];let groups=n<=5?[2,1,2]:n===6?[2,2,2]:n===7?[2,2,1,2]:[2,2,2,2],pos=1;return groups.map((g,i)=>{const a=pos,b=pos+g-1;pos=b+1;const label=i===0?'작업 전 차량·키':i===groups.length-1?'완성 후 작동 확인':'스마트키 등록 작업 과정';return `[사진 ${a}${b>a?'~'+b:''} 넣기 — ${label}]`})}
-function updateBlogCharCount(){const e=$('#blogCharCount');if(e)e.textContent=($('#blogBodyOut')?.value||'').length+'자'}
-
-let blogSelectedJobId='';
-let blogSourcePhotos=[];
-let blogWatermarkedPhotos=[];
-function blogRecentJobs(){return [...jobs].sort((a,b)=>(String(b.date||'')+' '+String(b.time||'')).localeCompare(String(a.date||'')+' '+String(a.time||''))).slice(0,15)}
-function renderBlogJobs(){
- const _blogFilter=$('#blogStatusFilter')?.value||'pending';
-
- const box=$('#blogJobList'); if(!box)return;
- const arr=blogRecentJobs();
- box.innerHTML=arr.length?arr.map(j=>`<button type="button" class="blog-job-btn ${j.id===blogSelectedJobId?'active':''}" onclick="loadBlogJob('${j.id}')"><b>${esc(j.car||'차량 미입력')}</b><small>${esc(j.date||'')} · ${esc(j.jobType||'')}${j.blogDone?' · ✓ 작성완료':''}</small></button>`).join(''):'<div class="note">저장된 작업이 없습니다.</div>';
+function initBlogAreas(){
+ const d=$('#blogDistrict'),g=$('#blogDong');
+ if(!d||!g)return;
+ const areaData=(typeof INCHEON_AREAS!=='undefined'&&INCHEON_AREAS)||{};
+ const districts=Object.keys(areaData);
+ d.innerHTML='<option value="">구·군 선택</option>'+districts.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+ g.innerHTML='<option value="">동·읍·면 선택</option>';
+ d.disabled=false; g.disabled=true;
+ d.onchange=()=>{
+   const district=d.value;
+   const list=areaData[district]||[];
+   g.innerHTML='<option value="">동·읍·면 선택</option>'+list.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+   g.disabled=!district;
+   if(!district)g.value='';
+   syncBlogRegion();
+   renderSeoTitleSuggestions?.();
+ };
+ g.onchange=()=>{syncBlogRegion();renderSeoTitleSuggestions?.();};
 }
 function guessBlogYear(car){const m=String(car||'').match(/(?:19|20)\d{2}/);return m?m[0]:''}
 function stripYearFromCar(car){return String(car||'').replace(/(?:19|20)\d{2}\s*년?식?/g,'').replace(/\s{2,}/g,' ').trim()}
@@ -847,7 +880,8 @@ function ensureBlogMapAndContact(body,region,phone){
  let b=String(body||'').trim();
  if(!b.includes('📍 지도 넣기'))b+=`\n\n📍 [지도 넣기 — ${region}]`;
  if(!b.includes(phone))b+=`\n\n📞 자동차키 작업 문의 : ${phone}`;
- if(!b.includes('무료 비교견적'))b+=`\n📝 무료 비교견적 : 키스팟 무료 비교견적 이용`;
+ const q=quotePageLink();
+ if(q && !b.includes(q))b+=`\n📝 무료견적 신청 : ${q}`;
  return b;
 }
 
@@ -916,8 +950,18 @@ function renderBlogRecommendation(){
  box.innerHTML=`<b>${esc(j.car||'차량 미입력')} · ${esc(j.jobType||'작업')}</b><br>${esc(j.date||'')} · 사진 ${photos}장${isOldBlogJob(j)?' · 예전 미작성 작업':''}<br><span style="color:#64748b">최근 작성완료 글과 차종·작업이 덜 겹치는 사례를 우선 추천합니다.</span>`;
 }
 function blogPhone(){return settings.businessPhone||'010-3004-0452'}
+function quotePageLink(){
+ const page=settings.quotePageUrl||'';
+ const endpoint=settings.quoteUrl||'';
+ if(!page)return '';
+ if(!endpoint)return page;
+ const sep=page.includes('?')?'&':'?';
+ return page+sep+'endpoint='+encodeURIComponent(endpoint);
+}
 function updateBlogCtaPreview(){
- const e=$('#blogCtaPreview');if(e)e.innerHTML=`📞 자동차키 작업 문의 : <b>${esc(blogPhone())}</b><br>📝 무료 비교견적 : <b>키스팟 무료 비교견적 이용</b>`;
+ const e=$('#blogCtaPreview');if(!e)return;
+ const q=quotePageLink();
+ e.innerHTML=`📞 자동차키 작업 문의 : <b>${esc(blogPhone())}</b><br>📝 무료견적 : <b>${q?esc(q):'설정에서 고객용 무료견적 페이지 주소를 입력하세요.'}</b>`;
 }
 function pastAwareSentence(text,j){
  if(!isOldBlogJob(j))return String(text||'');
@@ -1075,7 +1119,7 @@ async function restorePhoneTransferPackage(raw){
  return {jobs:jobs.length,photos,stocks:stocks.length};
 }
 
-const APP_VERSION='14.9';
+const APP_VERSION='15.0';
 let remoteVersion='';
 let autoUpdating=false;
 
