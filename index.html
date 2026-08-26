@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<meta name="app-version" content="15.3">
+<meta name="app-version" content="15.3b">
 <meta name="description" content="자동차키 업체용 매출·미수·재고·작업 관리">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -127,7 +127,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V15.3</span> Pro <small style="font-size:11px">v15.3</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V15.3b</span> Pro <small style="font-size:11px">v15.3b</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="blog">블로그</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -212,34 +212,13 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 <div><label>지역 (전국 시·도 → 시·군·구 → 동·읍·면)</label>
 <div style="display:grid;grid-template-columns:1fr;gap:8px">
 <select id="blogSido"><option value="">시·도 선택</option></select>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
 <select id="blogDistrict" disabled><option value="">시·군·구 선택</option></select>
 <select id="blogDong" disabled><option value="">동·읍·면 선택</option></select>
-</div>
+<input id="blogRegionManual" placeholder="동·읍·면 직접 입력 가능 (예: 청라동, 송도동)">
 </div>
 <input id="blogRegion" type="hidden">
-<div id="blogRegionLabel" class="note" style="margin-top:5px">전국 지역정보 불러오는 중...</div>
+<div id="blogRegionLabel" class="note" style="margin-top:5px">지역을 선택하세요.</div>
 </div>
-<div><label>작업</label><input id="blogWork" placeholder="예: 스마트키 추가 복사"></div>
-<div class="full"><label>고객 요청 / 작업 이유</label><textarea id="blogReason" placeholder="예: 스마트키가 하나뿐이라 분실에 대비해 예비키 제작"></textarea></div>
-<div><label>사용 장비</label><input id="blogEquipment" placeholder="예: 전용 장비"></div>
-<div><label>작업 결과</label><input id="blogResult" placeholder="예: 기존키와 추가키 2개 모두 정상작동"></div>
-<div class="full"><label>추가 메모</label><textarea id="blogMemo" placeholder="검색에 넣고 싶은 내용, 주의사항, 현장 설명"></textarea></div>
-</div><div class="card" style="margin:10px 0;padding:12px">
-<h3 style="margin:0 0 6px">✨ 오늘 올릴 블로그 추천</h3>
-<div id="blogTodayRecommend" class="note">미작성 작업을 분석해서 추천합니다.</div>
-<div class="actions" style="margin-top:8px">
-<button type="button" class="action" id="blogRecommendBtn">오늘 작업 추천</button>
-<button type="button" class="action ghost" id="blogPickRecommended">추천 작업 불러오기</button>
-</div>
-</div>
-<div class="card" style="margin:10px 0;padding:10px">
-<label>🔎 검색 노출용 제목 추천</label>
-<div id="blogTitleSuggestions" class="note">작업내용과 지역을 선택하면 제목 3개를 추천합니다.</div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
-<div><label>블로그 작업 보기</label><select id="blogStatusFilter"><option value="pending">미작성만</option><option value="all">전체</option><option value="done">작성완료만</option></select></div>
-<div><label>작성 현황</label><div id="blogStatusCount" class="note" style="padding-top:10px">미작성 0 · 완료 0</div></div>
 </div><div><label>본문 글자수</label><select id="blogLength"><option value="500">약 500자</option><option value="700" selected>약 700자 (추천)</option><option value="1000">약 1,000자</option></select></div><div class="actions"><button class="action" type="button" id="blogGenerate">✨ 블로그 글 만들기</button><button class="action secondary" type="button" id="blogOpenNaver">네이버 블로그 열기</button></div></div>
 <div class="card" style="margin-top:12px"><h2>사진 전화번호 넣기</h2><div class="grid"><div><label>표시 전화번호</label><input id="blogWatermarkPhone" inputmode="tel" value="010-3004-0452"></div><div><label>글자 크기</label><select id="blogWatermarkSize"><option value="0.050">보통</option><option value="0.062" selected>조금 크게</option><option value="0.075">크게</option></select></div></div><div class="photo-actions"><button type="button" id="blogGalleryBtn">🖼️ 사진 추가 선택</button><button type="button" id="blogPhotoClear" class="secondary">사진 비우기</button></div><input id="blogGalleryPhotos" class="hidden" type="file" accept="image/*" multiple><div class="blog-watermark-note" style="margin-top:8px">작업내역 사진을 자동으로 가져옵니다. 다른 사진도 추가할 수 있습니다. 오른쪽 아래에 노란색 전화번호 + 어두운 그림자로 표시하며 원본은 변경하지 않습니다.</div><div id="blogPhotoGrid" class="blog-photo-grid"></div><div class="actions"><button class="action warn" type="button" id="blogMakeWatermarks">📷 사진에 번호 넣기</button><button class="action secondary" type="button" id="blogDownloadPhotos">번호 사진 모두 저장</button></div></div>
 <div class="card" style="margin-top:12px"><h2>완성 원고</h2><label>제목</label><textarea id="blogTitleOut" style="min-height:84px"></textarea><label style="margin-top:10px">본문 <span id="blogCharCount" style="float:right;color:#2563eb;font-weight:900">0자</span></label><textarea id="blogBodyOut" class="blog-output"></textarea><label style="margin-top:10px">태그</label><textarea id="blogTagsOut" style="min-height:110px"></textarea><div class="card" style="margin:12px 0 0;padding:12px">
@@ -705,7 +684,7 @@ async function notify(text){if(!settings.telegramEnabled||!settings.telegramToke
 $('#testTelegram').onclick=async()=>{try{saveSettingsFromForm();if(!settings.telegramToken||!settings.telegramChat)throw new Error('토큰과 Chat ID를 입력하세요.');const res=await fetch(`https://api.telegram.org/bot${encodeURIComponent(settings.telegramToken)}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:settings.telegramChat,text:`🔑 ${settings.business} 테스트 알림`})});if(!res.ok)throw Error('전송 실패');status($('#settingsStatus'),'텔레그램 테스트 전송 성공')}catch(e){status($('#settingsStatus'),e.message,true)}};
 function saveSettingsFromForm(){settings.goal=Math.max(1,+$('#settingGoal').value||100);settings.business=$('#settingBusiness').value.trim()||'자동차키';settings.setupDone=true;settings.owner=$('#settingOwner').value.trim();settings.businessPhone=$('#settingBusinessPhone').value.trim();settings.address=$('#settingAddress').value.trim();settings.vinUrl=$('#settingVinUrl').value.trim();settings.scriptUrl=$('#settingScriptUrl').value.trim();settings.telegramToken=$('#settingTelegramToken').value.trim();settings.telegramChat=$('#settingTelegramChat').value.trim();settings.telegramEnabled=$('#settingTelegramEnabled').checked;settings.automationUrl=$('#settingAutomationUrl').value.trim();settings.autoBackup=$('#settingAutoBackup').checked;settings.cloudPhotos=$('#settingCloudPhotos').checked;settings.autoUpdate=$('#settingAutoUpdate').checked;settings.aiUrl=$('#settingAiUrl').value.trim();settings.quoteUrl=$('#settingQuoteUrl')?.value.trim()||'';settings.quotePageUrl=$('#settingQuotePageUrl')?.value.trim()||'';const pin=$('#settingPin').value.trim(),removePin=$('#settingRemovePin').checked;if(removePin)settings.pin='';else if(pin){if(!/^\d{4,6}$/.test(pin))throw new Error('PIN은 숫자 4~6자리로 입력하세요.');settings.pin=pin}settings.autoLock=$('#settingAutoLock').value;$('#settingPin').value='';$('#settingRemovePin').checked=false;save()}
 function loadSettings(){$('#settingGoal').value=settings.goal||100;$('#settingBusiness').value=settings.business||'자동차키';$('#settingOwner').value=settings.owner||'';$('#settingBusinessPhone').value=settings.businessPhone||'';$('#settingAddress').value=settings.address||'';$('#businessLogoPreview').src=settings.businessLogo||'icon-192.png';$('#settingVinUrl').value=settings.vinUrl||'';$('#settingScriptUrl').value=settings.scriptUrl||'';$('#settingTelegramToken').value=settings.telegramToken||'';$('#settingTelegramChat').value=settings.telegramChat||'';$('#settingTelegramEnabled').checked=!!settings.telegramEnabled;$('#settingAutomationUrl').value=settings.automationUrl||'';$('#settingAutoBackup').checked=!!settings.autoBackup;$('#settingCloudPhotos').checked=!!settings.cloudPhotos;$('#settingAutoUpdate').checked=settings.autoUpdate!==false;$('#settingAiUrl').value=settings.aiUrl||'';if($('#settingQuoteUrl'))$('#settingQuoteUrl').value=settings.quoteUrl||'';if($('#settingQuotePageUrl'))$('#settingQuotePageUrl').value=settings.quotePageUrl||'';$('#settingPin').value='';$('#settingRemovePin').checked=false;$('#settingAutoLock').value=settings.autoLock||'on'}
-function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v15.3';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
+function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v15.3b';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
 $('#brandEditButton').onclick=()=>{openTab('settings');setTimeout(()=>$('#settingBusiness')?.focus(),250)};
 $('#settingLogoFile').onchange=e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),max=256,q=Math.min(1,max/img.width,max/img.height);c.width=Math.max(1,Math.round(img.width*q));c.height=Math.max(1,Math.round(img.height*q));c.getContext('2d').drawImage(img,0,0,c.width,c.height);settings.businessLogo=c.toDataURL('image/jpeg',.85);$('#businessLogoPreview').src=settings.businessLogo;save(false);applyBranding()};img.src=r.result};r.readAsDataURL(f)};$('#removeBusinessLogo').onclick=()=>{settings.businessLogo='';$('#businessLogoPreview').src='icon-192.png';save(false);applyBranding()};
 
@@ -841,132 +820,99 @@ const INCHEON_AREAS={
 '강화군':['강화읍','선원면','불은면','길상면','화도면','양도면','내가면','하점면','양사면','송해면','교동면','삼산면','서도면'],
 '옹진군':['북도면','연평면','백령면','대청면','덕적면','자월면','영흥면']};
 
-const KOREA_REGION_DATA_URL='https://raw.githubusercontent.com/vuski/admdongkor/master/ver20260701/HangJeongDong_ver20260701.geojson';
-const KOREA_REGION_CACHE_KEY='dkm_korea_regions_20260701';
-let KOREA_AREAS={};
 
-function normalizeSidoName(v){
- const x=String(v||'').trim();
- const map={
-  '서울특별시':'서울','부산광역시':'부산','대구광역시':'대구','인천광역시':'인천',
-  '광주광역시':'광주','대전광역시':'대전','울산광역시':'울산','세종특별자치시':'세종',
-  '경기도':'경기','강원특별자치도':'강원','충청북도':'충북','충청남도':'충남',
-  '전북특별자치도':'전북','전라남도':'전남','경상북도':'경북','경상남도':'경남',
-  '제주특별자치도':'제주'
- };
- return map[x]||x.replace(/특별자치도|특별자치시|특별시|광역시|도$/,'');
-}
-function regionAdd(sido,sgg,dong){
- sido=normalizeSidoName(sido);sgg=String(sgg||'').trim();dong=String(dong||'').trim();
- if(!sido||!sgg||!dong)return;
- if(!KOREA_AREAS[sido])KOREA_AREAS[sido]={};
- if(!KOREA_AREAS[sido][sgg])KOREA_AREAS[sido][sgg]=[];
- if(!KOREA_AREAS[sido][sgg].includes(dong))KOREA_AREAS[sido][sgg].push(dong);
-}
-function regionFromFeature(f){
- const p=f?.properties||{};
- let sido=p.sidonm||p.sido_nm||p.SIDO_NM||p.sido||'';
- let sgg=p.sggnm||p.sgg_nm||p.SGG_NM||p.sgg||'';
- let dong=p.adm_nm||p.emd_nm||p.EMD_NM||p.dongnm||p.dong_nm||p.name||'';
- const full=String(p.adm_nm||p.ADM_NM||'').trim();
- if(full){
-   const parts=full.split(/\s+/);
-   if(!sido&&parts.length)sido=parts[0];
-   if(!sgg&&parts.length>1)sgg=parts.slice(1,-1).join(' ');
-   dong=parts[parts.length-1]||dong;
- }
- if(sido && sgg && dong){
-   const ns=normalizeSidoName(sido);
-   dong=String(dong).replace(String(sido),'').replace(String(sgg),'').trim().split(/\s+/).pop();
-   regionAdd(ns,sgg,dong);
- }
-}
-function makeRegionFallback(){
- const r={};
- // 전국 17개 시·도는 항상 선택 가능하게 제공. 네트워크 장애 시 시군구/동은 직접 입력 사용.
- ['서울','부산','대구','인천','광주','대전','울산','세종','경기','강원','충북','충남','전북','전남','경북','경남','제주'].forEach(x=>r[x]={});
- // 기존 인천 데이터는 오프라인 폴백으로 유지
- if(typeof INCHEON_AREAS!=='undefined')r['인천']={...INCHEON_AREAS};
- return r;
-}
-async function loadKoreaRegions(){
- const lab=$('#blogRegionLabel');
- try{
-   const cached=localStorage.getItem(KOREA_REGION_CACHE_KEY);
-   if(cached){
-     const d=JSON.parse(cached);
-     if(d&&typeof d==='object'&&Object.keys(d).length>=17){KOREA_AREAS=d;initBlogAreas();if(lab)lab.textContent='전국 지역 선택 가능';return;}
-   }
- }catch{}
- try{
-   if(lab)lab.textContent='전국 시·군·구·동 정보를 처음 한 번 불러오는 중...';
-   const res=await fetch(KOREA_REGION_DATA_URL,{cache:'force-cache'});
-   if(!res.ok)throw new Error('지역 데이터 다운로드 실패');
-   const geo=await res.json();
-   KOREA_AREAS={};
-   (geo.features||[]).forEach(regionFromFeature);
-   Object.values(KOREA_AREAS).forEach(sggs=>Object.values(sggs).forEach(a=>a.sort((x,y)=>x.localeCompare(y,'ko'))));
-   try{localStorage.setItem(KOREA_REGION_CACHE_KEY,JSON.stringify(KOREA_AREAS))}catch(e){console.warn('지역 캐시 저장 실패',e)}
-   initBlogAreas();
-   if(lab)lab.textContent='전국 지역 선택 가능';
- }catch(e){
-   console.warn('전국 지역 데이터 불러오기 실패',e);
-   KOREA_AREAS=makeRegionFallback();
-   initBlogAreas();
-   if(lab)lab.textContent='전국 데이터 연결 실패 · 시·도 선택 후 지역명을 직접 입력할 수 있습니다.';
- }
-}
+const KOREA_AREAS={
+'서울':{'강남구':[],'강동구':[],'강북구':[],'강서구':[],'관악구':[],'광진구':[],'구로구':[],'금천구':[],'노원구':[],'도봉구':[],'동대문구':[],'동작구':[],'마포구':[],'서대문구':[],'서초구':[],'성동구':[],'성북구':[],'송파구':[],'양천구':[],'영등포구':[],'용산구':[],'은평구':[],'종로구':[],'중구':[],'중랑구':[]},
+'부산':{'강서구':[],'금정구':[],'기장군':[],'남구':[],'동구':[],'동래구':[],'부산진구':[],'북구':[],'사상구':[],'사하구':[],'서구':[],'수영구':[],'연제구':[],'영도구':[],'중구':[],'해운대구':[]},
+'대구':{'군위군':[],'남구':[],'달서구':[],'달성군':[],'동구':[],'북구':[],'서구':[],'수성구':[],'중구':[]},
+'인천':{
+ '제물포구':['신포동','연안동','신흥동','도원동','율목동','동인천동','개항동','만석동','화수1·화평동','화수2동','송현1·2동','송현3동','송림1동','송림2동','송림3·5동','송림4동','송림6동','금창동'],
+ '영종구':['영종동','영종1동','영종2동','운서1동','운서2동','용유동'],
+ '미추홀구':['숭의1·3동','숭의2동','숭의4동','용현1·4동','용현2동','용현3동','용현5동','학익1동','학익2동','도화1동','도화2·3동','주안1동','주안2동','주안3동','주안4동','주안5동','주안6동','주안7동','주안8동','관교동','문학동'],
+ '연수구':['옥련1동','옥련2동','선학동','연수1동','연수2동','연수3동','청학동','동춘1동','동춘2동','동춘3동','송도1동','송도2동','송도3동','송도4동','송도5동'],
+ '남동구':['구월1동','구월2동','구월3동','구월4동','간석1동','간석2동','간석3동','간석4동','만수1동','만수2동','만수3동','만수4동','만수5동','만수6동','장수서창동','서창2동','남촌도림동','논현1동','논현2동','논현고잔동'],
+ '부평구':['부평1동','부평2동','부평3동','부평4동','부평5동','부평6동','산곡1동','산곡2동','산곡3동','산곡4동','청천1동','청천2동','갈산1동','갈산2동','삼산1동','삼산2동','부개1동','부개2동','부개3동','일신동','십정1동','십정2동'],
+ '계양구':['효성1동','효성2동','계산1동','계산2동','계산3동','계산4동','작전1동','작전2동','작전서운동','계양1동','계양2동','계양3동'],
+ '서해구':['검암경서동','연희동','청라1동','청라2동','청라3동','가정1동','가정2동','가정3동','신현원창동','석남1동','석남2동','석남3동','가좌1동','가좌2동','가좌3동','가좌4동'],
+ '검단구':['검단동','불로대곡동','원당동','당하동','오류왕길동','마전동','아라1동','아라2동'],
+ '강화군':['강화읍','선원면','불은면','길상면','화도면','양도면','내가면','하점면','양사면','송해면','교동면','삼산면','서도면'],
+ '옹진군':['북도면','연평면','백령면','대청면','덕적면','자월면','영흥면']
+},
+'광주':{'광산구':[],'남구':[],'동구':[],'북구':[],'서구':[]},
+'대전':{'대덕구':[],'동구':[],'서구':[],'유성구':[],'중구':[]},
+'울산':{'남구':[],'동구':[],'북구':[],'울주군':[],'중구':[]},
+'세종':{'세종시':[]},
+'경기':{'가평군':[],'고양시':[],'과천시':[],'광명시':[],'광주시':[],'구리시':[],'군포시':[],'김포시':[],'남양주시':[],'동두천시':[],'부천시':[],'성남시':[],'수원시':[],'시흥시':[],'안산시':[],'안성시':[],'안양시':[],'양주시':[],'양평군':[],'여주시':[],'연천군':[],'오산시':[],'용인시':[],'의왕시':[],'의정부시':[],'이천시':[],'파주시':[],'평택시':[],'포천시':[],'하남시':[],'화성시':[]},
+'강원':{'강릉시':[],'고성군':[],'동해시':[],'삼척시':[],'속초시':[],'양구군':[],'양양군':[],'영월군':[],'원주시':[],'인제군':[],'정선군':[],'철원군':[],'춘천시':[],'태백시':[],'평창군':[],'홍천군':[],'화천군':[],'횡성군':[]},
+'충북':{'괴산군':[],'단양군':[],'보은군':[],'영동군':[],'옥천군':[],'음성군':[],'제천시':[],'증평군':[],'진천군':[],'청주시':[],'충주시':[]},
+'충남':{'계룡시':[],'공주시':[],'금산군':[],'논산시':[],'당진시':[],'보령시':[],'부여군':[],'서산시':[],'서천군':[],'아산시':[],'예산군':[],'천안시':[],'청양군':[],'태안군':[],'홍성군':[]},
+'전북':{'고창군':[],'군산시':[],'김제시':[],'남원시':[],'무주군':[],'부안군':[],'순창군':[],'완주군':[],'익산시':[],'임실군':[],'장수군':[],'전주시':[],'정읍시':[],'진안군':[]},
+'전남':{'강진군':[],'고흥군':[],'곡성군':[],'광양시':[],'구례군':[],'나주시':[],'담양군':[],'목포시':[],'무안군':[],'보성군':[],'순천시':[],'신안군':[],'여수시':[],'영광군':[],'영암군':[],'완도군':[],'장성군':[],'장흥군':[],'진도군':[],'함평군':[],'해남군':[],'화순군':[]},
+'경북':{'경산시':[],'경주시':[],'고령군':[],'구미시':[],'김천시':[],'문경시':[],'봉화군':[],'상주시':[],'성주군':[],'안동시':[],'영덕군':[],'영양군':[],'영주시':[],'영천시':[],'예천군':[],'울릉군':[],'울진군':[],'의성군':[],'청도군':[],'청송군':[],'칠곡군':[],'포항시':[]},
+'경남':{'거제시':[],'거창군':[],'고성군':[],'김해시':[],'남해군':[],'밀양시':[],'사천시':[],'산청군':[],'양산시':[],'의령군':[],'진주시':[],'창녕군':[],'창원시':[],'통영시':[],'하동군':[],'함안군':[],'함양군':[],'합천군':[]},
+'제주':{'서귀포시':[],'제주시':[]}
+};
+
 function syncBlogRegion(){
- const a=$('#blogSido'),d=$('#blogDistrict'),g=$('#blogDong'),r=$('#blogRegion'),lab=$('#blogRegionLabel');
- if(!a||!d||!g)return;
- const region=[a.value,d.value,g.value].filter(Boolean).join(' ');
- if(r)r.value=region;
- if(lab&&region)lab.textContent=region;
+ const a=$('#blogSido'),d=$('#blogDistrict'),g=$('#blogDong'),m=$('#blogRegionManual'),r=$('#blogRegion'),lab=$('#blogRegionLabel');
+ if(!a||!d||!r)return;
+ const dong=(g&&!g.disabled?g.value:'')||(m?.value.trim()||'');
+ const region=[a.value,d.value,dong].filter(Boolean).join(' ');
+ r.value=region;
+ if(lab)lab.textContent=region||'지역을 선택하세요.';
+ if(typeof renderSeoTitleSuggestions==='function')renderSeoTitleSuggestions();
 }
+
 function initBlogAreas(){
- const a=$('#blogSido'),d=$('#blogDistrict'),g=$('#blogDong');
+ const a=$('#blogSido'),d=$('#blogDistrict'),g=$('#blogDong'),m=$('#blogRegionManual');
  if(!a||!d||!g)return;
- if(!Object.keys(KOREA_AREAS).length)KOREA_AREAS=makeRegionFallback();
  const order=['서울','부산','대구','인천','광주','대전','울산','세종','경기','강원','충북','충남','전북','전남','경북','경남','제주'];
- const sidos=Object.keys(KOREA_AREAS).sort((x,y)=>(order.indexOf(x)<0?99:order.indexOf(x))-(order.indexOf(y)<0?99:order.indexOf(y)));
- a.innerHTML='<option value="">시·도 선택</option>'+sidos.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
+ a.innerHTML='<option value="">시·도 선택</option>'+order.map(x=>`<option value="${x}">${x}</option>`).join('');
  d.innerHTML='<option value="">시·군·구 선택</option>';
  g.innerHTML='<option value="">동·읍·면 선택</option>';
  d.disabled=true;g.disabled=true;
 
  a.onchange=()=>{
-   const sggs=Object.keys(KOREA_AREAS[a.value]||{}).sort((x,y)=>x.localeCompare(y,'ko'));
-   d.innerHTML='<option value="">시·군·구 선택</option>'+sggs.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
-   d.disabled=!a.value||!sggs.length;
+   const list=Object.keys(KOREA_AREAS[a.value]||{}).sort((x,y)=>x.localeCompare(y,'ko'));
+   d.innerHTML='<option value="">시·군·구 선택</option>'+list.map(x=>`<option value="${x}">${x}</option>`).join('');
+   d.disabled=!a.value;
+   d.value='';
    g.innerHTML='<option value="">동·읍·면 선택</option>';
    g.disabled=true;
+   if(m)m.value='';
    syncBlogRegion();
-   if(typeof renderSeoTitleSuggestions==='function')renderSeoTitleSuggestions();
  };
+
  d.onchange=()=>{
    const list=(KOREA_AREAS[a.value]?.[d.value]||[]);
-   g.innerHTML='<option value="">동·읍·면 선택</option>'+list.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join('');
-   g.disabled=!d.value||!list.length;
+   g.innerHTML='<option value="">동·읍·면 선택</option>'+list.map(x=>`<option value="${x}">${x}</option>`).join('');
+   g.disabled=list.length===0;
+   g.value='';
+   if(m)m.value='';
    syncBlogRegion();
-   if(typeof renderSeoTitleSuggestions==='function')renderSeoTitleSuggestions();
  };
- g.onchange=()=>{
-   syncBlogRegion();
-   if(typeof renderSeoTitleSuggestions==='function')renderSeoTitleSuggestions();
- };
+
+ g.onchange=()=>{if(m)m.value='';syncBlogRegion();};
+ if(m)m.oninput=()=>{if(m.value.trim()&&g)g.value='';syncBlogRegion();};
  syncBlogRegion();
 }
+
 function setBlogAreaFromText(text){
- const a=$('#blogSido'),d=$('#blogDistrict'),g=$('#blogDong');if(!a||!d||!g)return;
+ const a=$('#blogSido'),d=$('#blogDistrict'),g=$('#blogDong'),m=$('#blogRegionManual');
+ if(!a||!d||!g)return;
  const t=String(text||'').trim();if(!t)return;
  const sido=Object.keys(KOREA_AREAS).find(x=>t.includes(x))||'';
  if(!sido)return;
  a.value=sido;a.onchange();
- const sgg=Object.keys(KOREA_AREAS[sido]||{}).find(x=>t.includes(x))||'';
- if(sgg){d.value=sgg;d.onchange()}
- if(sgg){
-   const dong=(KOREA_AREAS[sido]?.[sgg]||[]).find(x=>t.includes(x))||'';
-   if(dong){g.value=dong;g.onchange()}
+ const district=Object.keys(KOREA_AREAS[sido]||{}).find(x=>t.includes(x))||'';
+ if(district){d.value=district;d.onchange();}
+ if(district){
+   const dong=(KOREA_AREAS[sido][district]||[]).find(x=>t.includes(x))||'';
+   if(dong){g.value=dong;g.onchange();}
+   else if(m){
+     const remain=t.replace(sido,'').replace(district,'').trim();
+     m.value=remain;syncBlogRegion();
+   }
  }
 }
 function guessBlogYear(car){const m=String(car||'').match(/(?:19|20)\d{2}/);return m?m[0]:''}
@@ -1356,7 +1302,7 @@ setInterval(()=>checkForAppUpdate(true),30*60*1000);
 
 let deferredPrompt;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').style.display='block'});$('#installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').style.display='none'};if('serviceWorker'in navigator)addEventListener('load',async()=>{try{const r=await navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'});await r.update().catch(()=>{})}catch(e){console.warn('Service worker 등록 실패',e)}});
 let touchX=0;$('#photoModal').addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX},{passive:true});$('#photoModal').addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-touchX;if(Math.abs(d)>45){d>0?photoPrev():photoNext()}},{passive:true});function forceInitialHomeRender(){try{renderAll();requestAnimationFrame(()=>{renderAll();setTimeout(renderAll,120)})}catch(e){console.warn(e)}}
-function renderAll(){renderMetrics();renderJobs();renderStocks();drawChart();renderStats();renderCategoryStats();renderCalendar();renderDailyStats();renderKeyDb();renderBlogJobs();renderBlogPhotos()}loadSettings();applyBranding();syncVisibleAppVersion();KOREA_AREAS=makeRegionFallback();initBlogAreas();loadKoreaRegions().then(()=>{if($('#blogRegion'))setBlogAreaFromText(settings.address||'')});updateBlogCharCount();updateBlogStatusCount();renderSeoTitleSuggestions();renderBlogRecommendation();updateBlogCtaPreview();toggleOtherWork();$('#vatType').value=['해당없음','포함','별도'].includes(settings.lastVatType)?settings.lastVatType:'해당없음';renderVatPreview();renderPhotoPreview();forceInitialHomeRender();
+function renderAll(){renderMetrics();renderJobs();renderStocks();drawChart();renderStats();renderCategoryStats();renderCalendar();renderDailyStats();renderKeyDb();renderBlogJobs();renderBlogPhotos()}loadSettings();applyBranding();syncVisibleAppVersion();initBlogAreas();loadKoreaRegions().then(()=>{if($('#blogRegion'))setBlogAreaFromText(settings.address||'')});updateBlogCharCount();updateBlogStatusCount();renderSeoTitleSuggestions();renderBlogRecommendation();updateBlogCtaPreview();toggleOtherWork();$('#vatType').value=['해당없음','포함','별도'].includes(settings.lastVatType)?settings.lastVatType:'해당없음';renderVatPreview();renderPhotoPreview();forceInitialHomeRender();
 (async()=>{try{await migrateLegacyPhotos();await warmAllPhotos();renderAll();updatePhotoStorageStatus()}catch(e){console.warn('사진 저장소 초기화 실패',e)}})();
 setInterval(()=>{if(!$('#editId').value&&!dateManuallyChanged&&$('#date').value!==localISO())$('#date').value=localISO();if(!$('#editId').value&&$('#autoTime')?.checked)$('#time').value=currentTime();renderMetrics()},60000);checkFirstSetup();if(settings.setupDone&&sessionStorage.getItem('dkm_unlocked')!=='1')checkLock();
 </script>
