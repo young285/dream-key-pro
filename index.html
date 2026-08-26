@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<meta name="app-version" content="15.3e">
+<meta name="app-version" content="15.3f">
 <meta name="description" content="자동차키 업체용 매출·미수·재고·작업 관리">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -127,7 +127,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V15.3e</span> Pro <small style="font-size:11px">v15.3e</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V15.3f</span> Pro <small style="font-size:11px">v15.3f</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="blog">블로그</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -251,13 +251,12 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </section>
 <section id="settings" class="panel"><div class="card"><h2>업체 정보</h2><div class="grid"><div><label>상호</label><input id="settingBusiness" value="드림 자동차키"></div><div><label>대표자</label><input id="settingOwner" placeholder="선택 입력"></div><div><label>전화번호</label><input id="settingBusinessPhone" inputmode="tel" placeholder="010-0000-0000"></div><div><label>지역/주소</label><input id="settingAddress" placeholder="예: 인천 청라"></div><div class="full"><label>업체 로고</label><div class="logo-preview"><img id="businessLogoPreview" alt="업체 로고"><div style="flex:1"><input id="settingLogoFile" type="file" accept="image/*"><button type="button" class="action ghost" id="removeBusinessLogo" style="margin-top:6px">로고 삭제</button></div></div></div></div></div><div class="card" style="margin-top:12px"><h2>기본 설정</h2><div class="grid"><div><label>월 목표 차량</label><input id="settingGoal" type="number" min="1" value="100"></div><div><label>새 앱 잠금 PIN (4~6자리)</label><input id="settingPin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password" placeholder="변경할 때만 입력"></div><div><label>자동 잠금</label><select id="settingAutoLock"><option value="on">앱을 열 때마다</option><option value="off">사용 안 함</option></select></div><div><label><input id="settingRemovePin" type="checkbox" style="width:auto"> 기존 PIN 삭제</label></div><div class="full"><label>VIN 조회 주소</label><input id="settingVinUrl" placeholder="예: https://example.com/search?vin={VIN}"></div></div></div>
 <div class="card" style="margin-top:12px">
-<h2>🧹 중복 작업 정리</h2>
-<div class="note">예전 버전에서 같은 저장 동작이 여러 번 기록된 중복만 찾아 정리합니다. 묶음 작업(batchId)이 있는 정상 다중차량 작업은 삭제하지 않습니다.</div>
+<h2>🧹 중복 작업 검사</h2>
+<div class="note">같은 차종·작업·거래처·매출이 2분 이내 연속 저장된 기록을 후보로 찾습니다. 자동 삭제하지 않고 직접 선택해서 정리합니다.</div>
 <div id="duplicateScanStatus" class="note" style="margin-top:8px">중복 검사 대기</div>
-<div class="actions">
-<button class="action ghost" type="button" id="scanDuplicatesBtn">중복 검사</button>
-<button class="action warn" type="button" id="cleanDuplicatesBtn">중복 기록 정리</button>
-</div>
+<div class="actions"><button class="action ghost" type="button" id="scanDuplicatesBtn">중복 후보 검사</button></div>
+<div id="duplicateCandidateList" style="margin-top:10px"></div>
+<div class="actions"><button class="action warn" type="button" id="cleanDuplicatesBtn">선택한 기록 삭제</button></div>
 </div><div class="card" style="margin-top:12px"><h2>📷 사진 저장공간</h2>
 <div id="photoStorageStatus" class="note">사진 저장공간 확인 중...</div>
 <div class="actions"><button class="action ghost" type="button" id="refreshPhotoStorage">저장공간 다시 확인</button></div>
@@ -510,70 +509,59 @@ $('#addWorkLineBtn')?.addEventListener('click',()=>{try{const w=currentWorkDraft
 
 let jobSaveInFlight=false;
 
-function stableJobKey(j){
-  return [
-    String(j.date||''), String(j.time||''), String(j.customer||''), String(j.phone||''),
-    String(j.car||''), String(j.plate||''), String(j.vin||''), String(j.jobType||''),
-    Number(j.carCount||1), Number(j.sale||0), Number(j.cost||0), String(j.payment||''),
-    String(j.partNo||''), Number(j.stockUsed||0), String(j.memo||'')
-  ].join('|');
+
+function normDup(v){return String(v??'').trim().replace(/\s+/g,' ')}
+function minuteValue(j){
+  const d=normDup(j.date), t=normDup(j.time).slice(0,5);
+  const x=new Date(`${d}T${t||'00:00'}:00`);
+  return isNaN(x)?0:x.getTime()/60000;
 }
-function batchSubmissionKey(batch, meta){
-  return JSON.stringify({
-    date:meta.date,time:meta.time,customer:meta.customer,phone:meta.phone,
-    batch:batch.map(w=>({
-      car:w.car||'',plate:w.plate||'',vin:w.vin||'',jobType:w.jobType||'',
-      carCount:Number(w.carCount||1),sale:Number(w.sale||0),cost:Number(w.cost||0),
-      payment:w.payment||'',partNo:w.partNo||'',stockUsed:Number(w.stockUsed||0),memo:w.memo||''
-    }))
+function duplicateBaseKey(j){
+  return [normDup(j.date),normDup(j.customer),normDup(j.car),normDup(j.jobType),Number(j.sale||0)].join('|');
+}
+function findDuplicateCandidates(){
+  const map=new Map();
+  jobs.forEach(j=>{
+    const k=duplicateBaseKey(j);
+    if(!map.has(k))map.set(k,[]);
+    map.get(k).push(j);
   });
+  const groups=[];
+  for(const arr of map.values()){
+    arr.sort((x,y)=>minuteValue(x)-minuteValue(y));
+    let g=[];
+    for(const j of arr){
+      if(!g.length || minuteValue(j)-minuteValue(g[g.length-1])<=2) g.push(j);
+      else {if(g.length>1)groups.push(g);g=[j]}
+    }
+    if(g.length>1)groups.push(g);
+  }
+  return groups;
 }
-function isRapidDuplicateSubmission(key){
-  try{
-    const prev=JSON.parse(localStorage.getItem('dkm_last_submission')||'null');
-    if(prev && prev.key===key && (Date.now()-Number(prev.ts||0))<15000) return true;
-  }catch{}
-  return false;
-}
-function rememberSubmission(key){
-  try{localStorage.setItem('dkm_last_submission',JSON.stringify({key,ts:Date.now()}))}catch{}
-}
-function findLegacyDuplicateGroups(){
-  const groups=new Map();
-  jobs.forEach((j,idx)=>{
-    // V15.2+ batch records can legitimately contain identical multiple vehicles.
-    if(j.batchId) return;
-    const key=stableJobKey(j);
-    if(!groups.has(key)) groups.set(key,[]);
-    groups.get(key).push({j,idx});
-  });
-  return [...groups.values()].filter(g=>g.length>1);
-}
-function duplicateStats(){
-  const groups=findLegacyDuplicateGroups();
-  return {groups, extra:groups.reduce((n,g)=>n+g.length-1,0)};
-}
+function escDup(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function renderDuplicateScan(){
-  const e=$('#duplicateScanStatus'); if(!e)return;
-  const x=duplicateStats();
-  e.innerHTML=x.extra
-    ? `⚠️ 중복 의심 <b>${x.extra}건</b> 발견 · ${x.groups.length}개 묶음`
-    : '✅ 중복 의심 기록이 없습니다.';
+  const status=$('#duplicateScanStatus'), list=$('#duplicateCandidateList');
+  if(!status||!list)return;
+  const groups=findDuplicateCandidates();
+  const count=groups.reduce((n,g)=>n+g.length,0);
+  status.innerHTML=groups.length?`⚠️ 중복 후보 <b>${count}건</b> · ${groups.length}개 묶음`:'✅ 중복 후보가 없습니다.';
+  list.innerHTML=groups.map((g,gi)=>`<div style="border:1px solid #d8dee9;border-radius:14px;padding:10px;margin:8px 0">
+    <b>후보 ${gi+1}</b><div class="note">같은 작업으로 보이는 기록입니다. 남길 기록은 체크하지 마세요.</div>
+    ${g.map((j,i)=>`<label style="display:block;padding:9px 4px;border-top:1px solid #eef1f5">
+      <input type="checkbox" class="dupPick" value="${escDup(j.id)}" ${i?'checked':''}>
+      ${escDup(j.time)} · ${escDup(j.car)} · ${escDup(j.jobType)} · ${Number(j.sale||0).toLocaleString()}원
+      <small style="display:block;margin-left:24px">${escDup(j.customer||'거래처 없음')} · 원가 ${Number(j.cost||0).toLocaleString()}원 · ${escDup(j.payment||'')}</small>
+    </label>`).join('')}
+  </div>`).join('');
 }
 function cleanLegacyDuplicates(){
-  const {groups,extra}=duplicateStats();
-  if(!extra){renderDuplicateScan();alert('정리할 중복 기록이 없습니다.');return}
-  if(!confirm(`중복 의심 ${extra}건을 정리할까요?\n\n같은 날짜·시간·거래처·차량·작업·금액이 완전히 같은 예전 기록만 정리합니다.\n묶음 작업은 건드리지 않습니다.`))return;
-  const removeIds=new Set();
-  groups.forEach(g=>{
-    // Keep first/latest-listed record, remove the remaining exact copies.
-    g.slice(1).forEach(x=>removeIds.add(x.j.id));
-  });
-  jobs=jobs.filter(j=>!removeIds.has(j.id));
-  save(false);
-  renderAll();
-  renderDuplicateScan();
-  alert(`중복 기록 ${removeIds.size}건을 정리했습니다.`);
+  const ids=[...document.querySelectorAll('.dupPick:checked')].map(x=>x.value);
+  if(!ids.length){alert('삭제할 중복 기록을 선택하세요.');return}
+  if(!confirm(`선택한 ${ids.length}건을 삭제할까요?\n삭제 후 오늘/월 통계도 바로 다시 계산됩니다.`))return;
+  const set=new Set(ids);
+  jobs=jobs.filter(j=>!set.has(String(j.id)));
+  save(false);renderAll();renderDuplicateScan();
+  alert(`${ids.length}건을 정리했습니다.`);
 }
 $('#scanDuplicatesBtn')?.addEventListener('click',renderDuplicateScan);
 $('#cleanDuplicatesBtn')?.addEventListener('click',cleanLegacyDuplicates);
