@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<meta name="app-version" content="15.3c">
+<meta name="app-version" content="15.3d">
 <meta name="description" content="자동차키 업체용 매출·미수·재고·작업 관리">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -127,7 +127,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V15.3c</span> Pro <small style="font-size:11px">v15.3c</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V15.3d</span> Pro <small style="font-size:11px">v15.3d</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="blog">블로그</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -218,7 +218,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </div>
 </div>
 <input id="blogRegion" type="hidden">
-<div id="blogRegionLabel" class="note" style="margin-top:5px">전국 지역정보 불러오는 중...</div>
+<div id="blogRegionLabel" class="note" style="margin-top:5px">지역을 선택하세요.</div>
 </div>
 <div><label>작업</label><input id="blogWork" placeholder="예: 스마트키 추가 복사"></div>
 <div class="full"><label>고객 요청 / 작업 이유</label><textarea id="blogReason" placeholder="예: 스마트키가 하나뿐이라 분실에 대비해 예비키 제작"></textarea></div>
@@ -969,6 +969,14 @@ function setBlogAreaFromText(text){
    if(dong){g.value=dong;g.onchange()}
  }
 }
+
+function renderBlogJobs(){
+ const box=document.getElementById('blogJobList'); if(!box)return;
+ const arr=(typeof jobs!=="undefined"&&Array.isArray(jobs))?[...jobs]:[];
+ arr.sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+ if(!arr.length){box.innerHTML='<div class="note">등록된 작업이 없습니다.</div>';return;}
+ box.innerHTML=arr.slice(0,50).map(j=>'<button type="button" class="blog-job-btn" onclick="if(typeof loadBlogJob===\'function\')loadBlogJob(\''+String(j.id||'')+'\')"><b>'+String(j.car||j.vehicle||'차량 미입력')+'</b><small>'+String(j.date||'')+(j.jobType?' · '+String(j.jobType):'')+'</small></button>').join('');
+}
 function guessBlogYear(car){const m=String(car||'').match(/(?:19|20)\d{2}/);return m?m[0]:''}
 function stripYearFromCar(car){return String(car||'').replace(/(?:19|20)\d{2}\s*년?식?/g,'').replace(/\s{2,}/g,' ').trim()}
 window.loadBlogJob=async id=>{
@@ -1359,5 +1367,28 @@ let touchX=0;$('#photoModal').addEventListener('touchstart',e=>{touchX=e.changed
 function renderAll(){renderMetrics();renderJobs();renderStocks();drawChart();renderStats();renderCategoryStats();renderCalendar();renderDailyStats();renderKeyDb();renderBlogJobs();renderBlogPhotos()}loadSettings();applyBranding();syncVisibleAppVersion();KOREA_AREAS=makeRegionFallback();initBlogAreas();loadKoreaRegions().then(()=>{if($('#blogRegion'))setBlogAreaFromText(settings.address||'')});updateBlogCharCount();updateBlogStatusCount();renderSeoTitleSuggestions();renderBlogRecommendation();updateBlogCtaPreview();toggleOtherWork();$('#vatType').value=['해당없음','포함','별도'].includes(settings.lastVatType)?settings.lastVatType:'해당없음';renderVatPreview();renderPhotoPreview();forceInitialHomeRender();
 (async()=>{try{await migrateLegacyPhotos();await warmAllPhotos();renderAll();updatePhotoStorageStatus()}catch(e){console.warn('사진 저장소 초기화 실패',e)}})();
 setInterval(()=>{if(!$('#editId').value&&!dateManuallyChanged&&$('#date').value!==localISO())$('#date').value=localISO();if(!$('#editId').value&&$('#autoTime')?.checked)$('#time').value=currentTime();renderMetrics()},60000);checkFirstSetup();if(settings.setupDone&&sessionStorage.getItem('dkm_unlocked')!=='1')checkLock();
+</script>
+
+<script>
+(function(){
+const A={
+'서울':['강남구','강동구','강북구','강서구','관악구','광진구','구로구','금천구','노원구','도봉구','동대문구','동작구','마포구','서대문구','서초구','성동구','성북구','송파구','양천구','영등포구','용산구','은평구','종로구','중구','중랑구'],
+'부산':['강서구','금정구','기장군','남구','동구','동래구','부산진구','북구','사상구','사하구','서구','수영구','연제구','영도구','중구','해운대구'],
+'대구':['군위군','남구','달서구','달성군','동구','북구','서구','수성구','중구'],
+'인천':['제물포구','영종구','미추홀구','연수구','남동구','부평구','계양구','서해구','검단구','강화군','옹진군'],
+'광주':['광산구','남구','동구','북구','서구'],'대전':['대덕구','동구','서구','유성구','중구'],'울산':['남구','동구','북구','울주군','중구'],'세종':['세종시'],
+'경기':['가평군','고양시','과천시','광명시','광주시','구리시','군포시','김포시','남양주시','동두천시','부천시','성남시','수원시','시흥시','안산시','안성시','안양시','양주시','양평군','여주시','연천군','오산시','용인시','의왕시','의정부시','이천시','파주시','평택시','포천시','하남시','화성시'],
+'강원':['강릉시','고성군','동해시','삼척시','속초시','양구군','양양군','영월군','원주시','인제군','정선군','철원군','춘천시','태백시','평창군','홍천군','화천군','횡성군'],
+'충북':['괴산군','단양군','보은군','영동군','옥천군','음성군','제천시','증평군','진천군','청주시','충주시'],
+'충남':['계룡시','공주시','금산군','논산시','당진시','보령시','부여군','서산시','서천군','아산시','예산군','천안시','청양군','태안군','홍성군'],
+'전북':['고창군','군산시','김제시','남원시','무주군','부안군','순창군','완주군','익산시','임실군','장수군','전주시','정읍시','진안군'],
+'전남':['강진군','고흥군','곡성군','광양시','구례군','나주시','담양군','목포시','무안군','보성군','순천시','신안군','여수시','영광군','영암군','완도군','장성군','장흥군','진도군','함평군','해남군','화순군'],
+'경북':['경산시','경주시','고령군','구미시','김천시','문경시','봉화군','상주시','성주군','안동시','영덕군','영양군','영주시','영천시','예천군','울릉군','울진군','의성군','청도군','청송군','칠곡군','포항시'],
+'경남':['거제시','거창군','고성군','김해시','남해군','밀양시','사천시','산청군','양산시','의령군','진주시','창녕군','창원시','통영시','하동군','함안군','함양군','합천군'],'제주':['서귀포시','제주시']};
+const I={'연수구':['옥련1동','옥련2동','선학동','연수1동','연수2동','연수3동','청학동','동춘1동','동춘2동','동춘3동','송도1동','송도2동','송도3동','송도4동','송도5동'],'서해구':['검암경서동','연희동','청라1동','청라2동','청라3동','가정1동','가정2동','가정3동','신현원창동','석남1동','석남2동','석남3동','가좌1동','가좌2동','가좌3동','가좌4동'],'검단구':['검단동','불로대곡동','원당동','당하동','오류왕길동','마전동','아라1동','아라2동']};
+function sync(){let a=document.getElementById('blogSido'),d=document.getElementById('blogDistrict'),g=document.getElementById('blogDong'),r=document.getElementById('blogRegion'),l=document.getElementById('blogRegionLabel');if(!a||!d)return;let v=[a.value,d.value,g&&!g.disabled?g.value:''].filter(Boolean).join(' ');if(r)r.value=v;if(l)l.textContent=v||'지역을 선택하세요.';}
+function bind(){let a=document.getElementById('blogSido'),d=document.getElementById('blogDistrict'),g=document.getElementById('blogDong');if(!a||!d||!g)return;a.onchange=()=>{let x=A[a.value]||[];d.innerHTML='<option value="">시·군·구 선택</option>'+x.map(v=>'<option>'+v+'</option>').join('');d.disabled=!x.length;g.innerHTML='<option value="">동·읍·면 선택</option>';g.disabled=true;sync();};d.onchange=()=>{let x=a.value==='인천'?(I[d.value]||[]):[];g.innerHTML='<option value="">동·읍·면 선택</option>'+x.map(v=>'<option>'+v+'</option>').join('');g.disabled=!x.length;sync();};g.onchange=sync;if(a.value)a.onchange();}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
+})();
 </script>
 </body></html>
