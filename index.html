@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<meta name="app-version" content="14.5">
+<meta name="app-version" content="14.9">
 <meta name="description" content="자동차키 업체용 매출·미수·재고·작업 관리">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -127,7 +127,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V14.5</span> Pro <small style="font-size:11px">v14.5</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V14.9</span> Pro <small style="font-size:11px">v14.9</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="blog">블로그</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -209,15 +209,35 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 <div class="card" style="margin-top:12px"><h2>블로그 내용</h2><div class="grid">
 <div><label>차량 / 차종</label><input id="blogCar" placeholder="예: 르노 QM6"></div>
 <div><label>연식</label><input id="blogYear" inputmode="numeric" placeholder="예: 2020"></div>
-<div><label>지역</label><input id="blogRegion" placeholder="예: 인천 송도신도시"></div>
+<div><label>지역 (인천 구·군 → 동·읍·면)</label><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><select id="blogDistrict"></select><select id="blogDong"></select></div><input id="blogRegion" type="hidden"><div id="blogRegionLabel" class="note" style="margin-top:5px">인천 지역을 선택하세요.</div></div>
 <div><label>작업</label><input id="blogWork" placeholder="예: 스마트키 추가 복사"></div>
 <div class="full"><label>고객 요청 / 작업 이유</label><textarea id="blogReason" placeholder="예: 스마트키가 하나뿐이라 분실에 대비해 예비키 제작"></textarea></div>
 <div><label>사용 장비</label><input id="blogEquipment" placeholder="예: 전용 장비"></div>
 <div><label>작업 결과</label><input id="blogResult" placeholder="예: 기존키와 추가키 2개 모두 정상작동"></div>
 <div class="full"><label>추가 메모</label><textarea id="blogMemo" placeholder="검색에 넣고 싶은 내용, 주의사항, 현장 설명"></textarea></div>
-</div><div class="actions"><button class="action" type="button" id="blogGenerate">✨ 블로그 글 만들기</button><button class="action secondary" type="button" id="blogOpenNaver">네이버 블로그 열기</button></div></div>
+</div><div class="card" style="margin:10px 0;padding:12px">
+<h3 style="margin:0 0 6px">✨ 오늘 올릴 블로그 추천</h3>
+<div id="blogTodayRecommend" class="note">미작성 작업을 분석해서 추천합니다.</div>
+<div class="actions" style="margin-top:8px">
+<button type="button" class="action" id="blogRecommendBtn">오늘 작업 추천</button>
+<button type="button" class="action ghost" id="blogPickRecommended">추천 작업 불러오기</button>
+</div>
+</div>
+<div class="card" style="margin:10px 0;padding:10px">
+<label>🔎 검색 노출용 제목 추천</label>
+<div id="blogTitleSuggestions" class="note">작업내용과 지역을 선택하면 제목 3개를 추천합니다.</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+<div><label>블로그 작업 보기</label><select id="blogStatusFilter"><option value="pending">미작성만</option><option value="all">전체</option><option value="done">작성완료만</option></select></div>
+<div><label>작성 현황</label><div id="blogStatusCount" class="note" style="padding-top:10px">미작성 0 · 완료 0</div></div>
+</div><div><label>본문 글자수</label><select id="blogLength"><option value="500">약 500자</option><option value="700" selected>약 700자 (추천)</option><option value="1000">약 1,000자</option></select></div><div class="actions"><button class="action" type="button" id="blogGenerate">✨ 블로그 글 만들기</button><button class="action secondary" type="button" id="blogOpenNaver">네이버 블로그 열기</button></div></div>
 <div class="card" style="margin-top:12px"><h2>사진 전화번호 넣기</h2><div class="grid"><div><label>표시 전화번호</label><input id="blogWatermarkPhone" inputmode="tel" value="010-3004-0452"></div><div><label>글자 크기</label><select id="blogWatermarkSize"><option value="0.050">보통</option><option value="0.062" selected>조금 크게</option><option value="0.075">크게</option></select></div></div><div class="photo-actions"><button type="button" id="blogGalleryBtn">🖼️ 사진 추가 선택</button><button type="button" id="blogPhotoClear" class="secondary">사진 비우기</button></div><input id="blogGalleryPhotos" class="hidden" type="file" accept="image/*" multiple><div class="blog-watermark-note" style="margin-top:8px">작업내역 사진을 자동으로 가져옵니다. 다른 사진도 추가할 수 있습니다. 오른쪽 아래에 노란색 전화번호 + 어두운 그림자로 표시하며 원본은 변경하지 않습니다.</div><div id="blogPhotoGrid" class="blog-photo-grid"></div><div class="actions"><button class="action warn" type="button" id="blogMakeWatermarks">📷 사진에 번호 넣기</button><button class="action secondary" type="button" id="blogDownloadPhotos">번호 사진 모두 저장</button></div></div>
-<div class="card" style="margin-top:12px"><h2>완성 원고</h2><label>제목</label><textarea id="blogTitleOut" style="min-height:84px"></textarea><label style="margin-top:10px">본문</label><textarea id="blogBodyOut" class="blog-output"></textarea><label style="margin-top:10px">태그</label><textarea id="blogTagsOut" style="min-height:110px"></textarea><div class="blog-copy-row"><button type="button" id="blogCopyAll">전체 복사</button><button type="button" id="blogCopyTitle">제목 복사</button><button type="button" id="blogCopyBody">본문 복사</button><button type="button" id="blogCopyTags">태그 복사</button></div><div class="actions"><button class="action ok" type="button" id="blogMarkDone">✓ 이 작업 블로그 작성완료</button></div><div id="blogDoneStatus" class="note"></div></div>
+<div class="card" style="margin-top:12px"><h2>완성 원고</h2><label>제목</label><textarea id="blogTitleOut" style="min-height:84px"></textarea><label style="margin-top:10px">본문 <span id="blogCharCount" style="float:right;color:#2563eb;font-weight:900">0자</span></label><textarea id="blogBodyOut" class="blog-output"></textarea><label style="margin-top:10px">태그</label><textarea id="blogTagsOut" style="min-height:110px"></textarea><div class="card" style="margin:12px 0 0;padding:12px">
+<h3 style="margin:0 0 6px">📞 문의 유도</h3>
+<div id="blogCtaPreview" class="note">전화번호와 키스팟 무료 비교견적 문구가 본문 마지막에 자동 삽입됩니다.</div>
+</div>
+<div class="blog-copy-row"><button type="button" id="blogCopyAll">전체 복사</button><button type="button" id="blogCopyTitle">제목 복사</button><button type="button" id="blogCopyBody">본문 복사</button><button type="button" id="blogCopyTags">태그 복사</button></div><div class="actions"><button class="action ghost" type="button" id="blogMarkExistingDone">예전에 이미 올린 글로 표시</button>
+<button class="action ok" type="button" id="blogMarkDone">✓ 이 작업 블로그 작성완료</button></div><div id="blogDoneStatus" class="note"></div></div>
 </section>
 <section id="settings" class="panel"><div class="card"><h2>업체 정보</h2><div class="grid"><div><label>상호</label><input id="settingBusiness" value="드림 자동차키"></div><div><label>대표자</label><input id="settingOwner" placeholder="선택 입력"></div><div><label>전화번호</label><input id="settingBusinessPhone" inputmode="tel" placeholder="010-0000-0000"></div><div><label>지역/주소</label><input id="settingAddress" placeholder="예: 인천 청라"></div><div class="full"><label>업체 로고</label><div class="logo-preview"><img id="businessLogoPreview" alt="업체 로고"><div style="flex:1"><input id="settingLogoFile" type="file" accept="image/*"><button type="button" class="action ghost" id="removeBusinessLogo" style="margin-top:6px">로고 삭제</button></div></div></div></div></div><div class="card" style="margin-top:12px"><h2>기본 설정</h2><div class="grid"><div><label>월 목표 차량</label><input id="settingGoal" type="number" min="1" value="100"></div><div><label>새 앱 잠금 PIN (4~6자리)</label><input id="settingPin" type="password" inputmode="numeric" maxlength="6" autocomplete="new-password" placeholder="변경할 때만 입력"></div><div><label>자동 잠금</label><select id="settingAutoLock"><option value="on">앱을 열 때마다</option><option value="off">사용 안 함</option></select></div><div><label><input id="settingRemovePin" type="checkbox" style="width:auto"> 기존 PIN 삭제</label></div><div class="full"><label>VIN 조회 주소</label><input id="settingVinUrl" placeholder="예: https://example.com/search?vin={VIN}"></div></div></div>
 <div class="card" style="margin-top:12px"><h2>📷 사진 저장공간</h2>
@@ -621,7 +641,7 @@ $('#restoreFile').onchange=e=>{
       localStorage.setItem('dkm_stocks',JSON.stringify(stocks));
       localStorage.setItem('dkm_settings',JSON.stringify(settings));
       localStorage.setItem('dkm_keydb',JSON.stringify(keyDb));
-      loadSettings();applyBranding();syncVisibleAppVersion();renderAll();
+      loadSettings();applyBranding();syncVisibleAppVersion();initBlogAreas();updateBlogCharCount();updateBlogStatusCount();renderSeoTitleSuggestions();renderBlogRecommendation();updateBlogCtaPreview();renderAll();
 
       const photoCount=jobs.reduce((n,j)=>n+(Array.isArray(j.photos)?j.photos.length:0),0);
       alert(`복원 완료\n작업 ${jobs.length}건\n사진 ${photoCount}장`);
@@ -639,7 +659,7 @@ async function notify(text){if(!settings.telegramEnabled||!settings.telegramToke
 $('#testTelegram').onclick=async()=>{try{saveSettingsFromForm();if(!settings.telegramToken||!settings.telegramChat)throw new Error('토큰과 Chat ID를 입력하세요.');const res=await fetch(`https://api.telegram.org/bot${encodeURIComponent(settings.telegramToken)}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:settings.telegramChat,text:`🔑 ${settings.business} 테스트 알림`})});if(!res.ok)throw Error('전송 실패');status($('#settingsStatus'),'텔레그램 테스트 전송 성공')}catch(e){status($('#settingsStatus'),e.message,true)}};
 function saveSettingsFromForm(){settings.goal=Math.max(1,+$('#settingGoal').value||100);settings.business=$('#settingBusiness').value.trim()||'자동차키';settings.setupDone=true;settings.owner=$('#settingOwner').value.trim();settings.businessPhone=$('#settingBusinessPhone').value.trim();settings.address=$('#settingAddress').value.trim();settings.vinUrl=$('#settingVinUrl').value.trim();settings.scriptUrl=$('#settingScriptUrl').value.trim();settings.telegramToken=$('#settingTelegramToken').value.trim();settings.telegramChat=$('#settingTelegramChat').value.trim();settings.telegramEnabled=$('#settingTelegramEnabled').checked;settings.automationUrl=$('#settingAutomationUrl').value.trim();settings.autoBackup=$('#settingAutoBackup').checked;settings.cloudPhotos=$('#settingCloudPhotos').checked;settings.autoUpdate=$('#settingAutoUpdate').checked;settings.aiUrl=$('#settingAiUrl').value.trim();const pin=$('#settingPin').value.trim(),removePin=$('#settingRemovePin').checked;if(removePin)settings.pin='';else if(pin){if(!/^\d{4,6}$/.test(pin))throw new Error('PIN은 숫자 4~6자리로 입력하세요.');settings.pin=pin}settings.autoLock=$('#settingAutoLock').value;$('#settingPin').value='';$('#settingRemovePin').checked=false;save()}
 function loadSettings(){$('#settingGoal').value=settings.goal||100;$('#settingBusiness').value=settings.business||'자동차키';$('#settingOwner').value=settings.owner||'';$('#settingBusinessPhone').value=settings.businessPhone||'';$('#settingAddress').value=settings.address||'';$('#businessLogoPreview').src=settings.businessLogo||'icon-192.png';$('#settingVinUrl').value=settings.vinUrl||'';$('#settingScriptUrl').value=settings.scriptUrl||'';$('#settingTelegramToken').value=settings.telegramToken||'';$('#settingTelegramChat').value=settings.telegramChat||'';$('#settingTelegramEnabled').checked=!!settings.telegramEnabled;$('#settingAutomationUrl').value=settings.automationUrl||'';$('#settingAutoBackup').checked=!!settings.autoBackup;$('#settingCloudPhotos').checked=!!settings.cloudPhotos;$('#settingAutoUpdate').checked=settings.autoUpdate!==false;$('#settingAiUrl').value=settings.aiUrl||'';$('#settingPin').value='';$('#settingRemovePin').checked=false;$('#settingAutoLock').value=settings.autoLock||'on'}
-function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v14.5';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
+function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v14.9';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
 $('#brandEditButton').onclick=()=>{openTab('settings');setTimeout(()=>$('#settingBusiness')?.focus(),250)};
 $('#settingLogoFile').onchange=e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),max=256,q=Math.min(1,max/img.width,max/img.height);c.width=Math.max(1,Math.round(img.width*q));c.height=Math.max(1,Math.round(img.height*q));c.getContext('2d').drawImage(img,0,0,c.width,c.height);settings.businessLogo=c.toDataURL('image/jpeg',.85);$('#businessLogoPreview').src=settings.businessLogo;save(false);applyBranding()};img.src=r.result};r.readAsDataURL(f)};$('#removeBusinessLogo').onclick=()=>{settings.businessLogo='';$('#businessLogoPreview').src='icon-192.png';save(false);applyBranding()};
 
@@ -743,11 +763,31 @@ $('#unlockBtn').onclick=unlock;$('#pinInput').onkeydown=e=>{if(e.key==='Enter')u
 
 
 
+
+const INCHEON_AREAS={
+'제물포구':['신포동','연안동','신흥동','도원동','율목동','동인천동','개항동','만석동','화수1·화평동','화수2동','송현1·2동','송현3동','송림1동','송림2동','송림3·5동','송림4동','송림6동','금창동'],
+'영종구':['영종동','영종1동','영종2동','운서1동','운서2동','용유동'],
+'미추홀구':['숭의1·3동','숭의2동','숭의4동','용현1·4동','용현2동','용현3동','용현5동','학익1동','학익2동','도화1동','도화2·3동','주안1동','주안2동','주안3동','주안4동','주안5동','주안6동','주안7동','주안8동','관교동','문학동'],
+'연수구':['옥련1동','옥련2동','선학동','연수1동','연수2동','연수3동','청학동','동춘1동','동춘2동','동춘3동','송도1동','송도2동','송도3동','송도4동','송도5동'],
+'남동구':['구월1동','구월2동','구월3동','구월4동','간석1동','간석2동','간석3동','간석4동','만수1동','만수2동','만수3동','만수4동','만수5동','만수6동','장수서창동','서창2동','남촌도림동','논현1동','논현2동','논현고잔동'],
+'부평구':['부평1동','부평2동','부평3동','부평4동','부평5동','부평6동','산곡1동','산곡2동','산곡3동','산곡4동','청천1동','청천2동','갈산1동','갈산2동','삼산1동','삼산2동','부개1동','부개2동','부개3동','일신동','십정1동','십정2동'],
+'계양구':['효성1동','효성2동','계산1동','계산2동','계산3동','계산4동','작전1동','작전2동','작전서운동','계양1동','계양2동','계양3동'],
+'서해구':['검암경서동','연희동','청라1동','청라2동','청라3동','가정1동','가정2동','가정3동','신현원창동','석남1동','석남2동','석남3동','가좌1동','가좌2동','가좌3동','가좌4동'],
+'검단구':['검단동','불로대곡동','원당동','당하동','오류왕길동','마전동','아라1동','아라2동'],
+'강화군':['강화읍','선원면','불은면','길상면','화도면','양도면','내가면','하점면','양사면','송해면','교동면','삼산면','서도면'],
+'옹진군':['북도면','연평면','백령면','대청면','덕적면','자월면','영흥면']};
+function initBlogAreas(){const d=$('#blogDistrict'),g=$('#blogDong');if(!d||!g)return;d.innerHTML='<option value="">구·군 선택</option>'+Object.keys(INCHEON_AREAS).map(x=>`<option>${x}</option>`).join('');const sync=()=>{const r=['인천',d.value,g.value].filter(Boolean).join(' ');$('#blogRegion').value=r;$('#blogRegionLabel').textContent=r||'인천 지역을 선택하세요.'};d.onchange=()=>{g.innerHTML='<option value="">동·읍·면 선택</option>'+(INCHEON_AREAS[d.value]||[]).map(x=>`<option>${x}</option>`).join('');sync()};g.onchange=sync;d.onchange()}
+function setBlogAreaFromText(text){const d=$('#blogDistrict'),g=$('#blogDong');if(!d||!g)return;const t=String(text||'');const district=Object.keys(INCHEON_AREAS).find(x=>t.includes(x))||'';d.value=district;d.onchange();if(district){const dong=(INCHEON_AREAS[district]||[]).find(x=>t.includes(x))||'';g.value=dong;g.onchange()}}
+function blogPhotoMarkers(n){if(!n)return[];let groups=n<=5?[2,1,2]:n===6?[2,2,2]:n===7?[2,2,1,2]:[2,2,2,2],pos=1;return groups.map((g,i)=>{const a=pos,b=pos+g-1;pos=b+1;const label=i===0?'작업 전 차량·키':i===groups.length-1?'완성 후 작동 확인':'스마트키 등록 작업 과정';return `[사진 ${a}${b>a?'~'+b:''} 넣기 — ${label}]`})}
+function updateBlogCharCount(){const e=$('#blogCharCount');if(e)e.textContent=($('#blogBodyOut')?.value||'').length+'자'}
+
 let blogSelectedJobId='';
 let blogSourcePhotos=[];
 let blogWatermarkedPhotos=[];
 function blogRecentJobs(){return [...jobs].sort((a,b)=>(String(b.date||'')+' '+String(b.time||'')).localeCompare(String(a.date||'')+' '+String(a.time||''))).slice(0,15)}
 function renderBlogJobs(){
+ const _blogFilter=$('#blogStatusFilter')?.value||'pending';
+
  const box=$('#blogJobList'); if(!box)return;
  const arr=blogRecentJobs();
  box.innerHTML=arr.length?arr.map(j=>`<button type="button" class="blog-job-btn ${j.id===blogSelectedJobId?'active':''}" onclick="loadBlogJob('${j.id}')"><b>${esc(j.car||'차량 미입력')}</b><small>${esc(j.date||'')} · ${esc(j.jobType||'')}${j.blogDone?' · ✓ 작성완료':''}</small></button>`).join(''):'<div class="note">저장된 작업이 없습니다.</div>';
@@ -758,11 +798,11 @@ window.loadBlogJob=async id=>{
  const j=jobs.find(x=>x.id===id);if(!j)return;
  blogSelectedJobId=id;await warmPhotoRefs(j.photos||[]);blogSourcePhotos=Array.isArray(j.photos)?[...j.photos]:[];blogWatermarkedPhotos=[];
  $('#blogCar').value=stripYearFromCar(j.car||'');$('#blogYear').value=guessBlogYear(j.car||'');
- $('#blogRegion').value=settings.address||'인천 송도';$('#blogWork').value=j.jobType||'';
+ setBlogAreaFromText(settings.address||'');$('#blogWork').value=j.jobType||'';
  $('#blogReason').value=(j.memo||'').match(/(하나|1개|분실|예비|추가)/)?(j.memo||''):'';$('#blogEquipment').value='전용 장비';
  $('#blogResult').value=(String(j.jobType||'').includes('추가')?'기존키와 추가키 모두 정상작동':'작업 후 정상작동 확인');$('#blogMemo').value=j.memo||'';
  $('#blogDoneStatus').textContent=j.blogDone?'이 작업은 블로그 작성완료로 표시되어 있습니다.':'';
- renderBlogJobs();renderBlogPhotos();
+ renderBlogJobs();renderBlogPhotos();renderSeoTitleSuggestions();updateBlogStatusCount();renderBlogRecommendation();updateBlogCtaPreview();
 };
 function clearBlogForm(){blogSelectedJobId='';blogSourcePhotos=[];blogWatermarkedPhotos=[];['blogCar','blogYear','blogWork','blogReason','blogEquipment','blogResult','blogMemo','blogTitleOut','blogBodyOut','blogTagsOut'].forEach(id=>{const e=$('#'+id);if(e)e.value=''});$('#blogRegion').value=settings.address||'인천 송도';renderBlogJobs();renderBlogPhotos()}
 $('#blogClearJob')?.addEventListener('click',clearBlogForm);
@@ -773,12 +813,148 @@ $('#blogGalleryBtn')?.addEventListener('click',()=>$('#blogGalleryPhotos').click
 $('#blogGalleryPhotos')?.addEventListener('change',async e=>{const files=[...e.target.files].filter(f=>f.type.startsWith('image/'));for(const f of files){try{blogSourcePhotos.push(await compressImage(f))}catch{}}blogWatermarkedPhotos=[];renderBlogPhotos();e.target.value=''});
 $('#blogPhotoClear')?.addEventListener('click',()=>{blogSourcePhotos=[];blogWatermarkedPhotos=[];renderBlogPhotos()});
 function blogTags(car,region,work){const city=String(region||'').replace(/\s+/g,'');const c=String(car||'').replace(/\s+/g,'');const base=[city+'스마트키',c+'스마트키',c+'키복사',c+'스마트키추가','스마트키복사','스마트키추가','스마트키제작','자동차키','차키복사','차키제작','예비키','자동차열쇠','스마트키등록','출장스마트키','인천스마트키','송도스마트키'];return [...new Set(base.filter(x=>x&&x.length>1))].map(x=>'#'+x).join(' ')}
+
+function blogCompletedTexts(){
+ return jobs.filter(j=>j.blogDoneAt||j.blogTitle||j.blogBody).map(j=>({title:j.blogTitle||'',body:j.blogBody||''}));
+}
+function normalizeBlogText(t){return String(t||'').toLowerCase().replace(/[\s\W_]+/g,'')}
+function blogSimilarity(a,b){
+ a=normalizeBlogText(a);b=normalizeBlogText(b);if(!a||!b)return 0;
+ const n=3,A=new Set();for(let i=0;i<=a.length-n;i++)A.add(a.slice(i,i+n));
+ const B=new Set();for(let i=0;i<=b.length-n;i++)B.add(b.slice(i,i+n));
+ let hit=0;A.forEach(x=>{if(B.has(x))hit++});return hit/Math.max(1,Math.min(A.size,B.size));
+}
+function chooseVariant(seed,arr){return arr[Math.abs(Number(seed)||0)%arr.length]}
+function blogSeed(j){return String(j?.id||Date.now()).split('').reduce((n,c)=>n+c.charCodeAt(0),0)}
+function fitBlogLength(text,target,context){
+ let t=String(text||'').trim();
+ const extras=[
+  `차량 키 작업은 같은 차종이라도 연식과 옵션에 따라 사용하는 키와 등록 방식이 달라질 수 있어 작업 전 확인이 필요합니다.`,
+  `현장에서 차량 상태를 확인한 뒤 작업하기 때문에 필요한 키 종류와 작업 가능 여부를 보다 정확하게 안내할 수 있습니다.`,
+  `스마트키 추가 제작은 사용 중인 키를 분실하기 전에 준비해 두면 올키로스트 상황을 예방하는 데 도움이 됩니다.`,
+  `작업이 끝난 뒤에는 고객님과 함께 주요 기능을 다시 확인하고 실제 사용에 문제가 없는지 최종 점검합니다.`,
+  `인천 지역 출장 작업은 차종과 연식, 현재 키 보유 여부를 알려주시면 상담이 훨씬 빠릅니다.`
+ ];
+ let i=0;while(t.length<target-80&&i<extras.length){t+='\n\n'+extras[i++]}return t;
+}
+function uniqueBlogTitle(base,seed){
+ const old=blogCompletedTexts().map(x=>x.title);
+ if(!old.some(x=>blogSimilarity(base,x)>.72))return base;
+ const tails=['현장 작업 후기','출장 제작 사례','예비키 등록 작업','스마트키 등록 후기','자동차키 작업 사례'];
+ return base+' - '+chooseVariant(seed,tails);
+}
+function ensureBlogMapAndContact(body,region,phone){
+ let b=String(body||'').trim();
+ if(!b.includes('📍 지도 넣기'))b+=`\n\n📍 [지도 넣기 — ${region}]`;
+ if(!b.includes(phone))b+=`\n\n📞 자동차키 작업 문의 : ${phone}`;
+ if(!b.includes('무료 비교견적'))b+=`\n📝 무료 비교견적 : 키스팟 무료 비교견적 이용`;
+ return b;
+}
+
+
+function seoWorkTerm(work){
+ const w=String(work||'');
+ if(/올키|모두.?분실|분실/.test(w))return '스마트키 모두분실';
+ if(/추가|복사/.test(w))return '스마트키 추가 복사';
+ if(/리모콘/.test(w))return '리모콘키 제작';
+ if(/막키/.test(w))return '자동차키 제작';
+ return w||'스마트키 제작';
+}
+function cleanSeoCar(car){return String(car||'').replace(/\s+/g,' ').trim()}
+function seoTitleCandidates(){
+ const region=$('#blogRegion')?.value.trim()||'인천',car=cleanSeoCar($('#blogCar')?.value),year=$('#blogYear')?.value.trim(),work=seoWorkTerm($('#blogWork')?.value);
+ const shortRegion=region.replace(/^인천\s*/,'인천 ');
+ const y=year?`${year}년식 `:'';
+ return [
+  `${shortRegion} ${car} ${work} 출장 제작`,
+  `${shortRegion} ${y}${car} 차키 ${/분실/.test(work)?'분실 현장 제작':'추가 제작'}`,
+  `${region} ${car} ${work} 작업 후기`
+ ].map(x=>x.replace(/\s+/g,' ').trim());
+}
+function renderSeoTitleSuggestions(){
+ const box=$('#blogTitleSuggestions');if(!box)return;
+ const arr=seoTitleCandidates();box.innerHTML=arr.map((t,i)=>`<button type="button" class="ghost seo-title-pick" data-i="${i}" style="display:block;width:100%;text-align:left;margin:5px 0">${i+1}. ${esc(t)}</button>`).join('');
+ box.querySelectorAll('.seo-title-pick').forEach(b=>b.onclick=()=>{$('#blogTitleOut').value=arr[Number(b.dataset.i)];});
+}
+function blogDone(j){return !!j.blogDoneAt}
+function updateBlogStatusCount(){
+ const done=jobs.filter(blogDone).length,pending=jobs.length-done,e=$('#blogStatusCount');if(e)e.textContent=`미작성 ${pending} · 완료 ${done}`;
+}
+
+
+let blogRecommendedJobId='';
+
+function isOldBlogJob(j){
+ if(!j?.date)return false;
+ const d=new Date(j.date+'T00:00:00');
+ return Number.isFinite(d.getTime())&&(Date.now()-d.getTime())>30*86400000;
+}
+function blogRecentDoneJobs(limit=12){
+ return jobs.filter(j=>j.blogDoneAt).sort((a,b)=>String(b.blogDoneAt).localeCompare(String(a.blogDoneAt))).slice(0,limit);
+}
+function blogRecommendScore(j){
+ if(j.blogDoneAt)return -99999;
+ let score=0;
+ const recent=blogRecentDoneJobs(12),car=String(j.car||'').toLowerCase(),work=String(j.jobType||'').toLowerCase();
+ score+=30-recent.filter(x=>String(x.car||'').toLowerCase()===car).length*10;
+ score-=recent.filter(x=>String(x.jobType||'').toLowerCase()===work).length*4;
+ score+=Math.min(Array.isArray(j.photos)?j.photos.length:0,8)*3;
+ if(j.car)score+=8;if(j.jobType)score+=5;if(j.memo)score+=3;
+ if(j.date){const age=(Date.now()-new Date(j.date+'T00:00:00').getTime())/86400000;if(Number.isFinite(age))score+=Math.min(20,Math.max(0,age/15))}
+ return score;
+}
+function getBlogRecommendation(){
+ const a=jobs.filter(j=>!j.blogDoneAt);
+ return a.length?[...a].sort((x,y)=>blogRecommendScore(y)-blogRecommendScore(x))[0]:null;
+}
+function renderBlogRecommendation(){
+ const box=$('#blogTodayRecommend');if(!box)return;
+ const j=getBlogRecommendation();
+ if(!j){blogRecommendedJobId='';box.textContent='블로그 미작성 작업이 없습니다.';return}
+ blogRecommendedJobId=j.id;
+ const photos=Array.isArray(j.photos)?j.photos.length:0;
+ box.innerHTML=`<b>${esc(j.car||'차량 미입력')} · ${esc(j.jobType||'작업')}</b><br>${esc(j.date||'')} · 사진 ${photos}장${isOldBlogJob(j)?' · 예전 미작성 작업':''}<br><span style="color:#64748b">최근 작성완료 글과 차종·작업이 덜 겹치는 사례를 우선 추천합니다.</span>`;
+}
+function blogPhone(){return settings.businessPhone||'010-3004-0452'}
+function updateBlogCtaPreview(){
+ const e=$('#blogCtaPreview');if(e)e.innerHTML=`📞 자동차키 작업 문의 : <b>${esc(blogPhone())}</b><br>📝 무료 비교견적 : <b>키스팟 무료 비교견적 이용</b>`;
+}
+function pastAwareSentence(text,j){
+ if(!isOldBlogJob(j))return String(text||'');
+ return String(text||'').replace(/오늘 작업/g,'이번 작업 사례').replace(/오늘은/g,'이번에 소개할 작업은').replace(/오늘 차량은/g,'이번에 소개할 차량은');
+}
+
 function buildBlogOffline(){
- const car=$('#blogCar').value.trim()||'차량',year=$('#blogYear').value.trim(),region=$('#blogRegion').value.trim()||'인천 송도',work=$('#blogWork').value.trim()||'스마트키 작업',reason=$('#blogReason').value.trim(),equip=$('#blogEquipment').value.trim()||'전용 장비',result=$('#blogResult').value.trim()||'정상 작동 확인',memo=$('#blogMemo').value.trim();
- const yr=year?year+'년식 ':'';
- const title=`${region} ${yr}${car} ${work}, 예비키 제작 작업`;
- const body=`안녕하세요. ${region}에서 자동차 스마트키 작업을 진행하고 있습니다.\n\n오늘 작업 차량은 ${yr}${car}입니다. 이번 작업은 ${work} 작업으로 진행했습니다.${reason?`\n\n고객님께서는 ${reason} 때문에 추가 작업을 요청하셨습니다.`:''}\n\n[차량 및 작업 정보]\n- 차량: ${yr}${car}\n- 지역: ${region}\n- 작업: ${work}\n- 장비: ${equip}\n\n차량과 기존 스마트키 상태를 먼저 확인한 뒤 ${equip}를 이용해 등록 작업을 진행했습니다. 스마트키 작업은 등록만 끝내는 것이 아니라 실제 차량에서 도어 잠금과 열림, 스마트키 인식, 시동 등 주요 기능을 하나씩 확인하는 과정이 중요합니다.\n\n작업이 끝난 뒤 기존키와 새로 제작한 키를 각각 테스트했습니다. ${result}.${memo?`\n\n작업 중 확인한 내용은 다음과 같습니다. ${memo}`:''}\n\n스마트키를 한 개만 가지고 계신 경우 평소에는 큰 불편이 없지만 분실하면 차량을 바로 사용할 수 없어 시간과 비용이 더 들어갈 수 있습니다. 그래서 사용 가능한 키가 하나 남아 있을 때 예비키를 미리 추가해 두는 것이 편합니다.\n\n이번 ${region} ${car} ${work} 작업도 모든 기능을 확인한 뒤 마무리했습니다. 예비 스마트키 추가나 차키 분실 작업이 필요할 때는 차종과 연식을 알려주시면 작업 가능 여부를 확인하기 편합니다.`;
- return {title,body,tags:blogTags(car,region,work)};
+ const j=jobs.find(x=>String(x.id)===String(blogSelectedJobId))||{},seed=blogSeed(j);
+ const car=$('#blogCar').value.trim()||'차량',year=$('#blogYear').value.trim(),region=$('#blogRegion').value.trim()||'인천',work=$('#blogWork').value.trim()||'스마트키 작업',reason=$('#blogReason').value.trim(),equip=$('#blogEquipment').value.trim()||'전용 장비',result=$('#blogResult').value.trim()||'정상 작동 확인',memo=$('#blogMemo').value.trim();
+ const target=Number($('#blogLength')?.value||700),yr=year?year+'년식 ':'',phone=settings.businessPhone||'010-3004-0452',markers=blogPhotoMarkers(Math.min(blogSourcePhotos.length,8));
+ const intro=chooseVariant(seed,[
+  `안녕하세요. ${region}에서 자동차키 작업을 진행했습니다. 오늘 차량은 ${yr}${car}이며 ${work} 요청으로 현장에 방문했습니다.`,
+  `이번 작업은 ${region}에서 진행한 ${yr}${car} ${work}입니다. 차량과 기존 키 상태를 확인한 뒤 필요한 작업을 순서대로 진행했습니다.`,
+  `${region} ${yr}${car} 자동차키 작업 사례입니다. 고객님께서 ${work}이 필요해 연락을 주셔서 차량 상태부터 확인했습니다.`,
+  `오늘 소개할 작업은 ${region}에서 진행한 ${yr}${car} ${work}입니다. 현장에서 차량 정보와 키 상태를 먼저 확인했습니다.`
+ ]);
+ const middle1=chooseVariant(seed+1,[
+  `${reason?reason+' 상황이어서 ':''}차량에 맞는 키 종류와 버튼 구성을 확인하고 ${equip}를 이용해 등록을 진행했습니다. 차종과 연식에 따라 등록 절차가 달라 정확한 차량 확인이 중요합니다.`,
+  `${reason?reason+' 때문에 ':''}먼저 차량 정보와 기존 키의 작동 상태를 살펴봤습니다. 준비한 키가 차량과 맞는지 확인한 다음 ${equip}로 등록 절차를 진행했습니다.`,
+  `작업 전 차량 연식과 키 사양을 확인했습니다. ${reason?reason+' 요청을 확인한 뒤 ':''}${equip}를 사용해 차량에 맞는 방식으로 키 등록을 진행했습니다.`
+ ]);
+ const middle2=chooseVariant(seed+2,[
+  `등록 후에는 도어 잠금·열림, 스마트키 인식과 시동을 차례로 테스트했습니다. 기존 키가 있는 경우 기존 키와 새 키가 모두 정상적으로 작동하는지도 함께 확인했습니다. ${result}.`,
+  `키 등록만 하고 끝내지 않고 실제 사용 기능을 점검했습니다. 문 열림과 잠금, 차량의 키 인식, 시동 상태를 확인했고 결과는 ${result}이었습니다.`,
+  `등록을 마친 뒤 새 키로 도어와 시동 기능을 반복 확인했습니다. 기존 키도 다시 테스트해 두 키 모두 사용하는 데 문제가 없는지 확인했습니다. ${result}.`
+ ]);
+ const finish=chooseVariant(seed+3,[
+  `최종 점검 후 고객님께 사용 방법을 안내하고 작업을 마무리했습니다. ${region}을 포함한 인천 지역에서 스마트키 추가나 분실키 제작이 필요하면 차량 연식과 차종을 알려주시면 확인 후 안내해 드립니다.`,
+  `모든 기능이 정상인 것을 확인하고 작업을 마쳤습니다. 예비키가 하나 있으면 키 분실 시 발생하는 불편과 비용을 줄이는 데 도움이 됩니다. ${region} 자동차키 작업 문의는 차종과 연식을 함께 알려주세요.`,
+  `작업 완료 후 실제 사용에 문제가 없는지 마지막으로 확인했습니다. ${region} 및 인천 지역 스마트키 추가·자동차키 제작은 차량 정보와 현재 키 보유 여부를 알려주시면 빠르게 확인할 수 있습니다.`
+ ]);
+ let paras=[intro,middle1,middle2+(memo?' '+memo:''),finish],out=[];
+ paras.forEach((x,i)=>{out.push(x);if(markers[i])out.push(markers[i])});
+ let body=fitBlogLength(out.join('\n\n'),target,{car,region,work});
+ body=ensureBlogMapAndContact(body,region,phone);
+ const baseTitle=seoTitleCandidates()[0]||`${region} ${yr}${car} ${work}`.trim();
+ let tags=blogTags(car,region,work);const area=region.split(/\s+/),district=area[1]||'',dong=area[2]||'',sw=seoWorkTerm(work);const extra=[district&&`#${district}${car}스마트키`,dong&&`#${dong}${car}스마트키`,dong&&`#${dong}${sw.replace(/\s+/g,'')}`,`#${car}${sw.replace(/\s+/g,'')}`].filter(Boolean).join(' ');tags=(tags+' '+extra).trim();return {title:uniqueBlogTitle(baseTitle,seed),body,tags};
 }
 $('#blogGenerate')?.addEventListener('click',async()=>{
  const btn=$('#blogGenerate');const old=btn.textContent;btn.disabled=true;btn.textContent='작성 중...';
@@ -786,10 +962,19 @@ $('#blogGenerate')?.addEventListener('click',async()=>{
    const data={mode:'naver_blog',car:$('#blogCar').value.trim(),year:$('#blogYear').value.trim(),region:$('#blogRegion').value.trim(),work:$('#blogWork').value.trim(),reason:$('#blogReason').value.trim(),equipment:$('#blogEquipment').value.trim(),result:$('#blogResult').value.trim(),memo:$('#blogMemo').value.trim()};
    let out=buildBlogOffline();
    if(settings.aiUrl){try{const r=await fetch(settings.aiUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});if(r.ok){const d=await r.json();out={title:d.title||out.title,body:d.body||d.text||out.body,tags:d.tags||out.tags}}}catch(e){console.warn('블로그 AI 연결 실패',e)}}
-   $('#blogTitleOut').value=out.title;$('#blogBodyOut').value=out.body;$('#blogTagsOut').value=out.tags;
+   const local=buildBlogOffline(),target=Number($('#blogLength')?.value||700),region=$('#blogRegion').value.trim()||'인천',phone=settings.businessPhone||'010-3004-0452';let body=String(out.body||'').trim();const oldTexts=blogCompletedTexts();const tooSimilar=oldTexts.some(x=>blogSimilarity(body,x.body)>.58);if(body.length<target*.72||tooSimilar||(blogSourcePhotos.length&&!body.includes('[사진 ')))body=local.body;body=fitBlogLength(body,target,{});body=ensureBlogMapAndContact(body,region,phone);body=pastAwareSentence(body,j);$('#blogTitleOut').value=uniqueBlogTitle(out.title||local.title,blogSeed(j));$('#blogBodyOut').value=body;$('#blogTagsOut').value=out.tags||local.tags;updateBlogCharCount();
  }finally{btn.disabled=false;btn.textContent=old}
 });
 async function copyBlogText(id){const t=$('#'+id).value;if(!t)return alert('복사할 내용이 없습니다.');const ok=await copyTextSafe(t);alert(ok?'복사했습니다.':'복사하지 못했습니다.')}
+$('#blogBodyOut')?.addEventListener('input',updateBlogCharCount);
+['blogDistrict','blogDong','blogCar','blogYear','blogWork'].forEach(id=>$('#'+id)?.addEventListener('change',renderSeoTitleSuggestions));
+['blogCar','blogYear','blogWork'].forEach(id=>$('#'+id)?.addEventListener('input',renderSeoTitleSuggestions));
+$('#blogStatusFilter')?.addEventListener('change',()=>{renderBlogJobs?.()});
+
+$('#blogRecommendBtn')?.addEventListener('click',renderBlogRecommendation);
+$('#blogPickRecommended')?.addEventListener('click',()=>{if(!blogRecommendedJobId)return alert('추천할 미작성 작업이 없습니다.');loadBlogJob(blogRecommendedJobId);});
+
+
 $('#blogCopyTitle')?.addEventListener('click',()=>copyBlogText('blogTitleOut'));$('#blogCopyBody')?.addEventListener('click',()=>copyBlogText('blogBodyOut'));$('#blogCopyTags')?.addEventListener('click',()=>copyBlogText('blogTagsOut'));
 $('#blogCopyAll')?.addEventListener('click',async()=>{const t=`${$('#blogTitleOut').value}\n\n${$('#blogBodyOut').value}\n\n${$('#blogTagsOut').value}`.trim();if(!t)return alert('먼저 블로그 글을 만들어 주세요.');const ok=await copyTextSafe(t);alert(ok?'제목·본문·태그를 모두 복사했습니다.':'복사하지 못했습니다.')});
 $('#blogOpenNaver')?.addEventListener('click',()=>open('https://blog.naver.com','_blank','noopener,noreferrer'));
@@ -798,7 +983,16 @@ async function watermarkBlogPhoto(src,phone,ratio){src=await photoGet(src);const
 $('#blogMakeWatermarks')?.addEventListener('click',async()=>{if(!blogSourcePhotos.length)return alert('먼저 사진이 있는 작업을 선택하세요.');const phone=$('#blogWatermarkPhone').value.trim()||'010-3004-0452',ratio=Number($('#blogWatermarkSize').value)||.062,btn=$('#blogMakeWatermarks'),old=btn.textContent;btn.disabled=true;blogWatermarkedPhotos=[];try{for(let i=0;i<blogSourcePhotos.length;i++){btn.textContent=`처리 중 ${i+1}/${blogSourcePhotos.length}`;try{blogWatermarkedPhotos.push(await watermarkBlogPhoto(blogSourcePhotos[i],phone,ratio))}catch(e){console.warn(e)}}renderBlogPhotos();if(!blogWatermarkedPhotos.length)alert('사진 처리에 실패했습니다. 클라우드 사진은 서버 설정에 따라 제한될 수 있습니다.');}finally{btn.disabled=false;btn.textContent=old}});
 $('#blogDownloadPhotos')?.addEventListener('click',()=>{if(!blogWatermarkedPhotos.length)return alert('먼저 사진에 번호 넣기를 실행하세요.');blogWatermarkedPhotos.forEach((src,i)=>{setTimeout(()=>{const a=document.createElement('a');a.href=src;a.download=`블로그_전화번호_${String(i+1).padStart(2,'0')}.jpg`;document.body.appendChild(a);a.click();a.remove()},i*250)})});
 
-$('#blogMarkDone')?.addEventListener('click',()=>{if(!blogSelectedJobId)return alert('먼저 작업내역을 선택하세요.');const j=jobs.find(x=>x.id===blogSelectedJobId);if(!j)return;j.blogDone=true;j.blogDoneAt=new Date().toISOString();save(false);renderBlogJobs();$('#blogDoneStatus').textContent='✓ 블로그 작성완료로 저장했습니다.';});
+
+$('#blogMarkExistingDone')?.addEventListener('click',()=>{
+ if(!blogSelectedJobId)return alert('먼저 작업내역을 선택하세요.');
+ const j=jobs.find(x=>String(x.id)===String(blogSelectedJobId));if(!j)return;
+ if(!confirm('이 작업은 예전에 네이버 블로그에 이미 올린 작업으로 표시할까요?'))return;
+ j.blogDone=true;j.blogDoneAt=j.blogDoneAt||new Date().toISOString();j.blogExisting=true;
+ save(false);renderBlogJobs();updateBlogStatusCount();renderBlogRecommendation();
+ $('#blogDoneStatus').textContent='✓ 예전에 이미 올린 블로그 작업으로 표시했습니다.';
+});
+$('#blogMarkDone')?.addEventListener('click',()=>{if(!blogSelectedJobId){const active=$('#blogJobList .blog-job-btn.active');if(active)active.click()}if(!blogSelectedJobId)return alert('먼저 작업내역을 선택하세요.');const j=jobs.find(x=>String(x.id)===String(blogSelectedJobId));if(!j)return;j.blogDone=true;j.blogDoneAt=new Date().toISOString();j.blogTitle=$('#blogTitleOut')?.value.trim()||'';j.blogBody=$('#blogBodyOut')?.value.trim()||'';j.blogExisting=false;save(false);renderBlogJobs();updateBlogStatusCount();renderBlogRecommendation();$('#blogDoneStatus').textContent='✓ 블로그 작성완료로 저장했습니다.';});
 
 $('#refreshPhotoStorage')?.addEventListener('click',updatePhotoStorageStatus);
 
@@ -881,7 +1075,7 @@ async function restorePhoneTransferPackage(raw){
  return {jobs:jobs.length,photos,stocks:stocks.length};
 }
 
-const APP_VERSION='14.5';
+const APP_VERSION='14.9';
 let remoteVersion='';
 let autoUpdating=false;
 
@@ -973,7 +1167,7 @@ document.addEventListener('visibilitychange',()=>{
 setInterval(()=>checkForAppUpdate(true),30*60*1000);
 
 let deferredPrompt;addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;$('#installBtn').style.display='block'});$('#installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$('#installBtn').style.display='none'};if('serviceWorker'in navigator)addEventListener('load',async()=>{try{const r=await navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'});await r.update().catch(()=>{})}catch(e){console.warn('Service worker 등록 실패',e)}});
-let touchX=0;$('#photoModal').addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX},{passive:true});$('#photoModal').addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-touchX;if(Math.abs(d)>45){d>0?photoPrev():photoNext()}},{passive:true});function renderAll(){renderMetrics();renderJobs();renderStocks();drawChart();renderStats();renderCategoryStats();renderCalendar();renderDailyStats();renderKeyDb();renderBlogJobs();renderBlogPhotos()}loadSettings();applyBranding();if($('#blogRegion'))$('#blogRegion').value=settings.address||'인천 송도';toggleOtherWork();$('#vatType').value=['해당없음','포함','별도'].includes(settings.lastVatType)?settings.lastVatType:'해당없음';renderVatPreview();renderPhotoPreview();renderAll();
+let touchX=0;$('#photoModal').addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX},{passive:true});$('#photoModal').addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-touchX;if(Math.abs(d)>45){d>0?photoPrev():photoNext()}},{passive:true});function renderAll(){renderMetrics();renderJobs();renderStocks();drawChart();renderStats();renderCategoryStats();renderCalendar();renderDailyStats();renderKeyDb();renderBlogJobs();renderBlogPhotos()}loadSettings();applyBranding();if($('#blogRegion'))setBlogAreaFromText(settings.address||'');toggleOtherWork();$('#vatType').value=['해당없음','포함','별도'].includes(settings.lastVatType)?settings.lastVatType:'해당없음';renderVatPreview();renderPhotoPreview();renderAll();
 (async()=>{try{await migrateLegacyPhotos();await warmAllPhotos();renderAll();updatePhotoStorageStatus()}catch(e){console.warn('사진 저장소 초기화 실패',e)}})();
 setInterval(()=>{if(!$('#editId').value&&!dateManuallyChanged&&$('#date').value!==localISO())$('#date').value=localISO();if(!$('#editId').value&&$('#autoTime')?.checked)$('#time').value=currentTime();renderMetrics()},60000);checkFirstSetup();if(settings.setupDone&&sessionStorage.getItem('dkm_unlocked')!=='1')checkLock();
 </script>
