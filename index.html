@@ -133,7 +133,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V17.0</span> Pro <small style="font-size:11px">v17.0</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V17.1</span> Pro <small style="font-size:11px">v17.1</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -884,14 +884,22 @@ function rankRangeJobs(){
  return jobs;
 }
 function renderCustomerRanks(){
- const box=$('#customerRankList');if(!box)return;
- const mode=$('#customerRankMode')?.value||'profit', map=new Map();
+ const box=document.getElementById('customerRankList'); if(!box)return;
+ const sel=document.getElementById('customerRankMode');
+ const mode=sel ? sel.options[sel.selectedIndex].value : 'profit';
+ const map=new Map();
  rankRangeJobs().forEach(j=>{
-  const name=String(j.customer||'').trim()||String(j.phone||'').trim()||'고객 미입력';
-  if(!map.has(name))map.set(name,{name,profit:0,cars:0,sales:0,count:0,lastId:j.id});
-  const o=map.get(name);o.profit+=Number(j.profit)||0;o.cars+=Number(j.carCount)||1;o.sales+=Number(j.sale)||0;o.count++;o.lastId=j.id;
+   const name=String(j.customer||'').trim()||String(j.phone||'').trim()||'고객 미입력';
+   if(!map.has(name)) map.set(name,{name,profit:0,cars:0,sales:0,count:0});
+   const o=map.get(name);
+   o.profit += Number(j.profit)||0;
+   o.cars += Math.max(1,Number(j.carCount)||1);
+   o.sales += Number(j.sale)||0;
+   o.count += 1;
  });
- const a=[...map.values()].sort((x,y)=>mode==='cars'?(y.cars-x.cars||y.profit-x.profit):(y.profit-x.profit||y.cars-x.cars));
+ const a=[...map.values()];
+ if(mode==='cars') a.sort((x,y)=>(y.cars-x.cars)||(y.profit-x.profit)||(y.sales-x.sales));
+ else a.sort((x,y)=>(y.profit-x.profit)||(y.cars-x.cars)||(y.sales-x.sales));
  box.innerHTML=a.length?a.map((o,i)=>`<div class="item" onclick="showCustomerHistoryByName('${encodeURIComponent(o.name)}')">
  <div class="item-head"><div><div class="item-title">${i<3?['🥇','🥈','🥉'][i]:(i+1)+'위'} ${esc(o.name)}</div>
  <div class="item-sub">${o.count}건 · ${o.cars}대 · 매출 ${money(o.sales)}</div></div>
@@ -1023,7 +1031,7 @@ async function notify(text){if(!settings.telegramEnabled||!settings.telegramToke
 $('#testTelegram').onclick=async()=>{try{saveSettingsFromForm();if(!settings.telegramToken||!settings.telegramChat)throw new Error('토큰과 Chat ID를 입력하세요.');const res=await fetch(`https://api.telegram.org/bot${encodeURIComponent(settings.telegramToken)}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:settings.telegramChat,text:`🔑 ${settings.business} 테스트 알림`})});if(!res.ok)throw Error('전송 실패');status($('#settingsStatus'),'텔레그램 테스트 전송 성공')}catch(e){status($('#settingsStatus'),e.message,true)}};
 function saveSettingsFromForm(){settings.goal=Math.max(1,+$('#settingGoal').value||100);settings.business=$('#settingBusiness').value.trim()||'자동차키';settings.setupDone=true;settings.owner=$('#settingOwner').value.trim();settings.businessPhone=$('#settingBusinessPhone').value.trim();settings.address=$('#settingAddress').value.trim();settings.vinUrl=$('#settingVinUrl').value.trim();settings.scriptUrl=$('#settingScriptUrl').value.trim();settings.telegramToken=$('#settingTelegramToken').value.trim();settings.telegramChat=$('#settingTelegramChat').value.trim();settings.telegramEnabled=$('#settingTelegramEnabled').checked;settings.automationUrl=$('#settingAutomationUrl').value.trim();settings.autoBackup=$('#settingAutoBackup').checked;settings.cloudPhotos=$('#settingCloudPhotos').checked;settings.autoUpdate=$('#settingAutoUpdate').checked;settings.aiUrl=$('#settingAiUrl').value.trim();settings.quoteUrl=$('#settingQuoteUrl')?.value.trim()||'';settings.quotePageUrl=$('#settingQuotePageUrl')?.value.trim()||'';const pin=$('#settingPin').value.trim(),removePin=$('#settingRemovePin').checked;if(removePin)settings.pin='';else if(pin){if(!/^\d{4,6}$/.test(pin))throw new Error('PIN은 숫자 4~6자리로 입력하세요.');settings.pin=pin}settings.autoLock=$('#settingAutoLock').value;$('#settingPin').value='';$('#settingRemovePin').checked=false;save()}
 function loadSettings(){$('#settingGoal').value=settings.goal||100;$('#settingBusiness').value=settings.business||'자동차키';$('#settingOwner').value=settings.owner||'';$('#settingBusinessPhone').value=settings.businessPhone||'';$('#settingAddress').value=settings.address||'';$('#businessLogoPreview').src=settings.businessLogo||'icon-192.png';$('#settingVinUrl').value=settings.vinUrl||'';$('#settingScriptUrl').value=settings.scriptUrl||'';$('#settingTelegramToken').value=settings.telegramToken||'';$('#settingTelegramChat').value=settings.telegramChat||'';$('#settingTelegramEnabled').checked=!!settings.telegramEnabled;$('#settingAutomationUrl').value=settings.automationUrl||'';$('#settingAutoBackup').checked=!!settings.autoBackup;$('#settingCloudPhotos').checked=!!settings.cloudPhotos;$('#settingAutoUpdate').checked=settings.autoUpdate!==false;$('#settingAiUrl').value=settings.aiUrl||'';if($('#settingQuoteUrl'))$('#settingQuoteUrl').value=settings.quoteUrl||'';if($('#settingQuotePageUrl'))$('#settingQuotePageUrl').value=settings.quotePageUrl||'';$('#settingPin').value='';$('#settingRemovePin').checked=false;$('#settingAutoLock').value=settings.autoLock||'on'}
-function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v17.0';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
+function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v17.1';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
 $('#brandEditButton').onclick=()=>{openTab('settings');setTimeout(()=>$('#settingBusiness')?.focus(),250)};
 $('#settingLogoFile').onchange=e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),max=256,q=Math.min(1,max/img.width,max/img.height);c.width=Math.max(1,Math.round(img.width*q));c.height=Math.max(1,Math.round(img.height*q));c.getContext('2d').drawImage(img,0,0,c.width,c.height);settings.businessLogo=c.toDataURL('image/jpeg',.85);$('#businessLogoPreview').src=settings.businessLogo;save(false);applyBranding()};img.src=r.result};r.readAsDataURL(f)};$('#removeBusinessLogo').onclick=()=>{settings.businessLogo='';$('#businessLogoPreview').src='icon-192.png';save(false);applyBranding()};
 
@@ -1723,8 +1731,12 @@ let touchX=0;$('#photoModal').addEventListener('touchstart',e=>{touchX=e.changed
 function renderAll(){renderMetrics();renderJobs();renderStocks();drawChart();renderStats();renderCategoryStats();renderCalendar();renderDailyStats();renderKeyDb();renderBlogJobs();renderBlogPhotos();setTimeout(()=>hydratePhotoImages(document),0)}loadSettings();applyBranding();syncVisibleAppVersion();KOREA_AREAS=makeRegionFallback();initBlogAreas();loadKoreaRegions().then(()=>{if($('#blogRegion'))setBlogAreaFromText(settings.address||'')});updateBlogCharCount();updateBlogStatusCount();renderSeoTitleSuggestions();renderBlogRecommendation();updateBlogCtaPreview();toggleOtherWork();$('#vatType').value=['해당없음','포함','별도'].includes(settings.lastVatType)?settings.lastVatType:'해당없음';renderVatPreview();renderPhotoPreview();forceInitialHomeRender();setTimeout(()=>{try{renderDuplicateScan()}catch{}},300);
 (async()=>{try{await migrateLegacyPhotos();await warmAllPhotos();
 $('#smartHistorySearch')?.addEventListener('input',renderSmartHistory);
-$('#customerRankPeriod')?.addEventListener('change',renderCustomerRanks);
-$('#customerRankMode')?.addEventListener('change',renderCustomerRanks);
+
+document.addEventListener('change',function(e){
+ if(e.target && (e.target.id==='customerRankMode'||e.target.id==='customerRankPeriod')){
+   renderCustomerRanks();
+ }
+});
 renderAll();updatePhotoStorageStatus()}catch(e){console.warn('사진 저장소 초기화 실패',e)}})();
 setInterval(()=>{if(!$('#editId').value&&!dateManuallyChanged&&$('#date').value!==localISO())$('#date').value=localISO();if(!$('#editId').value&&$('#autoTime')?.checked)$('#time').value=currentTime();renderMetrics()},60000);checkFirstSetup();if(settings.setupDone&&sessionStorage.getItem('dkm_unlocked')!=='1')checkLock();
 </script>
