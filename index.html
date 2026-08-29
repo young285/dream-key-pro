@@ -133,7 +133,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V17.1</span> Pro <small style="font-size:11px">v17.1</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V17.2</span> Pro <small style="font-size:11px">v17.2</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -286,7 +286,8 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 <h2>📱 휴대폰 교체</h2>
 <div class="note">작업내역·작업사진·미수·입금기록·재고·품번DB·설정·블로그 데이터를 한 파일로 옮깁니다.</div>
 <div class="actions" style="margin-top:10px">
-<button class="action primary" type="button" id="phoneFullBackup">휴대폰 교체용 전체백업</button>
+<button class="action primary" type="button" id="phoneFullBackup">휴대폰 교체용 전체백업 만들기</button>
+<button class="action ok" type="button" id="phoneFullBackupSave" style="display:none">① 백업파일 저장하기</button>
 <button class="action ghost" type="button" id="phoneFullRestore">새 휴대폰 전체복원</button>
 <input id="phoneFullRestoreFile" type="file" accept=".json,application/json" style="display:none">
 </div>
@@ -1031,7 +1032,7 @@ async function notify(text){if(!settings.telegramEnabled||!settings.telegramToke
 $('#testTelegram').onclick=async()=>{try{saveSettingsFromForm();if(!settings.telegramToken||!settings.telegramChat)throw new Error('토큰과 Chat ID를 입력하세요.');const res=await fetch(`https://api.telegram.org/bot${encodeURIComponent(settings.telegramToken)}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:settings.telegramChat,text:`🔑 ${settings.business} 테스트 알림`})});if(!res.ok)throw Error('전송 실패');status($('#settingsStatus'),'텔레그램 테스트 전송 성공')}catch(e){status($('#settingsStatus'),e.message,true)}};
 function saveSettingsFromForm(){settings.goal=Math.max(1,+$('#settingGoal').value||100);settings.business=$('#settingBusiness').value.trim()||'자동차키';settings.setupDone=true;settings.owner=$('#settingOwner').value.trim();settings.businessPhone=$('#settingBusinessPhone').value.trim();settings.address=$('#settingAddress').value.trim();settings.vinUrl=$('#settingVinUrl').value.trim();settings.scriptUrl=$('#settingScriptUrl').value.trim();settings.telegramToken=$('#settingTelegramToken').value.trim();settings.telegramChat=$('#settingTelegramChat').value.trim();settings.telegramEnabled=$('#settingTelegramEnabled').checked;settings.automationUrl=$('#settingAutomationUrl').value.trim();settings.autoBackup=$('#settingAutoBackup').checked;settings.cloudPhotos=$('#settingCloudPhotos').checked;settings.autoUpdate=$('#settingAutoUpdate').checked;settings.aiUrl=$('#settingAiUrl').value.trim();settings.quoteUrl=$('#settingQuoteUrl')?.value.trim()||'';settings.quotePageUrl=$('#settingQuotePageUrl')?.value.trim()||'';const pin=$('#settingPin').value.trim(),removePin=$('#settingRemovePin').checked;if(removePin)settings.pin='';else if(pin){if(!/^\d{4,6}$/.test(pin))throw new Error('PIN은 숫자 4~6자리로 입력하세요.');settings.pin=pin}settings.autoLock=$('#settingAutoLock').value;$('#settingPin').value='';$('#settingRemovePin').checked=false;save()}
 function loadSettings(){$('#settingGoal').value=settings.goal||100;$('#settingBusiness').value=settings.business||'자동차키';$('#settingOwner').value=settings.owner||'';$('#settingBusinessPhone').value=settings.businessPhone||'';$('#settingAddress').value=settings.address||'';$('#businessLogoPreview').src=settings.businessLogo||'icon-192.png';$('#settingVinUrl').value=settings.vinUrl||'';$('#settingScriptUrl').value=settings.scriptUrl||'';$('#settingTelegramToken').value=settings.telegramToken||'';$('#settingTelegramChat').value=settings.telegramChat||'';$('#settingTelegramEnabled').checked=!!settings.telegramEnabled;$('#settingAutomationUrl').value=settings.automationUrl||'';$('#settingAutoBackup').checked=!!settings.autoBackup;$('#settingCloudPhotos').checked=!!settings.cloudPhotos;$('#settingAutoUpdate').checked=settings.autoUpdate!==false;$('#settingAiUrl').value=settings.aiUrl||'';if($('#settingQuoteUrl'))$('#settingQuoteUrl').value=settings.quoteUrl||'';if($('#settingQuotePageUrl'))$('#settingQuotePageUrl').value=settings.quotePageUrl||'';$('#settingPin').value='';$('#settingRemovePin').checked=false;$('#settingAutoLock').value=settings.autoLock||'on'}
-function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v17.1';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
+function applyBranding(){const name=settings.business||'자동차키';$('#brandBusinessName').textContent=name;$('#lockBusinessName').textContent=name+' Pro';document.title=name+' Pro v17.2';if(settings.businessLogo){$('#brandLogo').innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`}else{$('#brandLogo').textContent='🔑'}const extra=[settings.owner,settings.businessPhone,settings.address].filter(Boolean).join(' · ');$('#brandSubline').textContent=extra||'매출 · 일별마진 · 통계 · 미수 · 재고 · 품번DB'}
 $('#brandEditButton').onclick=()=>{openTab('settings');setTimeout(()=>$('#settingBusiness')?.focus(),250)};
 $('#settingLogoFile').onchange=e=>{const f=e.target.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas'),max=256,q=Math.min(1,max/img.width,max/img.height);c.width=Math.max(1,Math.round(img.width*q));c.height=Math.max(1,Math.round(img.height*q));c.getContext('2d').drawImage(img,0,0,c.width,c.height);settings.businessLogo=c.toDataURL('image/jpeg',.85);$('#businessLogoPreview').src=settings.businessLogo;save(false);applyBranding()};img.src=r.result};r.readAsDataURL(f)};$('#removeBusinessLogo').onclick=()=>{settings.businessLogo='';$('#businessLogoPreview').src='icon-192.png';save(false);applyBranding()};
 
@@ -1556,38 +1557,71 @@ $('#blogMarkDone')?.addEventListener('click',()=>{if(!blogSelectedJobId){const a
 
 $('#refreshPhotoStorage')?.addEventListener('click',updatePhotoStorageStatus);
 
+let preparedPhoneBackupBlob=null;
+let preparedPhoneBackupName='';
+
 $('#phoneFullBackup')?.addEventListener('click',async()=>{
- const btn=$('#phoneFullBackup'),old=btn.textContent;
+ const btn=$('#phoneFullBackup'),saveBtn=$('#phoneFullBackupSave'),old=btn.textContent;
  try{
-  btn.disabled=true;btn.textContent='전체백업 만드는 중...';
-  const pack=await buildPhoneTransferPackage();
+  btn.disabled=true; saveBtn.style.display='none'; preparedPhoneBackupBlob=null;
+  btn.textContent='전체백업 만드는 중...';
+  $('#phoneBackupInfo').textContent='작업내역과 사진을 한 파일로 모으는 중입니다. 사진이 많으면 시간이 걸릴 수 있습니다.';
+  const pack=await buildPhoneTransferPackage((done,total)=>{
+    $('#phoneBackupInfo').textContent=`전체백업 만드는 중 · 작업 ${done}/${total}`;
+  });
   const d=new Date(),stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-  download(new Blob([JSON.stringify(pack,null,2)],{type:'application/json'}),`${settings.business||'Dream_AutoKey'}_휴대폰교체_전체백업_${stamp}.json`);
-  $('#phoneBackupInfo').textContent=`전체백업 완료 · 작업 ${pack.jobs.length}건 · 사진 ${pack.jobs.reduce((n,j)=>n+(j.photos?.length||0),0)}장`;
- }catch(e){alert('전체백업을 만들지 못했습니다.\n'+(e?.message||''))}
- finally{btn.disabled=false;btn.textContent=old}
+  preparedPhoneBackupBlob=new Blob([JSON.stringify(pack)],{type:'application/json'});
+  preparedPhoneBackupName=`${settings.business||'Dream_AutoKey'}_휴대폰교체_전체백업_${stamp}.json`;
+  saveBtn.style.display='';
+  $('#phoneBackupInfo').innerHTML=`백업 준비 완료 · 작업 <b>${pack.jobs.length}건</b> · 사진 <b>${pack.jobs.reduce((n,j)=>n+(j.photos?.length||0),0)}장</b><br><b>아래 '① 백업파일 저장하기'를 한 번 더 눌러주세요.</b>`;
+ }catch(e){
+  console.error(e);
+  alert('전체백업을 만들지 못했습니다.\n'+(e?.message||''));
+  $('#phoneBackupInfo').textContent='전체백업 실패 · 저장공간 또는 사진 데이터를 확인해 주세요.';
+ }finally{btn.disabled=false;btn.textContent=old}
 });
-$('#phoneFullRestore')?.addEventListener('click',()=>$('#phoneFullRestoreFile').click());
-$('#phoneFullRestoreFile')?.addEventListener('change',e=>{
- const f=e.target.files?.[0];if(!f)return;
- if(!confirm('새 휴대폰에 전체복원할까요?\n현재 앱 데이터는 복원 전에 안전백업합니다.')){e.target.value='';return}
- const r=new FileReader();
- r.onload=async()=>{
+$('#phoneFullBackupSave')?.addEventListener('click',()=>{
+ if(!preparedPhoneBackupBlob)return alert('먼저 전체백업 만들기를 눌러주세요.');
+ // 중요: 실제 다운로드는 이 두 번째 직접 터치 안에서 즉시 실행하여 Android/PWA 다운로드 차단을 피함
+ download(preparedPhoneBackupBlob,preparedPhoneBackupName);
+ $('#phoneBackupInfo').innerHTML=`백업파일 저장을 요청했습니다.<br><b>내 파일 → 다운로드</b>에서 ${preparedPhoneBackupName} 파일을 확인하세요.`;
+});
+
+$('#phoneFullRestore')?.addEventListener('click',()=>{
+ // 매번 새 파일 입력을 만들어 Android/Samsung PWA에서도 파일 선택기가 확실히 열리게 함
+ const input=document.createElement('input');
+ input.type='file'; input.accept='.json,application/json'; input.style.display='none';
+ document.body.appendChild(input);
+ input.onchange=async()=>{
+  const f=input.files?.[0];
+  if(!f){input.remove();return}
+  if(!confirm(`선택한 백업파일:\n${f.name}\n\n새 휴대폰에 전체복원할까요?\n현재 앱 데이터는 복원 전에 안전백업합니다.`)){input.remove();return}
   try{
-   const result=await restorePhoneTransferPackage(JSON.parse(r.result));
+   $('#phoneBackupInfo').textContent='전체복원 중... 앱을 닫지 마세요.';
+   const text=await f.text();
+   const raw=JSON.parse(text);
+   const result=await restorePhoneTransferPackage(raw,(done,total)=>{
+     $('#phoneBackupInfo').textContent=`전체복원 중 · 작업 ${done}/${total}`;
+   });
    alert(`전체복원 완료\n작업 ${result.jobs}건\n사진 ${result.photos}장\n재고 ${result.stocks}종`);
-   $('#phoneBackupInfo').textContent=`전체복원 완료 · 작업 ${result.jobs}건 · 사진 ${result.photos}장`;
-  }catch(err){alert('전체복원 실패\n'+(err?.message||'파일을 확인해 주세요.'))}
-  finally{e.target.value=''}
+   $('#phoneBackupInfo').innerHTML=`전체복원 완료 · 작업 <b>${result.jobs}건</b> · 사진 <b>${result.photos}장</b> · 재고 <b>${result.stocks}종</b>`;
+  }catch(err){
+   console.error(err);
+   alert('전체복원 실패\n'+(err?.message||'파일을 확인해 주세요.'));
+   $('#phoneBackupInfo').textContent='전체복원 실패 · 올바른 휴대폰 교체용 JSON 백업파일인지 확인해 주세요.';
+  }finally{input.remove()}
  };
- r.readAsText(f);
+ input.click();
 });
 
 
-
-async function buildPhoneTransferPackage(){
+async function buildPhoneTransferPackage(onProgress){
  const exportJobs=[];
- for(const j of jobs) exportJobs.push({...j,photos:await photosForBackup(j.photos||[])});
+ for(let i=0;i<jobs.length;i++){
+   const j=jobs[i];
+   exportJobs.push({...j,photos:await photosForBackup(j.photos||[])});
+   if(onProgress)onProgress(i+1,jobs.length);
+ }
  const extra={};
  // Dream AutoKey Pro 관련 추가 localStorage 데이터도 함께 보존
  for(let i=0;i<localStorage.length;i++){
@@ -1611,13 +1645,16 @@ async function savePrePhoneRestoreSafetyBackup(){
    sessionStorage.setItem('dkm_pre_phone_restore',JSON.stringify(pack));
  }catch(e){console.warn('복원 전 안전백업 실패',e)}
 }
-async function restorePhoneTransferPackage(raw){
+async function restorePhoneTransferPackage(raw,onProgress){
  if(!raw||typeof raw!=='object')throw new Error('백업 파일 형식이 아닙니다.');
  const incomingJobs=Array.isArray(raw.jobs)?raw.jobs:(Array.isArray(raw.data?.jobs)?raw.data.jobs:null);
  if(!incomingJobs)throw new Error('작업내역을 찾지 못했습니다.');
  await savePrePhoneRestoreSafetyBackup();
  jobs=normalizeJobs(incomingJobs);
- for(const j of jobs)j.photos=await persistPendingPhotos(j.photos||[]);
+ for(let i=0;i<jobs.length;i++){
+   jobs[i].photos=await persistPendingPhotos(jobs[i].photos||[]);
+   if(onProgress)onProgress(i+1,jobs.length);
+ }
  if(Array.isArray(raw.stocks))stocks=normalizeStocks(raw.stocks);
  if(Array.isArray(raw.keyDb))keyDb=raw.keyDb;
  if(raw.settings&&typeof raw.settings==='object')settings={...settings,...raw.settings};
@@ -1635,7 +1672,7 @@ async function restorePhoneTransferPackage(raw){
  return {jobs:jobs.length,photos,stocks:stocks.length};
 }
 
-const APP_VERSION='15.3'
+const APP_VERSION='17.2'
 let remoteVersion='';
 let autoUpdating=false;
 
