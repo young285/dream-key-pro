@@ -133,7 +133,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V17.6</span> Pro <small style="font-size:11px">v17.6</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V17.7</span> Pro <small style="font-size:11px">v17.7</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -143,7 +143,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </div>
 <h2>빠른 등록</h2><div class="quick"><button data-quick="스마트키 추가"><span>➕</span>추가키</button><button data-quick="스마트키 올키"><span>🔑</span>올키</button><button data-quick="개문"><span>🚪</span>개문</button><button data-quick="리모콘 추가"><span>📡</span>리모컨</button></div>
 <h2>이번 달 목표</h2><div class="card goal"><div><b id="goalText">0 / 100대</b><div class="note">월 작업 차량 목표</div></div><div class="bar"><i id="goalBar"></i></div></div>
-<h2>최근 6개월 매출</h2><canvas id="chart" width="1000" height="280"></canvas>
+<h2>1년 매출 (1월~12월)</h2><canvas id="chart" width="1000" height="280"></canvas>
 <div class="actions"><button class="action secondary" id="exportCsv">CSV 내보내기</button><button class="action secondary" id="backupBtn">백업 저장</button><button class="action secondary" id="restoreBtn">백업 불러오기</button><button class="action ok" id="cloudPush">구글시트 전송</button><button class="action ghost" id="cloudPull">구글시트 불러오기</button><input type="file" id="restoreFile" accept=".json" hidden></div>
 <p class="note">작업정보는 휴대폰에 저장되고 사진은 대용량 사진저장소(IndexedDB)에 분리 저장됩니다. 휴대폰 교체 전에는 사진 포함 백업을 저장하세요.</p><div id="homeStatus" class="status"></div>
 </section>
@@ -764,33 +764,18 @@ function customerGroupHtml(a){
 function groupedJobHtml(list){return groupJobsByCustomer(list).map(customerGroupHtml).join('')}
 
 
-function groupedUnpaidHtml(list){
- const m=new Map();
- list.forEach(j=>{
-   const customer=String(j.customer||'').trim()||String(j.phone||'').trim()||'거래처 미입력';
-   const phone=String(j.phone||'').replace(/\D/g,'');
-   const key=String(j.date||'')+'|'+(customer.toLowerCase()||phone);
-   if(!m.has(key))m.set(key,{customer,date:j.date||'',items:[]});
-   m.get(key).items.push(j);
- });
- return [...m.values()].sort((a,b)=>String(b.date).localeCompare(String(a.date))).map((g,idx)=>{
-   const cars=g.items.reduce((n,j)=>n+(Number(j.carCount)||1),0);
-   const total=g.items.reduce((n,j)=>n+(Number(j.sale)||0),0);
-   const rec=g.items.reduce((n,j)=>n+paidAmountOf(j),0);
-   const bal=g.items.reduce((n,j)=>n+unpaidBalance(j),0);
-   const id='ug_'+idx+'_'+String(g.date).replace(/\D/g,'');
-   return `<div class="card" style="margin-bottom:12px">
-    <div onclick="const x=document.getElementById('${id}');x.style.display=x.style.display==='none'?'block':'none'" style="cursor:pointer">
-      <div class="item-head"><div><div class="item-title">🏢 ${esc(g.customer)}</div>
-      <div class="item-sub">${esc(g.date)} · <b>${cars}대</b> · ${g.items.length}건</div></div>
-      <div class="money">미수 ${money(bal)}</div></div>
-      <div class="item-sub" style="margin-top:8px">총 작업금액 ${money(total)} · 입금 ${money(rec)} · <b>총 미수 ${money(bal)}</b></div>
-      <div class="note" style="margin-top:6px">눌러서 차량별 내역 보기</div>
-    </div>
-    <div id="${id}" style="display:none;margin-top:10px">${g.items.map(unpaidJobHtml).join('')}</div>
-   </div>`;
- }).join('');
+
+function customerUnpaidGroupHtml(a){
+ const f=a[0],last=a[a.length-1],total=a.reduce((n,j)=>n+Number(j.sale||0),0),
+ rec=a.reduce((n,j)=>n+paidAmountOf(j),0),un=a.reduce((n,j)=>n+unpaidBalance(j),0),
+ cars=a.reduce((n,j)=>n+(Number(j.carCount)||1),0);
+ return `<div class="item"><div class="item-head"><div><div class="item-title">🏢 ${esc(f.customer||f.phone||'거래처 미입력')}</div>
+ <div class="item-sub">${esc(f.date)} · ${a.length}건 · 차량 ${cars}대</div></div><div class="money" style="color:#dc2626">미수 ${money(un)}</div></div>
+ <div><span class="tag">총매출 ${money(total)}</span><span class="tag">입금 ${money(rec)}</span><span class="tag unpaid">미수 ${money(un)}</span></div>
+ ${a.map((j,i)=>`<div class="item-sub" style="padding:8px 0;border-top:1px solid #eef2f7"><b>차량 ${i+1}</b> · ${esc(j.time||'')} · ${esc(j.car||'차량')} · ${esc(j.jobType||'')} <span style="float:right;color:#dc2626;font-weight:800">${money(unpaidBalance(j))}</span></div>`).join('')}
+ <div class="actions"><button class="action ghost" onclick="openCustomerSheet('${last.id}')">📒 차량별 미수·입금 보기</button></div></div>`;
 }
+
 function unpaidJobHtml(j){
  const vatLabel=j.vatType==='포함'?'부가세 포함':j.vatType==='별도'?'부가세 별도':j.vatType==='해당없음'?'부가세 없음':'부가세 미지정';
  const bal=unpaidBalance(j),rec=paidAmountOf(j);
@@ -940,7 +925,7 @@ window.showCustomerHistoryByName=encoded=>{
  const el=$('#smartHistorySearch');if(el){el.value=name;renderSmartHistory();el.scrollIntoView({behavior:'smooth',block:'center'})}
 };
 
-function renderJobs(){const q=$('#search').value.trim().toLowerCase(),mo=$('#filterMonth').value,tp=$('#filterType').value,py=$('#filterPayment').value,fr=$('#filterFrom').value,to=$('#filterTo').value,ph=$('#filterPhoto').value,arr=jobs.filter(j=>(!q||JSON.stringify(j).toLowerCase().includes(q))&&(!mo||j.date?.startsWith(mo))&&(!fr||j.date>=fr)&&(!to||j.date<=to)&&(!tp||j.jobType===tp)&&(!py||j.payment===py)&&(!ph||(ph==='yes'?(j.photos?.length>0):!(j.photos?.length))));$('#jobList').innerHTML=arr.length?groupedJobHtml(arr):'<div class="empty">조건에 맞는 작업이 없습니다.</div>';const unpaid=jobs.filter(j=>unpaidBalance(j)>0);$('#unpaidList').innerHTML=unpaid.length?groupedUnpaidHtml(unpaid):'<div class="empty">미수금이 없습니다.</div>';$('#unpaidSummary').innerHTML=`<b>총 ${unpaid.reduce((n,j)=>n+(Number(j.carCount)||1),0)}대 · ${unpaid.length}건 · ${money(unpaid.reduce((a,j)=>a+unpaidBalance(j),0))}</b><div class="note">입금 완료 전 확인창이 뜹니다. 잘못 처리한 경우 내역의 입금취소 버튼으로 복구할 수 있습니다.</div>`}
+function renderJobs(){const q=$('#search').value.trim().toLowerCase(),mo=$('#filterMonth').value,tp=$('#filterType').value,py=$('#filterPayment').value,fr=$('#filterFrom').value,to=$('#filterTo').value,ph=$('#filterPhoto').value,arr=jobs.filter(j=>(!q||JSON.stringify(j).toLowerCase().includes(q))&&(!mo||j.date?.startsWith(mo))&&(!fr||j.date>=fr)&&(!to||j.date<=to)&&(!tp||j.jobType===tp)&&(!py||j.payment===py)&&(!ph||(ph==='yes'?(j.photos?.length>0):!(j.photos?.length))));$('#jobList').innerHTML=arr.length?groupedJobHtml(arr):'<div class="empty">조건에 맞는 작업이 없습니다.</div>';const unpaid=jobs.filter(j=>unpaidBalance(j)>0);$('#unpaidList').innerHTML=unpaid.length?groupJobsByCustomer(unpaid).map(customerUnpaidGroupHtml).join(''):'<div class="empty">미수금이 없습니다.</div>';const unpaidCars=unpaid.reduce((n,j)=>n+(Number(j.carCount)||1),0),unpaidGroups=groupJobsByCustomer(unpaid);$('#unpaidSummary').innerHTML=`<b>총 ${unpaidGroups.length}개 거래처 묶음 · ${unpaid.length}건 · 차량 ${unpaidCars}대 · ${money(unpaid.reduce((a,j)=>a+unpaidBalance(j),0))}</b><div class="note">같은 날짜·같은 거래처 미수는 한 카드로 묶어 표시합니다. 거래처 작업서를 누르면 차량별 입금 처리가 가능합니다.</div>`}
 window.markPaid=async id=>{
  const j=jobs.find(x=>x.id===id);if(!j)return;
  const bal=unpaidBalance(j);if(bal<=0)return;
@@ -995,7 +980,7 @@ function renderStocks(){
 }
 window.setStockQty=id=>{const st=stocks.find(x=>x.id===id);if(!st)return;const input=$('#stockQty_'+id);st.qty=Math.max(0,Number(input?.value)||0);save();};
 window.stockChange=(id,d)=>{const s=stocks.find(x=>x.id===id);if(s){s.qty=Math.max(0,Number(s.qty)+d);save();if(s.qty<=Number(s.low??1))notify(`⚠️ 재고 부족\n${s.part} ${s.name||''}\n현재 ${s.qty}개`)}};window.editStock=id=>{const s=stocks.find(x=>x.id===id);if(!s)return;for(const [k,v] of Object.entries({stockEditId:s.id,stockPart:s.part,stockName:s.name,stockQty:s.qty,stockCost:s.cost,stockLow:s.low??1,stockMemo:s.memo}))$('#'+k).value=v??'';openTab('stock')};window.deleteStock=id=>{if(confirm('재고 항목을 삭제할까요?')){stocks=stocks.filter(x=>x.id!==id);save()}};
-function drawChart(){const c=$('#chart'),ctx=c.getContext('2d'),months=[],now=new Date();for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`)}const vals=months.map(m=>jobs.filter(j=>j.date?.startsWith(m)).reduce((a,j)=>a+(Number(j.sale)||0),0)),max=Math.max(...vals,1),w=c.width,h=c.height,p=48,bw=(w-p*2)/months.length*.62,gap=(w-p*2)/months.length;ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.strokeStyle='#dbe2ea';ctx.beginPath();ctx.moveTo(p,18);ctx.lineTo(p,h-p);ctx.lineTo(w-12,h-p);ctx.stroke();vals.forEach((v,i)=>{const bh=(h-p-30)*v/max,x=p+i*gap+(gap-bw)/2,y=h-p-bh;ctx.fillStyle='#2563eb';ctx.fillRect(x,y,bw,bh);ctx.fillStyle='#334155';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.fillText(months[i].slice(5)+'월',x+bw/2,h-16);ctx.font='12px sans-serif';ctx.fillText(Math.round(v/10000)+'만',x+bw/2,Math.max(15,y-5))})}
+function drawChart(){const c=$('#chart'),ctx=c.getContext('2d'),months=[],now=new Date(),year=now.getFullYear();for(let m=1;m<=12;m++)months.push(`${year}-${String(m).padStart(2,'0')}`);const vals=months.map(m=>jobs.filter(j=>j.date?.startsWith(m)).reduce((a,j)=>a+(Number(j.sale)||0),0)),max=Math.max(...vals,1),w=c.width,h=c.height,p=48,bw=(w-p*2)/months.length*.62,gap=(w-p*2)/months.length;ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.strokeStyle='#dbe2ea';ctx.beginPath();ctx.moveTo(p,18);ctx.lineTo(p,h-p);ctx.lineTo(w-12,h-p);ctx.stroke();vals.forEach((v,i)=>{const bh=(h-p-30)*v/max,x=p+i*gap+(gap-bw)/2,y=h-p-bh;ctx.fillStyle='#2563eb';ctx.fillRect(x,y,bw,bh);ctx.fillStyle='#334155';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText((i+1)+'월',x+bw/2,h-16);ctx.font='10px sans-serif';ctx.fillText(Math.round(v/10000)+'만',x+bw/2,Math.max(15,y-5))})}
 ['sale','vatType'].forEach(id=>$('#'+id).addEventListener(id==='sale'?'input':'change',()=>{if(id==='vatType'){settings.lastVatType=$('#vatType').value;localStorage.setItem('dkm_settings',JSON.stringify(settings))}renderVatPreview()}));
 ['search','filterMonth','filterType','filterPayment','filterFrom','filterTo','filterPhoto'].forEach(id=>$('#'+id).addEventListener(id==='search'?'input':'change',renderJobs));
 function download(blob,name){const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
@@ -1067,7 +1052,7 @@ function applyBranding(){
  const subline=document.getElementById('brandSubline');
  if(brandName)brandName.textContent=name;
  if(lockName)lockName.textContent=name+' Pro';
- document.title=name+' Pro v17.6';
+ document.title=name+' Pro v17.7';
  if(brandLogo){
    if(settings?.businessLogo)brandLogo.innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`;
    else brandLogo.textContent='🔑';
@@ -1767,7 +1752,7 @@ async function applyLatestVersion(){
 $('#applyUpdate').onclick=applyLatestVersion;
 
 
-/* V17.6 PHONE TRANSFER - immediate native event binding */
+/* V17.7 PHONE TRANSFER - immediate native event binding */
 let v175TransferBusy=false;
 function v175Info(msg,html=false){
   const el=document.getElementById('phoneBackupInfo');
@@ -1828,7 +1813,7 @@ async function v175Backup(){
     v175Info(`${noPhotos?'⚠️ 사진 제외 백업 완료':'✅ 전체백업 완료'} · <b>${mb}MB</b> · 작업 <b>${pack.jobs?.length||0}건</b><br>내 파일 → 다운로드에서 <b>${name}</b> 확인`,true);
     alert(`${noPhotos?'사진 제외 백업 완료':'전체백업 완료'}\n파일용량: ${mb}MB\n작업: ${pack.jobs?.length||0}건${noPhotos?'\n※ 사진 저장소 오류로 사진은 제외됨':''}`);
   }catch(e){
-    console.error('V17.6 backup',e);
+    console.error('V17.7 backup',e);
     v175Info('❌ 백업 실패: '+(e?.message||String(e)));
     alert('전체백업 실패\n'+(e?.message||String(e)));
   }finally{
@@ -1860,7 +1845,7 @@ function v175Restore(){
       alert(`전체복원 완료\n작업 ${r.jobs}건\n사진 ${r.photos}장\n재고 ${r.stocks}종`);
       renderAll();
     }catch(e){
-      console.error('V17.6 restore',e);
+      console.error('V17.7 restore',e);
       v175Info('❌ 복원 실패: '+(e?.message||String(e)));
       alert('전체복원 실패\n'+(e?.message||String(e)));
     }finally{
