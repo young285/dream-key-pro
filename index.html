@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<meta name="app-version" content="15.4a>
+<meta name="app-version" content="18.1">
 <meta name="description" content="자동차키 업체용 매출·미수·재고·작업 관리">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>자동차키 Pro v11 통합관리</title>
+<title>자동차키 Pro v18.1 통합관리</title>
 <style>
 :root{--bg:#eef2f7;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#dbe2ea;--accent:#2563eb;--danger:#dc2626;--ok:#059669;--warn:#d97706;--nav:#0f172a}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text)}
@@ -133,7 +133,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V18.0</span> Pro <small style="font-size:11px">v18.0</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V18.1</span> Pro <small style="font-size:11px">v18.1</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -500,7 +500,7 @@ function openContactHistory(){
   const unpaid=arr.filter(j=>!j.paid).reduce((a,j)=>a+(Number(j.sale)||0),0);
   $('#detailTitle').textContent=`거래처 작업 이력`;
   $('#detailSummary').innerHTML=`<div>작업<b>${arr.length}건</b></div><div>총 매출<b>${money(sum('sale'))}</b></div><div>총 순수익<b>${money(sum('profit'))}</b></div><div>미수<b>${money(unpaid)}</b></div>`;
-  $('#detailList').innerHTML=arr.length?arr.map(j=>`<div class="item"><div class="item-head"><div><div class="item-title">${esc(j.car||'차량 미입력')} · ${esc(j.jobType)}${j.jobType==='기타'&&j.otherWork?' · '+esc(j.otherWork):''}</div><div class="item-sub">${esc(j.date)} ${esc(j.time||'')} · ${esc(j.customer||'고객 미입력')} ${j.phone?'· '+esc(j.phone):''}</div></div><div class="money">${money(j.sale)}</div></div><div class="item-sub" style="margin-top:7px">${j.plate?'차량번호 '+esc(j.plate)+' · ':''}${j.partNo?'품번 '+esc(j.partNo)+' · ':''}순수익 ${money(j.profit)}${!j.paid?' · ⚠️ 미수':''}${j.memo?' · '+esc(j.memo):''}</div></div>`).join(''):'<div class="empty">저장된 작업 내역이 없습니다.</div>';
+  $('#detailList').innerHTML=arr.length?arr.map(j=>`<div class="item"><div class="item-head"><div><div class="item-title">${esc(j.car||'차량 미입력')} · ${esc(j.jobType)}${j.jobType==='기타'&&j.otherWork?' · '+esc(j.otherWork):''}</div><div class="item-sub">${esc(j.date)} ${esc(j.time||'')} · ${esc(j.customer||'고객 미입력')} ${j.phone?'· '+esc(j.phone):''}</div></div><div class="money">${money(businessSaleOf(j))}</div></div><div class="item-sub" style="margin-top:7px">${j.plate?'차량번호 '+esc(j.plate)+' · ':''}${j.partNo?'품번 '+esc(j.partNo)+' · ':''}순수익 ${money(j.profit)}${!j.paid?' · ⚠️ 미수':''}${j.memo?' · '+esc(j.memo):''}</div></div>`).join(''):'<div class="empty">저장된 작업 내역이 없습니다.</div>';
   $('#detailModal').classList.remove('hidden');
 }
 $('#contactHistoryBtn').onclick=openContactHistory;
@@ -661,12 +661,51 @@ function resetStockForm(){$('#stockForm').reset();$('#stockEditId').value='';$('
 $('#stockSearch').addEventListener('input',renderStocks);
 $('#stockSearchClear').onclick=()=>{$('#stockSearch').value='';renderStocks();$('#stockSearch').focus()};
 
+
+function businessSaleOf(j){
+  const supply=Number(j?.supplyAmount);
+  if(Number.isFinite(supply)) return Math.max(0,supply);
+  const gross=Number(j?.sale)||0;
+  const vat=Number(j?.vatAmount)||0;
+  return Math.max(0,gross-vat);
+}
+function businessProfitOf(j){
+  return businessSaleOf(j)-(Number(j?.cost)||0);
+}
+function businessSalesSum(arr){
+  return (Array.isArray(arr)?arr:[]).reduce((n,j)=>n+businessSaleOf(j),0);
+}
+function businessProfitSum(arr){
+  return (Array.isArray(arr)?arr:[]).reduce((n,j)=>n+businessProfitOf(j),0);
+}
+
 function marginRate(sales,profit){sales=Number(sales)||0;profit=Number(profit)||0;return sales>0?(profit/sales*100):0}
 function marginRateText(sales,profit){return marginRate(sales,profit).toLocaleString('ko-KR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%'}
-function renderMetrics(){const t=localISO(),m=t.slice(0,7),today=jobs.filter(j=>j.date===t),month=jobs.filter(j=>j.date?.startsWith(m)),sum=(a,k)=>a.reduce((x,j)=>x+(Number(j[k])||0),0),cars=sum(month,'carCount'),profit=sum(month,'profit'),days=new Set(month.filter(j=>j.carCount>0).map(j=>j.date)).size;const now=new Date(),daysKo=['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];$('#todayDateText').textContent=`${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 ${daysKo[now.getDay()]}`;$('#todayDateSub').textContent=`오늘 작업 ${sum(today,'carCount')}대 · 매출 ${money(sum(today,'sale'))} · 순수익 ${money(sum(today,'profit'))}`;$('#todayCars').textContent=sum(today,'carCount')+'대';$('#todaySales').textContent=money(sum(today,'sale'));$('#todayProfit').textContent=money(sum(today,'profit'));$('#todayUnpaid').textContent=money(today.reduce((a,j)=>a+unpaidBalance(j),0));$('#monthCars').textContent=cars+'대';$('#monthSales').textContent=money(sum(month,'sale'));$('#monthProfit').textContent=money(profit);$('#avgDailyCars').textContent=(days?cars/days:0).toLocaleString('ko-KR',{maximumFractionDigits:1})+'대';$('#avgMargin').textContent=money(cars?Math.round(profit/cars):0);$('#totalUnpaid').textContent=money(jobs.reduce((a,j)=>a+unpaidBalance(j),0));const goal=Number(settings.goal)||100;$('#goalText').textContent=`${cars} / ${goal}대`;$('#goalBar').style.width=Math.min(100,cars/goal*100)+'%'}
+function renderMetrics(){
+ const t=localISO(),m=t.slice(0,7),today=jobs.filter(j=>j.date===t),month=jobs.filter(j=>j.date?.startsWith(m));
+ const sum=(a,k)=>a.reduce((x,j)=>x+(Number(j[k])||0),0);
+ const cars=sum(month,'carCount'),profit=businessProfitSum(month),days=new Set(month.filter(j=>j.carCount>0).map(j=>j.date)).size;
+ const todaySales=businessSalesSum(today),todayProfit=businessProfitSum(today),monthSales=businessSalesSum(month);
+ const now=new Date(),daysKo=['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
+ $('#todayDateText').textContent=`${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 ${daysKo[now.getDay()]}`;
+ $('#todayDateSub').textContent=`오늘 작업 ${sum(today,'carCount')}대 · 매출 ${money(todaySales)} · 순수익 ${money(todayProfit)}`;
+ $('#todayCars').textContent=sum(today,'carCount')+'대';
+ $('#todaySales').textContent=money(todaySales);
+ $('#todayProfit').textContent=money(todayProfit);
+ $('#todayUnpaid').textContent=money(today.reduce((a,j)=>a+unpaidBalance(j),0));
+ $('#monthCars').textContent=cars+'대';
+ $('#monthSales').textContent=money(monthSales);
+ $('#monthProfit').textContent=money(profit);
+ $('#avgDailyCars').textContent=(days?cars/days:0).toLocaleString('ko-KR',{maximumFractionDigits:1})+'대';
+ $('#avgMargin').textContent=money(cars?Math.round(profit/cars):0);
+ $('#totalUnpaid').textContent=money(jobs.reduce((a,j)=>a+unpaidBalance(j),0));
+ const goal=Number(settings.goal)||100;
+ $('#goalText').textContent=`${cars} / ${goal}대`;
+ $('#goalBar').style.width=Math.min(100,cars/goal*100)+'%';
+}
 
 function metricJobs(kind){const t=localISO(),m=t.slice(0,7),today=jobs.filter(j=>j.date===t),month=jobs.filter(j=>j.date?.startsWith(m));if(['todayCars','todaySales','todayProfit'].includes(kind))return today;if(kind==='todayUnpaid')return today.filter(j=>unpaidBalance(j)>0);if(['monthCars','monthSales','monthProfit','avgDailyCars','avgMargin'].includes(kind))return month;if(kind==='totalUnpaid')return jobs.filter(j=>unpaidBalance(j)>0);return []}
-window.openMetricDetail=kind=>{const map={todayCars:'오늘 작업 차량',todaySales:'오늘 매출 상세',todayProfit:'오늘 순수익 상세',todayUnpaid:'오늘 미수 상세',monthCars:'이번 달 작업 차량',monthSales:'이번 달 매출 상세',monthProfit:'이번 달 순이익 상세',avgDailyCars:'이번 달 날짜별 차량',avgMargin:'이번 달 차량당 마진',totalUnpaid:'전체 미수금'};const arr=metricJobs(kind),sum=k=>arr.reduce((a,j)=>a+(Number(j[k])||0),0),cars=sum('carCount'),sales=sum('sale'),profit=sum('profit');$('#detailTitle').textContent=map[kind]||'상세 내역';$('#detailSummary').innerHTML=`<div>작업/차량<b>${arr.length}건 · ${cars}대</b></div><div>매출<b>${money(sales)}</b></div><div>마진<b>${money(profit)}</b></div><div>마진율<b style="color:#059669">${marginRateText(sales,profit)}</b></div>`;if(kind==='avgDailyCars'){const by={};arr.forEach(j=>by[j.date]=(by[j.date]||0)+(Number(j.carCount)||0));$('#detailList').innerHTML=Object.entries(by).sort().map(([d,c])=>`<div class="item" onclick="openDailyHistory('${d}');closeMetricDetail()"><b>${d}</b><span class="money" style="float:right">${c}대</span></div>`).join('')||'<div class="empty">내역이 없습니다.</div>'}else{$('#detailList').innerHTML=arr.length?arr.map(j=>`<div class="item"><div class="item-head"><div><div class="item-title">${esc(j.car||'차량 미입력')} · ${esc(j.jobType)}${j.jobType==='기타'&&j.otherWork?' · '+esc(j.otherWork):''}</div><div class="item-sub">${esc(j.date)} ${esc(j.time||'')} · ${esc(j.customer||'고객 미입력')}</div></div><div class="money">${money(j.sale)}</div></div><div class="item-sub" style="margin-top:7px">원가 ${money(j.cost)} · 마진 ${money(j.profit)} · <b style="color:#059669">마진율 ${marginRateText(j.sale,j.profit)}</b>${!j.paid?' · ⚠️ 미수':''}${j.partNo?' · '+esc(j.partNo):''}${Array.isArray(j.photos)&&j.photos.length?' · 📷 '+j.photos.length+'장':''}</div></div>`).join(''):'<div class="empty">내역이 없습니다.</div>'}$('#detailModal').classList.remove('hidden')};window.closeMetricDetail=()=>$('#detailModal').classList.add('hidden');
+window.openMetricDetail=kind=>{const map={todayCars:'오늘 작업 차량',todaySales:'오늘 매출 상세',todayProfit:'오늘 순수익 상세',todayUnpaid:'오늘 미수 상세',monthCars:'이번 달 작업 차량',monthSales:'이번 달 매출 상세',monthProfit:'이번 달 순이익 상세',avgDailyCars:'이번 달 날짜별 차량',avgMargin:'이번 달 차량당 마진',totalUnpaid:'전체 미수금'};const arr=metricJobs(kind),sum=k=>arr.reduce((a,j)=>a+(Number(j[k])||0),0),cars=sum('carCount'),sales=businessSalesSum(arr),profit=businessProfitSum(arr);$('#detailTitle').textContent=map[kind]||'상세 내역';$('#detailSummary').innerHTML=`<div>작업/차량<b>${arr.length}건 · ${cars}대</b></div><div>매출<b>${money(sales)}</b></div><div>마진<b>${money(profit)}</b></div><div>마진율<b style="color:#059669">${marginRateText(sales,profit)}</b></div>`;if(kind==='avgDailyCars'){const by={};arr.forEach(j=>by[j.date]=(by[j.date]||0)+(Number(j.carCount)||0));$('#detailList').innerHTML=Object.entries(by).sort().map(([d,c])=>`<div class="item" onclick="openDailyHistory('${d}');closeMetricDetail()"><b>${d}</b><span class="money" style="float:right">${c}대</span></div>`).join('')||'<div class="empty">내역이 없습니다.</div>'}else{$('#detailList').innerHTML=arr.length?arr.map(j=>`<div class="item"><div class="item-head"><div><div class="item-title">${esc(j.car||'차량 미입력')} · ${esc(j.jobType)}${j.jobType==='기타'&&j.otherWork?' · '+esc(j.otherWork):''}</div><div class="item-sub">${esc(j.date)} ${esc(j.time||'')} · ${esc(j.customer||'고객 미입력')}</div></div><div class="money">${money(businessSaleOf(j))}</div></div><div class="item-sub" style="margin-top:7px">원가 ${money(j.cost)} · 마진 ${money(j.profit)} · <b style="color:#059669">마진율 ${marginRateText(businessSaleOf(j),businessProfitOf(j))}</b>${!j.paid?' · ⚠️ 미수':''}${j.partNo?' · '+esc(j.partNo):''}${Array.isArray(j.photos)&&j.photos.length?' · 📷 '+j.photos.length+'장':''}</div></div>`).join(''):'<div class="empty">내역이 없습니다.</div>'}$('#detailModal').classList.remove('hidden')};window.closeMetricDetail=()=>$('#detailModal').classList.add('hidden');
 
 function paidAmountOf(j){
   if(j.paid)return Number(j.sale)||0;
@@ -710,7 +749,7 @@ window.openCustomerSheet=id=>{
       const bal=unpaidBalance(j), rec=paidAmountOf(j);
       return `<div class="item">
         <div class="item-head"><div><div class="item-title">${esc(j.time||'')} · ${esc(j.car||'차량')} · ${esc(j.jobType||'')}</div>
-        <div class="item-sub">${Number(j.carCount)||1}대 · ${esc(j.payment||'')}</div></div><div class="money">${money(j.sale)}</div></div>
+        <div class="item-sub">${Number(j.carCount)||1}대 · ${esc(j.payment||'')}</div></div><div class="money">${money(businessSaleOf(j))}</div></div>
         <div class="item-sub" style="margin-top:7px">입금 ${money(rec)} · <b style="color:${bal?'#dc2626':'#059669'}">미수 ${money(bal)}</b> · 원가 ${money(j.cost)} · 마진 ${money(j.profit)}</div>
         <div class="actions">${bal>0?`<button class="action warn" onclick="receivePartial('${j.id}')">일부입금</button><button class="action ok" onclick="markPaid('${j.id}')">전액입금</button>`:`<button class="action warn" onclick="undoPaid('${j.id}')">입금취소</button>`}<button class="action secondary" onclick="editJob('${j.id}');closeMetricDetail()">수정</button></div>
       </div>`;
@@ -785,7 +824,7 @@ function unpaidJobHtml(j){
  <div class="item-title">🏢 ${esc(customerTitle)}</div>
  <div class="item-sub" style="font-size:17px;font-weight:800;color:#111827;margin-top:4px">${esc(j.car||'차량 미입력')} · ${esc(j.jobType)}${j.jobType==='기타'&&j.otherWork?' · '+esc(j.otherWork):''}</div>
  <div class="item-sub">${esc(j.date)} ${esc(j.time||'')}${j.plate?' · '+esc(j.plate):''}</div>
- </div><div class="money">${money(j.sale)}</div></div>
+ </div><div class="money">${money(businessSaleOf(j))}</div></div>
  <div><span class="tag">🚗 ${Number(j.carCount)||0}대</span><span class="tag">${esc(j.payment)}</span>
  <span class="tag unpaid">미수 ${money(bal)}</span><span class="tag">${vatLabel}</span>${j.partNo?`<span class="tag">${esc(j.partNo)}</span>`:''}${j.taxInvoice==='예'?'<span class="tag">세금계산서</span>':''}</div>
  <div class="item-sub" style="margin-top:8px">입금 ${money(rec)} · 미수 ${money(bal)} · 공급가액 ${money(j.supplyAmount??j.sale)} · 원가 ${money(j.cost)} · 순이익 ${money(j.profit)}${j.vin?' · VIN '+esc(j.vin):''}${j.memo?' · '+esc(j.memo):''}</div>
@@ -800,7 +839,7 @@ function jobHtml(j){
  const bal=unpaidBalance(j),rec=paidAmountOf(j);
  return `<div class="item" onclick="if(!event.target.closest('button,img'))openJobDetail('${j.id}')">
  <div class="item-head"><div><div class="item-title">${esc(j.car||'차량 미입력')} · ${esc(j.jobType)}${j.jobType==='기타'&&j.otherWork?' · '+esc(j.otherWork):''}</div>
- <div class="item-sub">${esc(j.date)} ${esc(j.time||'')} · ${esc(j.customer||'고객 미입력')} ${j.plate?'· '+esc(j.plate):''}</div></div><div class="money">${money(j.sale)}</div></div>
+ <div class="item-sub">${esc(j.date)} ${esc(j.time||'')} · ${esc(j.customer||'고객 미입력')} ${j.plate?'· '+esc(j.plate):''}</div></div><div class="money">${money(businessSaleOf(j))}</div></div>
  <div><span class="tag">🚗 ${Number(j.carCount)||0}대</span><span class="tag">${esc(j.payment)}</span>
  <span class="tag ${bal?'unpaid':'paid'}">${bal?`미수 ${money(bal)}`:'입금완료'}</span><span class="tag">${vatLabel}</span>${j.partNo?`<span class="tag">${esc(j.partNo)}</span>`:''}${j.taxInvoice==='예'?'<span class="tag">세금계산서</span>':''}</div>
  <div class="item-sub" style="margin-top:8px">입금 ${money(rec)} · 미수 ${money(bal)} · 공급가액 ${money(j.supplyAmount??j.sale)} · 원가 ${money(j.cost)} · 순이익 ${money(j.profit)}${j.vin?' · VIN '+esc(j.vin):''}${j.memo?' · '+esc(j.memo):''}</div>
@@ -854,7 +893,7 @@ window.openJobDetail=id=>{
     ['판매금액',money(j.sale)],
     ['원가',money(j.cost)],
     ['순수익',money(j.profit)],
-    ['마진율',marginRateText(j.sale,j.profit)],
+    ['마진율',marginRateText(businessSaleOf(j),businessProfitOf(j))],
     ['결제',j.payment||''],
     ['미수상태',j.paid?'입금완료':'미수'],
     ['세금계산서',j.taxInvoice||''],
@@ -1002,7 +1041,20 @@ function renderStocks(){
 }
 window.setStockQty=id=>{const st=stocks.find(x=>x.id===id);if(!st)return;const input=$('#stockQty_'+id);st.qty=Math.max(0,Number(input?.value)||0);save();};
 window.stockChange=(id,d)=>{const s=stocks.find(x=>x.id===id);if(s){s.qty=Math.max(0,Number(s.qty)+d);save();if(s.qty<=Number(s.low??1))notify(`⚠️ 재고 부족\n${s.part} ${s.name||''}\n현재 ${s.qty}개`)}};window.editStock=id=>{const s=stocks.find(x=>x.id===id);if(!s)return;for(const [k,v] of Object.entries({stockEditId:s.id,stockPart:s.part,stockName:s.name,stockQty:s.qty,stockCost:s.cost,stockLow:s.low??1,stockMemo:s.memo}))$('#'+k).value=v??'';openTab('stock')};window.deleteStock=id=>{if(confirm('재고 항목을 삭제할까요?')){stocks=stocks.filter(x=>x.id!==id);save()}};
-function drawChart(){const c=$('#chart'),ctx=c.getContext('2d'),months=[],now=new Date(),year=now.getFullYear();for(let m=1;m<=12;m++)months.push(`${year}-${String(m).padStart(2,'0')}`);const vals=months.map(m=>jobs.filter(j=>j.date?.startsWith(m)).reduce((a,j)=>a+(Number(j.sale)||0),0)),max=Math.max(...vals,1),w=c.width,h=c.height,p=48,bw=(w-p*2)/months.length*.62,gap=(w-p*2)/months.length;ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);ctx.strokeStyle='#dbe2ea';ctx.beginPath();ctx.moveTo(p,18);ctx.lineTo(p,h-p);ctx.lineTo(w-12,h-p);ctx.stroke();vals.forEach((v,i)=>{const bh=(h-p-30)*v/max,x=p+i*gap+(gap-bw)/2,y=h-p-bh;ctx.fillStyle='#2563eb';ctx.fillRect(x,y,bw,bh);ctx.fillStyle='#334155';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText((i+1)+'월',x+bw/2,h-16);ctx.font='10px sans-serif';ctx.fillText(Math.round(v/10000)+'만',x+bw/2,Math.max(15,y-5))})}
+function drawChart(){
+ const c=$('#chart'),ctx=c.getContext('2d'),months=[],now=new Date(),year=now.getFullYear();
+ for(let m=1;m<=12;m++)months.push(`${year}-${String(m).padStart(2,'0')}`);
+ const vals=months.map(m=>businessSalesSum(jobs.filter(j=>j.date?.startsWith(m))));
+ const max=Math.max(...vals,1),w=c.width,h=c.height,p=48,bw=(w-p*2)/months.length*.62,gap=(w-p*2)/months.length;
+ ctx.clearRect(0,0,w,h);ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);
+ ctx.strokeStyle='#dbe2ea';ctx.beginPath();ctx.moveTo(p,18);ctx.lineTo(p,h-p);ctx.lineTo(w-12,h-p);ctx.stroke();
+ vals.forEach((v,i)=>{
+   const bh=(h-p-30)*v/max,x=p+i*gap+(gap-bw)/2,y=h-p-bh;
+   ctx.fillStyle='#2563eb';ctx.fillRect(x,y,bw,bh);
+   ctx.fillStyle='#334155';ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillText((i+1)+'월',x+bw/2,h-16);
+   ctx.font='10px sans-serif';ctx.fillText(Math.round(v/10000)+'만',x+bw/2,Math.max(15,y-5));
+ });
+}
 ['sale','vatType'].forEach(id=>$('#'+id).addEventListener(id==='sale'?'input':'change',()=>{if(id==='vatType'){settings.lastVatType=$('#vatType').value;localStorage.setItem('dkm_settings',JSON.stringify(settings))}renderVatPreview()}));
 ['search','filterMonth','filterType','filterPayment','filterFrom','filterTo','filterPhoto'].forEach(id=>$('#'+id).addEventListener(id==='search'?'input':'change',renderJobs));
 function download(blob,name){const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
@@ -1074,7 +1126,7 @@ function applyBranding(){
  const subline=document.getElementById('brandSubline');
  if(brandName)brandName.textContent=name;
  if(lockName)lockName.textContent=name+' Pro';
- document.title=name+' Pro v18.0';
+ document.title=name+' Pro v18.1';
  if(brandLogo){
    if(settings?.businessLogo)brandLogo.innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`;
    else brandLogo.textContent='🔑';
@@ -1165,12 +1217,33 @@ function renderCategoryStats(){
  arr.forEach(j=>{const k=j.jobType||'기타';if(!groups.has(k))groups.set(k,[]);groups.get(k).push(j)});
  const order=['스마트키 추가','스마트키 올키','리모콘 추가','리모콘 올키','리모콘 이모빌 추가','리모콘 이모빌 올키','막키 추가','막키 올키 제작','막키 이모빌 추가','막키 이모빌 제작','개문','키 판매','핀코드 판매','사제 스마트키 제작','기타'];
  const keys=[...groups.keys()].sort((a,b)=>{const ai=order.indexOf(a),bi=order.indexOf(b);return (ai<0?999:ai)-(bi<0?999:bi)||a.localeCompare(b,'ko')});
- const rows=keys.map(k=>{const a=groups.get(k),cars=a.reduce((n,j)=>n+(Number(j.carCount)||0),0),sales=a.reduce((n,j)=>n+(Number(j.sale)||0),0),profit=a.reduce((n,j)=>n+(Number(j.profit)||0),0);return `<tr><td><b>${esc(k)}</b></td><td>${a.length}건 · ${cars}대</td><td>${money(sales)}</td><td>${money(profit)}</td><td class="daily-positive">${marginRateText(sales,profit)}</td></tr>`});
- const sales=arr.reduce((n,j)=>n+(Number(j.sale)||0),0),profit=arr.reduce((n,j)=>n+(Number(j.profit)||0),0),cars=arr.reduce((n,j)=>n+(Number(j.carCount)||0),0);
+ const rows=keys.map(k=>{
+   const a=groups.get(k),cars=a.reduce((n,j)=>n+(Number(j.carCount)||0),0),sales=businessSalesSum(a),profit=businessProfitSum(a);
+   return `<tr><td><b>${esc(k)}</b></td><td>${a.length}건 · ${cars}대</td><td>${money(sales)}</td><td>${money(profit)}</td><td class="daily-positive">${marginRateText(sales,profit)}</td></tr>`;
+ });
+ const sales=businessSalesSum(arr),profit=businessProfitSum(arr),cars=arr.reduce((n,j)=>n+(Number(j.carCount)||0),0);
  body.innerHTML=(rows.join('')||'<tr><td colspan="5" style="text-align:center;color:#64748b">해당 달 작업이 없습니다.</td></tr>')+(arr.length?`<tr class="total-row"><td>합계</td><td>${arr.length}건 · ${cars}대</td><td>${money(sales)}</td><td>${money(profit)}</td><td class="daily-positive">${marginRateText(sales,profit)}</td></tr>`:'');
 }
 
-function renderStats(){const years=[...new Set(jobs.map(j=>j.date?.slice(0,4)).filter(Boolean))].sort().reverse(),nowY=String(new Date().getFullYear());if(!years.includes(nowY))years.unshift(nowY);const sel=$('#statsYear'),cur=sel.value||nowY;sel.innerHTML=years.map(y=>`<option${y===cur?' selected':''}>${y}</option>`).join('');const mode=$('#statsMode').value,y=sel.value,sum=(a,k)=>a.reduce((n,j)=>n+(Number(j[k])||0),0);let groups=[];if(mode==='month'){for(let m=1;m<=12;m++){const k=`${y}-${String(m).padStart(2,'0')}`,a=jobs.filter(j=>j.date?.startsWith(k));groups.push([`${m}월`,a])}}else{groups=years.map(yr=>[yr+'년',jobs.filter(j=>j.date?.startsWith(yr))])}const all=mode==='month'?jobs.filter(j=>j.date?.startsWith(y)):jobs;$('#statsSummary').innerHTML=`<div class="card metric blue"><div class="label">차량</div><div class="value">${sum(all,'carCount')}대</div></div><div class="card metric ok"><div class="label">매출</div><div class="value">${money(sum(all,'sale'))}</div></div><div class="card metric"><div class="label">순이익</div><div class="value">${money(sum(all,'profit'))}</div></div><div class="card metric warn"><div class="label">미수</div><div class="value">${money(all.reduce((n,j)=>n+unpaidBalance(j),0))}</div></div>`;$('#statsBody').innerHTML=groups.map(([label,a])=>`<tr><td>${label}</td><td>${sum(a,'carCount')}대</td><td>${money(sum(a,'sale'))}</td><td>${money(sum(a,'profit'))}</td><td>${money(a.reduce((n,j)=>n+unpaidBalance(j),0))}</td></tr>`).join('')}
+function renderStats(){
+ const years=[...new Set(jobs.map(j=>j.date?.slice(0,4)).filter(Boolean))].sort().reverse(),nowY=String(new Date().getFullYear());
+ if(!years.includes(nowY))years.unshift(nowY);
+ const sel=$('#statsYear'),cur=sel.value||nowY;
+ sel.innerHTML=years.map(y=>`<option${y===cur?' selected':''}>${y}</option>`).join('');
+ const mode=$('#statsMode').value,y=sel.value,sum=(a,k)=>a.reduce((n,j)=>n+(Number(j[k])||0),0);
+ let groups=[];
+ if(mode==='month'){
+   for(let m=1;m<=12;m++){
+     const k=`${y}-${String(m).padStart(2,'0')}`,a=jobs.filter(j=>j.date?.startsWith(k));
+     groups.push([`${m}월`,a]);
+   }
+ }else{
+   groups=years.map(yr=>[yr+'년',jobs.filter(j=>j.date?.startsWith(yr))]);
+ }
+ const all=mode==='month'?jobs.filter(j=>j.date?.startsWith(y)):jobs;
+ $('#statsSummary').innerHTML=`<div class="card metric blue"><div class="label">차량</div><div class="value">${sum(all,'carCount')}대</div></div><div class="card metric ok"><div class="label">매출(부가세 제외)</div><div class="value">${money(businessSalesSum(all))}</div></div><div class="card metric"><div class="label">순이익</div><div class="value">${money(businessProfitSum(all))}</div></div><div class="card metric warn"><div class="label">미수</div><div class="value">${money(all.reduce((n,j)=>n+unpaidBalance(j),0))}</div></div>`;
+ $('#statsBody').innerHTML=groups.map(([label,a])=>`<tr><td>${label}</td><td>${sum(a,'carCount')}대</td><td>${money(businessSalesSum(a))}</td><td>${money(businessProfitSum(a))}</td><td>${money(a.reduce((n,j)=>n+unpaidBalance(j),0))}</td></tr>`).join('');
+}
 $('#statsYear').onchange=renderStats;$('#statsMode').onchange=renderStats;
 
 let calendarYM=localISO().slice(0,7);
@@ -1180,27 +1253,13 @@ function renderCalendar(){
   $('#calTitle').textContent=`${y}년 ${m}월`;
   const first=new Date(y,m-1,1).getDay(), days=new Date(y,m,0).getDate();
   const monthJobs=jobs.filter(j=>String(j.date||'').startsWith(calendarYM+'-'));
-
-  /* 매출 = 부가세 제외 공급가액. VAT가 따로 기록된 건만 제외하며,
-     VAT 정보가 없는 기존 기록은 기존 sale 값을 그대로 사용한다. */
-  const netSaleOf=j=>{
-    const gross=Number(j.sale)||0;
-    const supply=Number(j.supply)||Number(j.supplyAmount)||0;
-    const vat=Number(j.vat)||Number(j.vatAmount)||0;
-    if(supply>0)return supply;
-    if(vat>0)return Math.max(0,gross-vat);
-    return gross;
-  };
-  const costOf=j=>Number(j.cost)||0;
-  const profitOf=j=>netSaleOf(j)-costOf(j);
-
   let html='';
   for(let i=0;i<first;i++) html+='<div class="cal-day empty"></div>';
   for(let d=1;d<=days;d++){
     const date=`${calendarYM}-${String(d).padStart(2,'0')}`;
     const a=monthJobs.filter(j=>j.date===date);
-    const sales=a.reduce((n,j)=>n+netSaleOf(j),0);
-    const profit=a.reduce((n,j)=>n+profitOf(j),0);
+    const sales=businessSalesSum(a);
+    const profit=businessProfitSum(a);
     const cars=a.reduce((n,j)=>n+(Number(j.carCount)||1),0);
     const dow=new Date(y,m-1,d).getDay();
     const cls=dow===0?' sun':dow===6?' sat':'';
@@ -1210,9 +1269,9 @@ function renderCalendar(){
     </div>`;
   }
   grid.innerHTML=html;
-  const totalSales=monthJobs.reduce((n,j)=>n+netSaleOf(j),0);
-  const totalCost=monthJobs.reduce((n,j)=>n+costOf(j),0);
-  const totalProfit=monthJobs.reduce((n,j)=>n+profitOf(j),0);
+  const totalSales=businessSalesSum(monthJobs);
+  const totalCost=monthJobs.reduce((n,j)=>n+(Number(j.cost)||0),0);
+  const totalProfit=businessProfitSum(monthJobs);
   const totalCars=monthJobs.reduce((n,j)=>n+(Number(j.carCount)||1),0);
   $('#calendarSummary').innerHTML=`${m}월 작업 ${totalCars}대 · ${monthJobs.length}건 · 매출(부가세 제외) <b>${money(totalSales)}</b> · 원가 <b>${money(totalCost)}</b> · 순수익 <b>${money(totalProfit)}</b>`;
 }
@@ -1221,13 +1280,28 @@ window.openCalendarDay=date=>{
   const sum=k=>arr.reduce((a,j)=>a+(Number(j[k])||0),0);
   $('#detailTitle').textContent=`${Number(date.slice(5,7))}월 ${Number(date.slice(8,10))}일 작업 내역`;
   $('#detailSummary').innerHTML=`<div>작업<b>${arr.length}건</b></div><div>매출<b>${money(sum('sale'))}</b></div><div>순수익<b>${money(sum('profit'))}</b></div>`;
-  $('#detailList').innerHTML=arr.length?arr.map(j=>`<div class="item"><div class="item-head"><div><div class="item-title">${esc(j.car||'차량 미입력')} · ${esc(j.jobType)}${j.jobType==='기타'&&j.otherWork?' · '+esc(j.otherWork):''}</div><div class="item-sub">${esc(j.time||'')} · ${esc(j.customer||'고객 미입력')}</div></div><div class="money">${money(j.sale)}</div></div><div class="item-sub" style="margin-top:7px">원가 ${money(j.cost)} · 순수익 ${money(j.profit)}${!j.paid?' · ⚠️ 미수':''}${j.partNo?' · '+esc(j.partNo):''}${Array.isArray(j.photos)&&j.photos.length?' · 📷 '+j.photos.length+'장':''}</div></div>`).join(''):'<div class="empty">이 날짜의 작업 내역이 없습니다.</div>';
+  $('#detailList').innerHTML=arr.length?arr.map(j=>`<div class="item"><div class="item-head"><div><div class="item-title">${esc(j.car||'차량 미입력')} · ${esc(j.jobType)}${j.jobType==='기타'&&j.otherWork?' · '+esc(j.otherWork):''}</div><div class="item-sub">${esc(j.time||'')} · ${esc(j.customer||'고객 미입력')}</div></div><div class="money">${money(businessSaleOf(j))}</div></div><div class="item-sub" style="margin-top:7px">원가 ${money(j.cost)} · 순수익 ${money(j.profit)}${!j.paid?' · ⚠️ 미수':''}${j.partNo?' · '+esc(j.partNo):''}${Array.isArray(j.photos)&&j.photos.length?' · 📷 '+j.photos.length+'장':''}</div></div>`).join(''):'<div class="empty">이 날짜의 작업 내역이 없습니다.</div>';
   $('#detailModal').classList.remove('hidden');
 };
 $('#calPrev').onclick=()=>{let [y,m]=calendarYM.split('-').map(Number);m--;if(m<1){m=12;y--}calendarYM=`${y}-${String(m).padStart(2,'0')}`;renderCalendar()};
 $('#calNext').onclick=()=>{let [y,m]=calendarYM.split('-').map(Number);m++;if(m>12){m=1;y++}calendarYM=`${y}-${String(m).padStart(2,'0')}`;renderCalendar()};
 
-function renderDailyStats(){const input=$('#dailyStatsMonth');if(!input.value)input.value=localISO().slice(0,7);const ym=input.value;if(!/^\d{4}-\d{2}$/.test(ym))return;const [year,month]=ym.split('-').map(Number),daysInMonth=new Date(year,month,0).getDate(),sum=(a,k)=>a.reduce((n,j)=>n+(Number(j[k])||0),0),week=['일','월','화','수','목','금','토'],rows=[];let monthJobs=[];for(let day=1;day<=daysInMonth;day++){const date=`${ym}-${String(day).padStart(2,'0')}`,a=jobs.filter(j=>j.date===date);monthJobs.push(...a);const cars=sum(a,'carCount'),sales=sum(a,'sale'),cost=sum(a,'cost'),profit=sum(a,'profit'),unpaid=a.reduce((n,j)=>n+unpaidBalance(j),0);rows.push({date,day,weekday:week[new Date(year,month-1,day).getDay()],cars,sales,cost,profit,unpaid,count:a.length})}const totalCars=sum(monthJobs,'carCount'),totalSales=sum(monthJobs,'sale'),totalCost=sum(monthJobs,'cost'),totalProfit=sum(monthJobs,'profit'),totalUnpaid=monthJobs.reduce((n,j)=>n+unpaidBalance(j),0),activeDays=rows.filter(r=>r.count>0).length,best=rows.reduce((a,b)=>b.profit>a.profit?b:a,rows[0]),avg=activeDays?Math.round(totalProfit/activeDays):0;$('#dailyStatsSummary').innerHTML=`<div class="card metric blue"><div class="label">${month}월 차량</div><div class="value">${totalCars}대</div></div><div class="card metric ok"><div class="label">월 마진 합계</div><div class="value">${money(totalProfit)}</div></div><div class="card metric"><div class="label">영업일 평균 마진</div><div class="value">${money(avg)}</div></div><div class="card metric warn"><div class="label">최고 마진일</div><div class="value">${best&&best.profit>0?best.day+'일 · '+money(best.profit):'없음'}</div></div>`;const cls=n=>n>0?'daily-positive':n<0?'daily-negative':'daily-zero';$('#dailyStatsBody').innerHTML=rows.map(r=>`<tr class="clickable${r.date===localISO()?' daily-highlight':''}" onclick="openDailyHistory('${r.date}')"><td>${r.day}일</td><td>${r.weekday}</td><td>${r.cars}대</td><td>${money(r.sales)}</td><td>${money(r.cost)}</td><td class="${cls(r.profit)}">${money(r.profit)}</td><td>${money(r.unpaid)}</td></tr>`).join('')+`<tr class="total-row"><td colspan="2">${year}년 ${month}월 합계</td><td>${totalCars}대</td><td>${money(totalSales)}</td><td>${money(totalCost)}</td><td class="${cls(totalProfit)}">${money(totalProfit)}</td><td>${money(totalUnpaid)}</td></tr>`}window.openDailyHistory=date=>{$('#filterFrom').value=date;$('#filterTo').value=date;$('#filterMonth').value='';openTab('history');renderJobs()};$('#dailyStatsMonth').onchange=renderDailyStats;$('#dailyStatsCurrent').onclick=()=>{$('#dailyStatsMonth').value=localISO().slice(0,7);renderDailyStats()};
+function renderDailyStats(){
+ const input=$('#dailyStatsMonth');if(!input.value)input.value=localISO().slice(0,7);
+ const ym=input.value;if(!/^\d{4}-\d{2}$/.test(ym))return;
+ const [year,month]=ym.split('-').map(Number),daysInMonth=new Date(year,month,0).getDate(),sum=(a,k)=>a.reduce((n,j)=>n+(Number(j[k])||0),0),week=['일','월','화','수','목','금','토'],rows=[];
+ let monthJobs=[];
+ for(let day=1;day<=daysInMonth;day++){
+   const date=`${ym}-${String(day).padStart(2,'0')}`,a=jobs.filter(j=>j.date===date);
+   monthJobs.push(...a);
+   const cars=sum(a,'carCount'),sales=businessSalesSum(a),cost=sum(a,'cost'),profit=businessProfitSum(a),unpaid=a.reduce((n,j)=>n+unpaidBalance(j),0);
+   rows.push({date,day,weekday:week[new Date(year,month-1,day).getDay()],cars,sales,cost,profit,unpaid,count:a.length});
+ }
+ const totalCars=sum(monthJobs,'carCount'),totalSales=businessSalesSum(monthJobs),totalCost=sum(monthJobs,'cost'),totalProfit=businessProfitSum(monthJobs),totalUnpaid=monthJobs.reduce((n,j)=>n+unpaidBalance(j),0),activeDays=rows.filter(r=>r.count>0).length,best=rows.reduce((a,b)=>b.profit>a.profit?b:a,rows[0]),avg=activeDays?Math.round(totalProfit/activeDays):0;
+ $('#dailyStatsSummary').innerHTML=`<div class="card metric blue"><div class="label">${month}월 차량</div><div class="value">${totalCars}대</div></div><div class="card metric ok"><div class="label">월 마진 합계</div><div class="value">${money(totalProfit)}</div></div><div class="card metric"><div class="label">영업일 평균 마진</div><div class="value">${money(avg)}</div></div><div class="card metric warn"><div class="label">최고 마진일</div><div class="value">${best&&best.profit>0?best.day+'일 · '+money(best.profit):'없음'}</div></div>`;
+ const cls=n=>n>0?'daily-positive':n<0?'daily-negative':'daily-zero';
+ $('#dailyStatsBody').innerHTML=rows.map(r=>`<tr class="clickable${r.date===localISO()?' daily-highlight':''}" onclick="openDailyHistory('${r.date}')"><td>${r.day}일</td><td>${r.weekday}</td><td>${r.cars}대</td><td>${money(r.sales)}</td><td>${money(r.cost)}</td><td class="${cls(r.profit)}">${money(r.profit)}</td><td>${money(r.unpaid)}</td></tr>`).join('')+`<tr class="total-row"><td colspan="2">${year}년 ${month}월 합계</td><td>${totalCars}대</td><td>${money(totalSales)}</td><td>${money(totalCost)}</td><td class="${cls(totalProfit)}">${money(totalProfit)}</td><td>${money(totalUnpaid)}</td></tr>`;
+}window.openDailyHistory=date=>{$('#filterFrom').value=date;$('#filterTo').value=date;$('#filterMonth').value='';openTab('history');renderJobs()};$('#dailyStatsMonth').onchange=renderDailyStats;$('#dailyStatsCurrent').onclick=()=>{$('#dailyStatsMonth').value=localISO().slice(0,7);renderDailyStats()};
 
 function renderKeyDb(){const q=$('#keyDbSearch').value.trim().toLowerCase(),a=keyDb.filter(x=>!q||JSON.stringify(x).toLowerCase().includes(q));$('#keyDbList').innerHTML=a.length?a.map(x=>`<div class="item"><div class="item-head"><div><div class="item-title">${esc(x.car||'차종 미입력')}</div><div class="item-sub">${esc(x.part||'품번 없음')} · ${esc(x.freq||'주파수/ID 미입력')}</div></div><button class="action danger" onclick="deleteKeyDb('${x.id}')">삭제</button></div><div class="item-sub">${esc(x.memo||'')}</div></div>`).join(''):'<div class="empty">등록된 품번 데이터가 없습니다.</div>'}
 $('#keyDbSearch').oninput=renderKeyDb;$('#keyDbAdd').onclick=()=>{const o={id:uid(),car:$('#keyDbCar').value.trim(),part:$('#keyDbPart').value.trim().toUpperCase(),freq:$('#keyDbFreq').value.trim(),memo:$('#keyDbMemo').value.trim()};if(!o.car&&!o.part)return alert('차종 또는 품번을 입력하세요.');keyDb.unshift(o);save();['keyDbCar','keyDbPart','keyDbFreq','keyDbMemo'].forEach(id=>$('#'+id).value='');renderKeyDb()};window.deleteKeyDb=id=>{keyDb=keyDb.filter(x=>x.id!==id);save();renderKeyDb()};$('#keyDbExport').onclick=()=>download(new Blob([JSON.stringify(keyDb,null,2)],{type:'application/json'}),'스마트키_품번DB.json');$('#keyDbImport').onclick=()=>$('#keyDbFile').click();$('#keyDbFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d))throw Error();keyDb=d.map(x=>({id:x.id||uid(),car:String(x.car||''),part:String(x.part||'').toUpperCase(),freq:String(x.freq||''),memo:String(x.memo||'')}));save();renderKeyDb();alert('품번 DB를 불러왔습니다.')}catch{alert('JSON 형식의 품번 DB 파일만 지원합니다.')}};r.readAsText(f)};
@@ -1717,7 +1791,7 @@ async function restorePhoneTransferPackage(raw,onProgress){
  return {jobs:jobs.length,photos,stocks:stocks.length};
 }
 
-const APP_VERSION='17.2'
+const APP_VERSION='18.1'
 let remoteVersion='';
 let autoUpdating=false;
 
@@ -1792,7 +1866,7 @@ async function applyLatestVersion(){
 $('#applyUpdate').onclick=applyLatestVersion;
 
 
-/* V18.0 PHONE TRANSFER - immediate native event binding */
+/* V18.1 PHONE TRANSFER - immediate native event binding */
 let v175TransferBusy=false;
 function v175Info(msg,html=false){
   const el=document.getElementById('phoneBackupInfo');
@@ -1853,7 +1927,7 @@ async function v175Backup(){
     v175Info(`${noPhotos?'⚠️ 사진 제외 백업 완료':'✅ 전체백업 완료'} · <b>${mb}MB</b> · 작업 <b>${pack.jobs?.length||0}건</b><br>내 파일 → 다운로드에서 <b>${name}</b> 확인`,true);
     alert(`${noPhotos?'사진 제외 백업 완료':'전체백업 완료'}\n파일용량: ${mb}MB\n작업: ${pack.jobs?.length||0}건${noPhotos?'\n※ 사진 저장소 오류로 사진은 제외됨':''}`);
   }catch(e){
-    console.error('V18.0 backup',e);
+    console.error('V18.1 backup',e);
     v175Info('❌ 백업 실패: '+(e?.message||String(e)));
     alert('전체백업 실패\n'+(e?.message||String(e)));
   }finally{
@@ -1885,7 +1959,7 @@ function v175Restore(){
       alert(`전체복원 완료\n작업 ${r.jobs}건\n사진 ${r.photos}장\n재고 ${r.stocks}종`);
       renderAll();
     }catch(e){
-      console.error('V18.0 restore',e);
+      console.error('V18.1 restore',e);
       v175Info('❌ 복원 실패: '+(e?.message||String(e)));
       alert('전체복원 실패\n'+(e?.message||String(e)));
     }finally{
@@ -1935,7 +2009,7 @@ let deferredPrompt;addEventListener('beforeinstallprompt',e=>{e.preventDefault()
 let touchX=0;$('#photoModal').addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX},{passive:true});$('#photoModal').addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-touchX;if(Math.abs(d)>45){d>0?photoPrev():photoNext()}},{passive:true});function forceInitialHomeRender(){try{renderAll();requestAnimationFrame(()=>{renderAll();setTimeout(renderAll,120)})}catch(e){console.warn(e)}}
 function renderAll(){renderSmartHistory();renderUnifiedSearch();renderMetrics();renderJobs();renderStocks();drawChart();renderStats();renderCategoryStats();renderCalendar();renderDailyStats();renderKeyDb();renderBlogJobs();renderBlogPhotos();setTimeout(()=>hydratePhotoImages(document),0)}loadSettings();applyBranding();syncVisibleAppVersion();KOREA_AREAS=makeRegionFallback();initBlogAreas();loadKoreaRegions().then(()=>{if($('#blogRegion'))setBlogAreaFromText(settings.address||'')});updateBlogCharCount();updateBlogStatusCount();renderSeoTitleSuggestions();renderBlogRecommendation();updateBlogCtaPreview();toggleOtherWork();$('#vatType').value=['해당없음','포함','별도'].includes(settings.lastVatType)?settings.lastVatType:'해당없음';renderVatPreview();renderPhotoPreview();forceInitialHomeRender();setTimeout(()=>{try{renderDuplicateScan()}catch{}},300);
 
-/* V18.0 검색 입력 이벤트: 사진 저장소 초기화와 완전히 분리 */
+/* V18.1 검색 입력 이벤트: 사진 저장소 초기화와 완전히 분리 */
 (function bindSearchInputsNow(){
  const smart=document.getElementById('smartHistorySearch');
  const unified=document.getElementById('unifiedSearch');
