@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0f172a">
-<meta name="app-version" content="18.1">
+<meta name="app-version" content="18.2">
 <meta name="description" content="자동차키 업체용 매출·미수·재고·작업 관리">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-192.png">
-<title>자동차키 Pro v18.1 통합관리</title>
+<title>자동차키 Pro v18.2 통합관리</title>
 <style>
 :root{--bg:#eef2f7;--card:#fff;--text:#0f172a;--muted:#64748b;--line:#dbe2ea;--accent:#2563eb;--danger:#dc2626;--ok:#059669;--warn:#d97706;--nav:#0f172a}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;background:var(--bg);color:var(--text)}
@@ -133,7 +133,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 </style>
 </head>
 <body><div id="firstSetup" class="lock-screen hidden"><div class="lock-box" style="text-align:left"><div style="text-align:center;font-size:42px">🔑</div><h2 style="text-align:center">업체 정보 설정</h2><div class="note" style="text-align:center;margin-bottom:12px">처음 한 번만 입력하면 앱 전체에 자동 적용됩니다.</div><label>상호</label><input id="firstBusiness" placeholder="예: 드림 자동차키"><label>대표자</label><input id="firstOwner" placeholder="선택 입력"><label>전화번호</label><input id="firstPhone" inputmode="tel" placeholder="010-0000-0000"><label>지역/주소</label><input id="firstAddress" placeholder="예: 인천 청라"><button id="firstSetupSave" class="action" style="width:100%;margin-top:12px">시작하기</button></div></div><div id="lockScreen" class="lock-screen hidden"><div class="lock-box"><div class="key">🔐</div><h2 id="lockBusinessName">자동차키 Pro</h2><div class="note">PIN 비밀번호를 입력하세요.</div><input id="pinInput" type="password" inputmode="numeric" maxlength="6" placeholder="••••"><button id="unlockBtn" class="action" style="width:100%">잠금 해제</button><div id="lockError" class="lock-error"></div></div></div><div id="detailModal" class="detail-modal hidden" onclick="closeMetricDetail()"><div class="detail-box" onclick="event.stopPropagation()"><div class="detail-head"><h2 id="detailTitle">상세 내역</h2><button class="detail-close" type="button" onclick="closeMetricDetail()">×</button></div><div id="detailSummary" class="detail-summary"></div><div id="detailList" class="list"></div></div></div><div id="photoModal" class="photo-modal hidden" onclick="closePhotoModal()"><div class="photo-hint">두 손가락으로 확대</div><button type="button" aria-label="닫기">×</button><button type="button" class="nav prev" onclick="event.stopPropagation();photoPrev()">‹</button><img id="photoModalImg" alt="작업사진" onclick="event.stopPropagation()"><button type="button" class="nav next" onclick="event.stopPropagation();photoNext()">›</button><div id="photoCount" class="photo-count"></div></div>
-<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V18.1</span> Pro <small style="font-size:11px">v18.1</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
+<header><div class="head"><div style="display:flex;gap:10px;align-items:center"><div id="brandLogo" class="logo">🔑</div><div class="brand"><h1><span id="brandBusinessName">드림 자동차키</span> <span id="appVersionBadge" class="app-version-badge">V18.2</span> Pro <small style="font-size:11px">v18.2</small></h1><button type="button" id="brandEditButton" class="brand-edit" title="업체정보 변경">업체정보 변경 <span class="edit-icon">✎</span></button><div id="brandSubline" class="brand-subline"></div></div></div><button id="installBtn" class="install">앱 설치</button></div></header>
 <main>
 <nav class="tabs"><button class="active" data-tab="home">홈</button><button data-tab="add">등록</button><button data-tab="history">내역</button><button data-tab="calendar">달력</button><button data-tab="stats">통계</button><button data-tab="unpaid">미수</button><button data-tab="stock">재고</button><button data-tab="settings">설정</button></nav>
 <section id="home" class="panel active"><div id="updateBanner" class="update-banner" style="display:none"><span id="updateText">새 버전이 있습니다.</span><button class="action ok" id="applyUpdate">지금 업데이트</button></div>
@@ -172,7 +172,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 <div class="card" style="margin-bottom:12px;background:linear-gradient(135deg,#eff6ff,#fff)">
 <h2 style="margin-top:0">🔎 과거 거래 통합검색</h2>
 <div class="note">거래처명 · 전화번호 · 차종 · 차량번호 · VIN 전체/뒤 7자리 · 작업내용으로 검색합니다. 과거에 받은 가격도 바로 확인할 수 있습니다.</div>
-<input id="smartHistorySearch" placeholder="예: 막다 / 카니발 / 12가3456 / VIN 뒤7자리" style="margin-top:10px">
+<input id="smartHistorySearch" placeholder="예: 막다 / 카니발 / 12가3456 / VIN 뒤7자리" style="margin-top:10px" oninput="renderSmartHistory()" onkeyup="renderSmartHistory()" onchange="renderSmartHistory()" oncompositionend="renderSmartHistory()">
 <div id="smartHistorySummary" class="note" style="margin-top:8px"></div>
 <div id="smartHistoryResults" class="list" style="margin-top:8px"></div>
 </div>
@@ -183,7 +183,7 @@ label{display:block;font-size:13px;font-weight:800;margin-bottom:5px}input,selec
 <div class="card unified-search-card">
   <h2 style="margin-top:0">🔍 통합 작업검색</h2>
   <div class="note">차종 · 차량번호 · VIN 전체/뒤 6자리/뒤 8자리 · 거래처 · 전화번호 · 품번으로 검색</div>
-  <input id="unifiedSearch" placeholder="예: 쏘렌토 / 123가4567 / 008491 / 엑심모터스 / 95440N1950" autocomplete="off">
+  <input id="unifiedSearch" placeholder="예: 쏘렌토 / 123가4567 / 008491 / 엑심모터스 / 95440N1950" autocomplete="off" oninput="renderUnifiedSearch()" onkeyup="renderUnifiedSearch()" onchange="renderUnifiedSearch()" oncompositionend="renderUnifiedSearch()">
   <div id="unifiedSearchSummary" class="note" style="margin-top:8px"></div>
   <div id="unifiedResults" class="unified-results"></div>
 </div>
@@ -856,6 +856,7 @@ function renderUnifiedSearch(){
  const raw=String(input.value||'').trim();
  const q=raw.toLowerCase().replace(/\s+/g,'').replace(/-/g,'');
  if(!q){box.innerHTML='';sum.textContent='';return}
+ sum.textContent='검색 중...';
  const norm=v=>String(v||'').toLowerCase().replace(/\s+/g,'').replace(/-/g,'');
  const a=(Array.isArray(jobs)?jobs:[]).filter(j=>{
    const vin=norm(j.vin);
@@ -935,6 +936,7 @@ function renderSmartHistory(){
  const raw=String(input.value||'').trim();
  const q=raw.toLowerCase().replace(/\s+/g,'').replace(/-/g,'');
  if(!q){box.innerHTML='';sum.textContent='';return}
+ sum.textContent='검색 중...';
  const norm=v=>String(v||'').toLowerCase().replace(/\s+/g,'').replace(/-/g,'');
  const a=(Array.isArray(jobs)?jobs:[]).filter(j=>{
    const vin=norm(j.vin);
@@ -1126,7 +1128,7 @@ function applyBranding(){
  const subline=document.getElementById('brandSubline');
  if(brandName)brandName.textContent=name;
  if(lockName)lockName.textContent=name+' Pro';
- document.title=name+' Pro v18.1';
+ document.title=name+' Pro v18.2';
  if(brandLogo){
    if(settings?.businessLogo)brandLogo.innerHTML=`<img class="brand-logo-img" src="${settings.businessLogo}" alt="로고">`;
    else brandLogo.textContent='🔑';
@@ -1791,7 +1793,7 @@ async function restorePhoneTransferPackage(raw,onProgress){
  return {jobs:jobs.length,photos,stocks:stocks.length};
 }
 
-const APP_VERSION='18.1'
+const APP_VERSION='18.2'
 let remoteVersion='';
 let autoUpdating=false;
 
@@ -1866,7 +1868,7 @@ async function applyLatestVersion(){
 $('#applyUpdate').onclick=applyLatestVersion;
 
 
-/* V18.1 PHONE TRANSFER - immediate native event binding */
+/* V18.2 PHONE TRANSFER - immediate native event binding */
 let v175TransferBusy=false;
 function v175Info(msg,html=false){
   const el=document.getElementById('phoneBackupInfo');
@@ -1927,7 +1929,7 @@ async function v175Backup(){
     v175Info(`${noPhotos?'⚠️ 사진 제외 백업 완료':'✅ 전체백업 완료'} · <b>${mb}MB</b> · 작업 <b>${pack.jobs?.length||0}건</b><br>내 파일 → 다운로드에서 <b>${name}</b> 확인`,true);
     alert(`${noPhotos?'사진 제외 백업 완료':'전체백업 완료'}\n파일용량: ${mb}MB\n작업: ${pack.jobs?.length||0}건${noPhotos?'\n※ 사진 저장소 오류로 사진은 제외됨':''}`);
   }catch(e){
-    console.error('V18.1 backup',e);
+    console.error('V18.2 backup',e);
     v175Info('❌ 백업 실패: '+(e?.message||String(e)));
     alert('전체백업 실패\n'+(e?.message||String(e)));
   }finally{
@@ -1959,7 +1961,7 @@ function v175Restore(){
       alert(`전체복원 완료\n작업 ${r.jobs}건\n사진 ${r.photos}장\n재고 ${r.stocks}종`);
       renderAll();
     }catch(e){
-      console.error('V18.1 restore',e);
+      console.error('V18.2 restore',e);
       v175Info('❌ 복원 실패: '+(e?.message||String(e)));
       alert('전체복원 실패\n'+(e?.message||String(e)));
     }finally{
@@ -2009,7 +2011,7 @@ let deferredPrompt;addEventListener('beforeinstallprompt',e=>{e.preventDefault()
 let touchX=0;$('#photoModal').addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX},{passive:true});$('#photoModal').addEventListener('touchend',e=>{const d=e.changedTouches[0].clientX-touchX;if(Math.abs(d)>45){d>0?photoPrev():photoNext()}},{passive:true});function forceInitialHomeRender(){try{renderAll();requestAnimationFrame(()=>{renderAll();setTimeout(renderAll,120)})}catch(e){console.warn(e)}}
 function renderAll(){renderSmartHistory();renderUnifiedSearch();renderMetrics();renderJobs();renderStocks();drawChart();renderStats();renderCategoryStats();renderCalendar();renderDailyStats();renderKeyDb();renderBlogJobs();renderBlogPhotos();setTimeout(()=>hydratePhotoImages(document),0)}loadSettings();applyBranding();syncVisibleAppVersion();KOREA_AREAS=makeRegionFallback();initBlogAreas();loadKoreaRegions().then(()=>{if($('#blogRegion'))setBlogAreaFromText(settings.address||'')});updateBlogCharCount();updateBlogStatusCount();renderSeoTitleSuggestions();renderBlogRecommendation();updateBlogCtaPreview();toggleOtherWork();$('#vatType').value=['해당없음','포함','별도'].includes(settings.lastVatType)?settings.lastVatType:'해당없음';renderVatPreview();renderPhotoPreview();forceInitialHomeRender();setTimeout(()=>{try{renderDuplicateScan()}catch{}},300);
 
-/* V18.1 검색 입력 이벤트: 사진 저장소 초기화와 완전히 분리 */
+/* V18.2 검색 입력 이벤트: 사진 저장소 초기화와 완전히 분리 */
 (function bindSearchInputsNow(){
  const smart=document.getElementById('smartHistorySearch');
  const unified=document.getElementById('unifiedSearch');
