@@ -1179,15 +1179,28 @@ function renderCalendar(){
   const [y,m]=calendarYM.split('-').map(Number);
   $('#calTitle').textContent=`${y}년 ${m}월`;
   const first=new Date(y,m-1,1).getDay(), days=new Date(y,m,0).getDate();
-  const sum=(a,k)=>a.reduce((n,j)=>n+(Number(j[k])||0),0);
   const monthJobs=jobs.filter(j=>String(j.date||'').startsWith(calendarYM+'-'));
+
+  /* 매출 = 부가세 제외 공급가액. VAT가 따로 기록된 건만 제외하며,
+     VAT 정보가 없는 기존 기록은 기존 sale 값을 그대로 사용한다. */
+  const netSaleOf=j=>{
+    const gross=Number(j.sale)||0;
+    const supply=Number(j.supply)||Number(j.supplyAmount)||0;
+    const vat=Number(j.vat)||Number(j.vatAmount)||0;
+    if(supply>0)return supply;
+    if(vat>0)return Math.max(0,gross-vat);
+    return gross;
+  };
+  const costOf=j=>Number(j.cost)||0;
+  const profitOf=j=>netSaleOf(j)-costOf(j);
+
   let html='';
   for(let i=0;i<first;i++) html+='<div class="cal-day empty"></div>';
   for(let d=1;d<=days;d++){
     const date=`${calendarYM}-${String(d).padStart(2,'0')}`;
     const a=monthJobs.filter(j=>j.date===date);
-    const profit=sum(a,'profit');
-    const sales=sum(a,'sale');
+    const sales=a.reduce((n,j)=>n+netSaleOf(j),0);
+    const profit=a.reduce((n,j)=>n+profitOf(j),0);
     const cars=a.reduce((n,j)=>n+(Number(j.carCount)||1),0);
     const dow=new Date(y,m-1,d).getDay();
     const cls=dow===0?' sun':dow===6?' sat':'';
@@ -1197,9 +1210,11 @@ function renderCalendar(){
     </div>`;
   }
   grid.innerHTML=html;
-  const totalProfit=sum(monthJobs,'profit'), totalSales=sum(monthJobs,'sale');
+  const totalSales=monthJobs.reduce((n,j)=>n+netSaleOf(j),0);
+  const totalCost=monthJobs.reduce((n,j)=>n+costOf(j),0);
+  const totalProfit=monthJobs.reduce((n,j)=>n+profitOf(j),0);
   const totalCars=monthJobs.reduce((n,j)=>n+(Number(j.carCount)||1),0);
-  $('#calendarSummary').innerHTML=`${m}월 작업 ${totalCars}대 · ${monthJobs.length}건 · 매출 <b>${money(totalSales)}</b> · 순수익 <b>${money(totalProfit)}</b>`;
+  $('#calendarSummary').innerHTML=`${m}월 작업 ${totalCars}대 · ${monthJobs.length}건 · 매출(부가세 제외) <b>${money(totalSales)}</b> · 원가 <b>${money(totalCost)}</b> · 순수익 <b>${money(totalProfit)}</b>`;
 }
 window.openCalendarDay=date=>{
   const arr=jobs.filter(j=>j.date===date);
